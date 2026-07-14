@@ -1,0 +1,195 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum AdminRole {
+  OWNER
+  STAFF
+}
+
+enum LeadStatus {
+  NEW
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model AdminUser {
+  id           Int       @id @default(autoincrement())
+  name         String
+  email        String    @unique
+  passwordHash String
+  role         AdminRole @default(STAFF)
+  isActive     Boolean   @default(true)
+
+  lastLoginAt DateTime?
+
+  sessions      AdminSession[]
+  assignedLeads Lead[]
+  auditLogs     AdminAuditLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([role])
+  @@index([isActive])
+}
+
+model AdminSession {
+  id Int @id @default(autoincrement())
+
+  tokenHash     String @unique
+  csrfTokenHash String @unique
+
+  userId Int
+  user   AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  expiresAt  DateTime
+  lastUsedAt DateTime @default(now())
+
+  ipAddress String @default("")
+  userAgent String @default("")
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model Lead {
+  id Int @id @default(autoincrement())
+
+  name    String
+  phone   String
+  service String @default("")
+  message String @default("")
+
+  status          LeadStatus @default(NEW)
+  internalComment String     @default("")
+
+  source String @default("website")
+
+  consentAccepted   Boolean   @default(false)
+  consentAcceptedAt DateTime?
+
+  assignedToId Int?
+  assignedTo   AdminUser? @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([assignedToId])
+  @@index([createdAt])
+}
+
+model BlogPost {
+  id Int @id @default(autoincrement())
+
+  slug    String @unique
+  title   String
+  excerpt String
+  content String @default("")
+
+  category     String @default("Журнал")
+  categorySlug String @default("hair-care")
+
+  coverImage  String @default("/site/img/blog/blog-hero.png")
+  readingTime String @default("3 мин")
+
+  isPublished Boolean   @default(false)
+  publishedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isPublished])
+  @@index([categorySlug])
+  @@index([publishedAt])
+}
+
+model Work {
+  id Int @id @default(autoincrement())
+
+  slug String @unique
+
+  title   String
+  excerpt String @default("")
+
+  category     String @default("Работа")
+  categorySlug String @default("airtouch")
+
+  beforeImage String
+  afterImage  String
+
+  technique String @default("")
+  duration  String @default("")
+
+  heroImage       String @default("")
+  experienceImage String @default("")
+  heroQuote       String @default("")
+  story           String @default("")
+
+  // Временно оставляем для совместимости с текущим публичным JS.
+  // После перевода галереи на WorkImage это поле удалим отдельной миграцией.
+  gallery String @default("[]")
+
+  images WorkImage[]
+
+  isPublished Boolean @default(false)
+  showOnHome  Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isPublished])
+  @@index([showOnHome])
+  @@index([categorySlug])
+}
+
+model WorkImage {
+  id Int @id @default(autoincrement())
+
+  workId Int
+  work   Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+
+  imagePath String
+  alt       String @default("")
+  sortOrder Int    @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([workId])
+  @@index([workId, sortOrder])
+}
+
+model AdminAuditLog {
+  id Int @id @default(autoincrement())
+
+  userId Int?
+  user   AdminUser? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  action     String
+  entityType String
+  entityId   String @default("")
+
+  // Сюда будем класть безопасный JSON без паролей,
+  // cookie, session token и других секретов.
+  details String @default("{}")
+
+  ipAddress String @default("")
+  userAgent String @default("")
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([entityType])
+  @@index([createdAt])
+}

@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+
+    <title>Заявки — Клуб Эстетики</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="/site/css/admin.min.css" />
+
+    <script src="/site/script/admin/admin.js" defer></script>
+  </head>
+
+  <body class="admin-body" data-admin-page="requests" data-requests-page>
+    <div class="admin-shell">
+      <aside class="admin-sidebar">
+        <a class="admin-sidebar__logo" href="/admin/dashboard">
+          Клуб Эстетики
+        </a>
+
+        <span class="admin-sidebar__caption"> Управление </span>
+
+        <nav class="admin-sidebar__nav" aria-label="Навигация админ-панели">
+          <a
+            class="admin-sidebar__link"
+            href="/admin/dashboard"
+            data-owner-only
+          >
+            Обзор
+          </a>
+
+          <a
+            class="admin-sidebar__link admin-sidebar__link--active"
+            href="/admin/requests"
+          >
+            Заявки
+          </a>
+
+          <a class="admin-sidebar__link" href="/admin/works" data-owner-only>
+            Работы
+          </a>
+
+          <span
+            class="admin-sidebar__link admin-sidebar__link--disabled"
+            data-owner-only
+            aria-disabled="true"
+            title="Раздел будет добавлен позже"
+          >
+            Каталог
+          </span>
+
+          <a class="admin-sidebar__link" href="/admin/blog" data-owner-only>
+            Статьи
+          </a>
+
+          <a class="admin-sidebar__link" href="/admin/staff" data-owner-only>
+            Сотрудники
+          </a>
+        </nav>
+
+        <div class="admin-sidebar__bottom">
+          <a
+            class="admin-sidebar__site-link"
+            href="/"
+            target="_blank"
+            rel="noopener"
+          >
+            Открыть сайт
+          </a>
+
+          <button class="admin-sidebar__logout" type="button" data-admin-logout>
+            Выйти
+          </button>
+        </div>
+      </aside>
+
+      <main class="admin-main">
+        <header class="admin-header">
+          <div>
+            <span class="admin-header__eyebrow"> Работа с клиентами </span>
+
+            <h1 class="admin-header__title">Заявки</h1>
+          </div>
+
+          <div class="admin-user">
+            <div class="admin-user__info">
+              <span class="admin-user__role" data-admin-user-role> — </span>
+
+              <span class="admin-user__email" data-admin-user-email> — </span>
+            </div>
+
+            <button
+              class="admin-user__logout-mobile"
+              type="button"
+              data-admin-logout
+            >
+              Выйти
+            </button>
+          </div>
+        </header>
+
+        <section class="admin-requests">
+          <div class="admin-requests__head">
+            <div class="admin-requests__intro">
+              <span class="admin-requests__caption">
+                Клиентские обращения
+              </span>
+
+              <h2 class="admin-requests__title">Управление заявками</h2>
+
+              <p class="admin-requests__description">
+                Просматривайте обращения с сайта, меняйте статус и сохраняйте
+                внутренние комментарии для сотрудников.
+              </p>
+            </div>
+
+            <button
+              class="admin-requests__refresh"
+              type="button"
+              data-requests-refresh
+            >
+              Обновить
+            </button>
+          </div>
+
+          <div class="admin-requests__stats">
+            <article class="admin-request-stat">
+              <span class="admin-request-stat__label"> Всего </span>
+
+              <strong
+                class="admin-request-stat__value"
+                data-request-count="all"
+              >
+                0
+              </strong>
+            </article>
+
+            <article class="admin-request-stat">
+              <span class="admin-request-stat__label"> Новые </span>
+
+              <strong
+                class="admin-request-stat__value"
+                data-request-count="NEW"
+              >
+                0
+              </strong>
+            </article>
+
+            <article class="admin-request-stat">
+              <span class="admin-request-stat__label"> В работе </span>
+
+              <strong
+                class="admin-request-stat__value"
+                data-request-count="IN_PROGRESS"
+              >
+                0
+              </strong>
+            </article>
+
+            <article class="admin-request-stat">
+              <span class="admin-request-stat__label"> Завершены </span>
+
+              <strong
+                class="admin-request-stat__value"
+                data-request-count="COMPLETED"
+              >
+                0
+              </strong>
+            </article>
+
+            <article class="admin-request-stat">
+              <span class="admin-request-stat__label"> Отменены </span>
+
+              <strong
+                class="admin-request-stat__value"
+                data-request-count="CANCELLED"
+              >
+                0
+              </strong>
+            </article>
+          </div>
+
+          <div class="admin-requests__toolbar">
+            <form class="admin-requests__search" data-requests-search-form>
+              <label class="admin-requests__search-label" for="requests-search">
+                Поиск заявок
+              </label>
+
+              <div class="admin-requests__search-row">
+                <input
+                  class="admin-requests__search-input"
+                  id="requests-search"
+                  name="search"
+                  type="search"
+                  maxlength="100"
+                  autocomplete="off"
+                  placeholder="Имя, телефон, услуга или комментарий"
+                  data-requests-search
+                />
+
+                <button class="admin-requests__search-button" type="submit">
+                  Найти
+                </button>
+
+                <button
+                  class="admin-requests__search-reset"
+                  type="button"
+                  data-requests-search-reset
+                  hidden
+                >
+                  Сбросить
+                </button>
+              </div>
+            </form>
+
+            <form class="admin-requests__date-filter" data-requests-date-form>
+              <span class="admin-requests__search-label">
+                Поиск по дате создания
+              </span>
+
+              <div class="admin-requests__date-row">
+                <label class="admin-requests__date-field">
+                  <span>С даты</span>
+
+                  <input
+                    class="admin-requests__date-input"
+                    name="dateFrom"
+                    type="date"
+                    data-requests-date-from
+                  />
+                </label>
+
+                <label class="admin-requests__date-field">
+                  <span>По дату</span>
+
+                  <input
+                    class="admin-requests__date-input"
+                    name="dateTo"
+                    type="date"
+                    data-requests-date-to
+                  />
+                </label>
+
+                <button class="admin-requests__search-button" type="submit">
+                  Применить
+                </button>
+
+                <button
+                  class="admin-requests__search-reset"
+                  type="button"
+                  data-requests-date-reset
+                  hidden
+                >
+                  Сбросить даты
+                </button>
+              </div>
+            </form>
+
+            <div class="admin-requests__filters" aria-label="Фильтр заявок">
+              <button
+                class="admin-requests__filter is-active"
+                type="button"
+                data-request-filter=""
+              >
+                Все
+              </button>
+
+              <button
+                class="admin-requests__filter"
+                type="button"
+                data-request-filter="NEW"
+              >
+                Новые
+              </button>
+
+              <button
+                class="admin-requests__filter"
+                type="button"
+                data-request-filter="IN_PROGRESS"
+              >
+                В работе
+              </button>
+
+              <button
+                class="admin-requests__filter"
+                type="button"
+                data-request-filter="COMPLETED"
+              >
+                Завершены
+              </button>
+
+              <button
+                class="admin-requests__filter"
+                type="button"
+                data-request-filter="CANCELLED"
+              >
+                Отменены
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="admin-requests__message"
+            role="status"
+            aria-live="polite"
+            hidden
+            data-requests-message
+          ></div>
+
+          <div
+            class="admin-requests__loading"
+            aria-live="polite"
+            data-requests-loading
+          >
+            Загружаем заявки…
+          </div>
+
+          <div class="admin-requests__empty" data-requests-empty hidden>
+            <span class="admin-requests__empty-caption"> Заявок нет </span>
+
+            <h3 class="admin-requests__empty-title">
+              По выбранным параметрам ничего не найдено
+            </h3>
+
+            <p class="admin-requests__empty-text">
+              Измените фильтры, даты или очистите строку поиска.
+            </p>
+          </div>
+
+          <div
+            class="admin-requests__list"
+            aria-live="polite"
+            data-requests-list
+            hidden
+          ></div>
+
+          <nav
+            class="admin-requests__pagination"
+            aria-label="Страницы заявок"
+            data-requests-pagination
+            hidden
+          >
+            <button
+              class="admin-requests__pagination-button"
+              type="button"
+              data-requests-prev
+            >
+              Назад
+            </button>
+
+            <span
+              class="admin-requests__pagination-info"
+              data-requests-pagination-info
+            >
+              Страница 1 из 1
+            </span>
+
+            <button
+              class="admin-requests__pagination-button"
+              type="button"
+              data-requests-next
+            >
+              Вперёд
+            </button>
+          </nav>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

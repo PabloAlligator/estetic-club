@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+
+    <title>Вход в админ-панель — NADIA HAIR</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="/site/css/admin.min.css" />
+
+    <script src="/site/script/admin/admin.js" defer></script>
+  </head>
+
+  <body class="admin-body admin-body--login" data-admin-page="login">
+    <main class="admin-login">
+      <section class="admin-login__visual">
+        <div class="admin-login__visual-inner">
+          <a
+            class="admin-login__brand"
+            href="/"
+            aria-label="Перейти на сайт Клуб Эстетики"
+          >
+            Клуб Эстетики
+          </a>
+
+          <div class="admin-login__visual-content">
+            <span class="admin-login__eyebrow"> Клуб эстетики </span>
+
+            <h1 class="admin-login__visual-title">Пространство управления</h1>
+
+            <p class="admin-login__visual-text">
+              Работы, статьи, заявки и материалы бренда в единой системе.
+            </p>
+          </div>
+
+          <p class="admin-login__visual-footer">
+            Закрытая административная панель
+          </p>
+        </div>
+      </section>
+
+      <section class="admin-login__form-side">
+        <div class="admin-login__form-wrap">
+          <div class="admin-login__heading">
+            <span class="admin-login__mobile-brand"> Клуб Эстетики </span>
+
+            <span class="admin-login__caption"> Административная панель </span>
+
+            <h2 class="admin-login__title">Добро пожаловать</h2>
+
+            <p class="admin-login__description">
+              Введите данные вашей учётной записи.
+            </p>
+          </div>
+
+          <form class="admin-login__form" data-admin-login-form novalidate>
+            <div class="admin-field">
+              <label class="admin-field__label" for="admin-email">
+                Электронная почта
+              </label>
+
+              <input
+                class="admin-field__input"
+                id="admin-email"
+                name="email"
+                type="email"
+                inputmode="email"
+                autocomplete="username"
+                maxlength="254"
+                placeholder="name@example.com"
+                required
+                data-admin-email
+              />
+            </div>
+
+            <div class="admin-field">
+              <label class="admin-field__label" for="admin-password">
+                Пароль
+              </label>
+
+              <div class="admin-field__password">
+                <input
+                  class="admin-field__input admin-field__input--password"
+                  id="admin-password"
+                  name="password"
+                  type="password"
+                  autocomplete="current-password"
+                  maxlength="128"
+                  placeholder="Введите пароль"
+                  required
+                  data-admin-password
+                />
+
+                <button
+                  class="admin-field__password-toggle"
+                  type="button"
+                  aria-label="Показать пароль"
+                  aria-pressed="false"
+                  data-password-toggle
+                >
+                  <span data-password-toggle-text> Показать </span>
+                </button>
+              </div>
+            </div>
+
+            <div
+              class="admin-login__message"
+              role="status"
+              aria-live="polite"
+              hidden
+              data-admin-login-message
+            ></div>
+
+            <button
+              class="admin-button admin-button--primary admin-login__submit"
+              type="submit"
+              data-admin-login-submit
+            >
+              <span data-admin-login-submit-text> Войти в панель </span>
+
+              <span
+                class="admin-button__loader"
+                aria-hidden="true"
+                hidden
+                data-admin-login-loader
+              ></span>
+            </button>
+          </form>
+
+          <div class="admin-login__security">
+            <span class="admin-login__security-icon"> ◇ </span>
+
+            <p>
+              Защищённая авторизация. Доступ разрешён только зарегистрированным
+              сотрудникам.
+            </p>
+          </div>
+
+          <a class="admin-login__back" href="/"> ← Вернуться на сайт </a>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

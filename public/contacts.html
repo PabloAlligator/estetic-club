@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/site/css/contacts.min.css" />
+    <!-- <link rel="stylesheet" href="/site/css/footer.css" /> -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Document</title>
+  </head>
+  <body>
+    <header class="header" data-header>
+      <div class="header__inner glass">
+        <nav class="header__nav header__nav--left" aria-label="Левая навигация">
+          <a href="/public/index.html">Главная</a>
+          <a href="#hero">Контакты</a>
+        </nav>
+
+        <a
+          href="/public/index.html"
+          class="header__logo"
+          aria-label="На главную"
+        >
+          <img src="/site/img/logo.png" alt="Nadia Hair Studio" />
+        </a>
+
+        <nav
+          class="header__nav header__nav--right"
+          aria-label="Правая навигация"
+        >
+          <a href="#services">Услуги</a>
+          <a href="#works">Работы</a>
+          <a href="/public/blog/blog.html">Блог</a>
+        </nav>
+
+        <button
+          class="header__burger"
+          type="button"
+          aria-label="Открыть меню"
+          aria-expanded="false"
+          data-burger
+        >
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+
+      <nav
+        class="header__mobile"
+        aria-label="Мобильная навигация"
+        data-mobile-menu
+      >
+        <div class="header__mobile-nav">
+          <a href="/public/index.html">Главная</a>
+          <a href="/public/services.html">Услуги</a>
+          <a href="/public/works.html">Работы</a>
+          <a href="/public/blog/blog.html">Блог</a>
+          <a href="/public/contacts.html">Контакты</a>
+        </div>
+
+        <div class="header__mobile-contact">
+          <span>Записаться в салон</span>
+          <a href="tel:89235853333">8 923 585-33-33</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="contacts-page">
+      <section class="contact-hero js-contact-hero" id="hero">
+        <div class="contact-hero__stage">
+          <div class="contact-hero__content">
+            <p class="contact-hero__eyebrow">Контакты</p>
+
+            <h1 class="contact-hero__title">
+              НАДЕЖДА ШУМИЛОВА
+              <!-- НАДЬКА БУТЕРБРОЖКА -->
+            </h1>
+
+            <p class="contact-hero__text">
+              Подберём услугу, обсудим состояние волос и найдём образ, в котором
+              вы будете чувствовать себя уверенно.
+            </p>
+
+            <!-- <div class="contact-hero__actions">
+                <a class="contact-hero__button" href="tel:+79233906649">
+                  Позвонить
+                </a>
+
+                <a class="contact-hero__link" href="#contact-form">
+                  Оставить заявку
+                </a>
+              </div> -->
+
+            <div class="contact-hero__info">
+              <div>
+                <span>Телефон</span>
+                <a href="tel:+79235853333">+7 (923) 585-33-33</a>
+              </div>
+
+              <div>
+                <span>Город</span>
+                <address>Абакан</address>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-hero__visual">
+            <img
+              src="/site/img/contacts/contact-hero.png"
+              alt="NADIA HAIR — образ для страницы контактов"
+              draggable="false"
+            />
+
+            <div class="contact-hero__quote">
+              <p>Красота начинается с бережного подхода.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- интро -->
+
+      <!-- flow контактов: коричневый → белый -->
+
+      <div class="contacts-flow" data-contacts-flow>
+        <!-- интро -->
+
+        <section class="contact-services-intro js-contact-services-intro">
+          <div class="contact-services-intro__inner">
+            <div class="contact-services-intro__visual">
+              <img
+                src="/site/img/contacts/services-intro3.png"
+                alt="NADIA HAIR — индивидуальный образ и премиальный уход"
+                draggable="false"
+              />
+            </div>
+
+            <div class="contact-services-intro__content">
+              <div class="contact-services-intro__top">
+                <p
+                  class="contact-services-intro__line contact-services-intro__line--one js-services-intro-top"
+                >
+                  Ваши эмоции —
+                </p>
+
+                <span
+                  class="contact-services-intro__small contact-services-intro__small--with js-services-intro-small"
+                >
+                  наша
+                </span>
+
+                <p
+                  class="contact-services-intro__line contact-services-intro__line--two js-services-intro-top"
+                >
+                  главная деталь
+                </p>
+              </div>
+
+              <p class="contact-services-intro__text js-services-intro-text">
+                Потому что идеальный образ — это не только цвет, блеск и форма.
+                Это момент, когда вы смотрите на себя и чувствуете: «Вот она —
+                я».
+              </p>
+
+              <h2
+                class="contact-services-intro__bottom js-services-intro-bottom"
+              >
+                Nadia Hair Experience
+              </h2>
+            </div>
+          </div>
+        </section>
+
+        <!-- белая секция контактов -->
+
+        <section
+          class="contact-equipment js-contact-equipment"
+          data-contact-white-section
+          aria-labelledby="contact-equipment-title"
+        >
+          <div class="contact-equipment__inner">
+            <div class="contact-equipment__head">
+              <p class="contact-equipment__number js-equipment-fade">003</p>
+
+              <h2 class="contact-equipment__title" id="contact-equipment-title">
+                Оборудование,<br />
+                которое работает<br />
+                на ваше ощущение
+              </h2>
+
+              <p class="contact-equipment__lead js-equipment-fade">
+                Для нас важен не только результат на волосах. Важно, как вы
+                чувствуете себя в процессе: спокойно, бережно, уверенно и
+                красиво.
+              </p>
+            </div>
+
+            <div class="contact-equipment__showcase">
+              <article
+                class="contact-equipment__card contact-equipment__card--large js-equipment-card"
+              >
+                <div class="contact-equipment__media">
+                  <img
+                    src="/site/img/contacts/equipment-wash.png"
+                    alt="Кресло-мойка для ухода за волосами"
+                    draggable="false"
+                  />
+                </div>
+
+                <div class="contact-equipment__body">
+                  <span>01</span>
+                  <h3>Кресло-мойка для глубокого ухода</h3>
+                  <p>
+                    Мягкая посадка, удобное положение и комфорт во время
+                    процедур — чтобы уход ощущался как спокойный beauty-ритуал.
+                  </p>
+                </div>
+              </article>
+
+              <article class="contact-equipment__card js-equipment-card">
+                <div class="contact-equipment__media">
+                  <img
+                    src="/site/img/contacts/equipment-dyson.png"
+                    alt="Dyson Airstrait и профессиональный фен Dyson"
+                    draggable="false"
+                  />
+                </div>
+
+                <div class="contact-equipment__body">
+                  <span>02</span>
+                  <h3>Dyson Airstrait</h3>
+                  <p>
+                    Для аккуратной гладкости, чистого финиша и бережной работы с
+                    полотном волос.
+                  </p>
+                </div>
+              </article>
+
+              <article class="contact-equipment__card js-equipment-card">
+                <div class="contact-equipment__media">
+                  <img
+                    src="/site/img/contacts/equipment-climazon.png"
+                    alt="Профессиональный термоактиватор для уходовых процедур"
+                    draggable="false"
+                  />
+                </div>
+
+                <div class="contact-equipment__body">
+                  <span>03</span>
+                  <h3>Профессиональный термоактиватор</h3>
+                  <p>
+                    Помогает сделать уходовые процедуры глубже, мягче и
+                    комфортнее для клиента.
+                  </p>
+                </div>
+              </article>
+
+              <article class="contact-equipment__card js-equipment-card">
+                <div class="contact-equipment__media">
+                  <img
+                    src="/site/img/contacts/equipment-mirror.png"
+                    alt="Рабочее место Nadia Hair с зеркалом и мягкой подсветкой"
+                    draggable="false"
+                  />
+                </div>
+
+                <div class="contact-equipment__body">
+                  <span>04</span>
+                  <h3>Мягкий свет и рабочее пространство</h3>
+                  <p>
+                    Атмосфера, в которой удобно смотреть на себя, выбирать образ
+                    и наслаждаться моментом.
+                  </p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section
+          class="contact-booking js-contact-booking"
+          id="contact-form"
+          aria-labelledby="contact-booking-title"
+        >
+          <div class="contact-booking__inner">
+            <div class="contact-booking__intro">
+              <p class="contact-booking__number">004</p>
+
+              <div class="contact-booking__content">
+                <p class="contact-booking__eyebrow">Запись на консультацию</p>
+
+                <h2 class="contact-booking__title" id="contact-booking-title">
+                  Давайте обсудим<br />
+                  ваш будущий образ
+                </h2>
+
+                <p class="contact-booking__text">
+                  Оставьте номер телефона. Мы свяжемся с вами, уточним состояние
+                  волос, историю окрашиваний и поможем выбрать подходящую
+                  процедуру.
+                </p>
+              </div>
+
+              <div class="contact-booking__contacts">
+                <div class="contact-booking__contact">
+                  <span>Телефон</span>
+
+                  <a href="tel:+79235853333"> +7 (923) 585-33-33 </a>
+                </div>
+
+                <div class="contact-booking__contact">
+                  <span>Город</span>
+
+                  <p>Абакан</p>
+                </div>
+
+                <div class="contact-booking__contact">
+                  <span>Формат</span>
+
+                  <p>По предварительной записи</p>
+                </div>
+              </div>
+
+              <p class="contact-booking__note">
+                Ответим на вопросы и подберём решение без спешки и навязанных
+                процедур.
+              </p>
+            </div>
+
+            <div class="contact-booking__form-side">
+              <div class="contact-booking__form-head">
+                <p class="contact-booking__form-caption">NADIA HAIR</p>
+
+                <h3 class="contact-booking__form-title">Оставить заявку</h3>
+
+                <p class="contact-booking__form-text">
+                  Заполните несколько полей — остальное обсудим лично.
+                </p>
+              </div>
+
+              <form
+                class="contact-booking__form"
+                data-contact-booking-form
+                novalidate
+              >
+                <div class="contact-booking__trap" aria-hidden="true">
+                  <label for="booking-company"> Название компании </label>
+
+                  <input
+                    id="booking-company"
+                    name="company"
+                    type="text"
+                    tabindex="-1"
+                    autocomplete="off"
+                    data-booking-honeypot
+                  />
+                </div>
+
+                <input type="hidden" name="source" value="contacts-page" />
+
+                <div class="contact-booking__field">
+                  <label class="contact-booking__label" for="booking-name">
+                    Ваше имя
+                  </label>
+
+                  <input
+                    class="contact-booking__input"
+                    id="booking-name"
+                    name="name"
+                    type="text"
+                    autocomplete="name"
+                    minlength="2"
+                    maxlength="80"
+                    placeholder="Как к вам обращаться?"
+                    required
+                    data-booking-name
+                  />
+
+                  <span
+                    class="contact-booking__error"
+                    data-booking-error="name"
+                  ></span>
+                </div>
+
+                <div class="contact-booking__field">
+                  <label class="contact-booking__label" for="booking-phone">
+                    Номер телефона
+                  </label>
+
+                  <input
+                    class="contact-booking__input"
+                    id="booking-phone"
+                    name="phone"
+                    type="tel"
+                    inputmode="tel"
+                    autocomplete="tel"
+                    maxlength="18"
+                    placeholder="+7 (___) ___-__-__"
+                    required
+                    data-booking-phone
+                  />
+
+                  <span
+                    class="contact-booking__error"
+                    data-booking-error="phone"
+                  ></span>
+                </div>
+
+                <div class="contact-booking__field">
+                  <label class="contact-booking__label" for="booking-service">
+                    Что вас интересует?
+                  </label>
+
+                  <select
+                    class="contact-booking__input contact-booking__select"
+                    id="booking-service"
+                    name="service"
+                    required
+                    data-booking-service
+                  >
+                    <option value="">Выберите услугу</option>
+
+                    <option value="Консультация">Нужна консультация</option>
+
+                    <option value="AirTouch">AirTouch</option>
+
+                    <option value="Тотал блонд">Тотал блонд</option>
+
+                    <option value="Тонирование">Тонирование</option>
+
+                    <option value="Работа с сединой">Работа с сединой</option>
+
+                    <option value="Уход и восстановление">
+                      Уход и восстановление
+                    </option>
+
+                    <option value="Другая услуга">Другая услуга</option>
+                  </select>
+
+                  <span
+                    class="contact-booking__error"
+                    data-booking-error="service"
+                  ></span>
+                </div>
+
+                <div class="contact-booking__field">
+                  <label class="contact-booking__label" for="booking-message">
+                    Комментарий
+                    <span>необязательно</span>
+                  </label>
+
+                  <textarea
+                    class="contact-booking__input contact-booking__textarea"
+                    id="booking-message"
+                    name="message"
+                    maxlength="1000"
+                    rows="4"
+                    placeholder="Расскажите коротко о желаемом результате"
+                    data-booking-message
+                  ></textarea>
+
+                  <span class="contact-booking__counter" data-booking-counter>
+                    0 / 1000
+                  </span>
+                </div>
+
+                <label class="contact-booking__consent">
+                  <input
+                    class="contact-booking__checkbox"
+                    type="checkbox"
+                    name="consentAccepted"
+                    required
+                    data-booking-consent
+                  />
+
+                  <span class="contact-booking__checkmark"></span>
+
+                  <span class="contact-booking__consent-text">
+                    Я соглашаюсь на обработку персональных данных и принимаю
+                    <a href="/public/privacy-policy.html">
+                      политику конфиденциальности
+                    </a>
+                  </span>
+                </label>
+
+                <span
+                  class="contact-booking__error contact-booking__error--consent"
+                  data-booking-error="consent"
+                ></span>
+
+                <div
+                  class="contact-booking__status"
+                  role="status"
+                  aria-live="polite"
+                  hidden
+                  data-booking-status
+                ></div>
+
+                <button
+                  class="contact-booking__submit"
+                  type="submit"
+                  data-booking-submit
+                >
+                  <span data-booking-submit-text> Отправить заявку </span>
+
+                  <span
+                    class="contact-booking__loader"
+                    aria-hidden="true"
+                    hidden
+                    data-booking-loader
+                  ></span>
+                </button>
+              </form>
+
+              <div
+                class="contact-booking__success"
+                role="status"
+                aria-live="polite"
+                tabindex="-1"
+                hidden
+                data-booking-success
+              >
+                <span class="contact-booking__success-number"> Спасибо </span>
+
+                <h3>Заявка отправлена</h3>
+
+                <p>
+                  Мы свяжемся с вами в ближайшее время, уточним детали и
+                  подберём подходящий вариант.
+                </p>
+
+                <button type="button" data-booking-new-request>
+                  Отправить ещё одну заявку
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer__glass">
+        <div class="footer__top">
+          <div class="footer__brand">
+            <a class="footer__logo" href="/" aria-label="NADIA HAIR">
+              NADIA HAIR
+            </a>
+
+            <p class="footer__text">
+              Премиальный уход за волосами и безупречный результат.
+              Индивидуальный подход к каждой клиентке.
+            </p>
+
+            <a class="footer__button" href="tel:+79233906649">
+              <!-- <span class="footer__button-icon">▣</span> -->
+              Записаться онлайн
+            </a>
+          </div>
+
+          <nav class="footer__nav" aria-label="Меню сайта">
+            <span class="footer__title">Меню</span>
+
+            <a href="/">Главная</a>
+            <a href="/services">Услуги</a>
+            <a href="/works">Работы</a>
+            <a href="/blog">Влог</a>
+            <a href="/contacts">Контакты</a>
+          </nav>
+
+          <nav class="footer__nav" aria-label="Услуги салона">
+            <span class="footer__title">Услуги</span>
+
+            <a href="/services">Окрашивание</a>
+            <a href="/services">AirTouch</a>
+            <a href="/services">Уход за волосами</a>
+            <a href="/services">Стрижки</a>
+            <a href="/services">Укладки</a>
+          </nav>
+
+          <div class="footer__contacts">
+            <span class="footer__title">Контакты</span>
+
+            <a class="footer__contact" href="tel:+79233906649">
+              <!-- <span>☎</span> -->
+              +7 (923) 390-66-49
+            </a>
+
+            <div class="footer__contact">
+              <!-- <span>⌖</span> -->
+              Абакан
+            </div>
+
+            <div class="footer__socials">
+              <a href="#" aria-label="Instagram">IG</a>
+              <a href="#" aria-label="VK">VK</a>
+              <a href="#" aria-label="Telegram">TG</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer__bottom">
+          <p>© NADIA HAIR, 2026</p>
+
+          <a href="/privacy-policy">Политика конфиденциальности</a>
+
+          <a href="https://shumdev.ru" target="_blank" rel="noopener">
+            Разработка ShumDev
+          </a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="/site/script/contacts.js"></script>
+  </body>
+</html>

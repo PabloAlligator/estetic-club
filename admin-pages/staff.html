@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+
+    <meta
+      name="robots"
+      content="noindex, nofollow, noarchive"
+    />
+
+    <title>Сотрудники — Клуб Эстетики</title>
+
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="/site/css/admin.min.css"
+    />
+
+    <script
+      src="/site/script/admin/admin.js"
+      defer
+    ></script>
+  </head>
+
+  <body
+    class="admin-body"
+    data-admin-page="staff"
+  >
+    <div class="admin-shell">
+      <aside class="admin-sidebar">
+        <a
+          class="admin-sidebar__logo"
+          href="/admin/dashboard"
+        >
+          Клуб Эстетики
+        </a>
+
+        <span class="admin-sidebar__caption">
+          Управление
+        </span>
+
+        <nav
+          class="admin-sidebar__nav"
+          aria-label="Навигация админ-панели"
+        >
+          <a
+            class="admin-sidebar__link"
+            href="/admin/dashboard"
+          >
+            Обзор
+          </a>
+
+          <a
+            class="admin-sidebar__link"
+            href="/admin/requests"
+          >
+            Заявки
+          </a>
+
+          <a
+            class="admin-sidebar__link"
+            href="/admin/works"
+          >
+            Работы
+          </a>
+
+          <span
+            class="admin-sidebar__link admin-sidebar__link--disabled"
+            aria-disabled="true"
+            title="Раздел будет добавлен позже"
+          >
+            Каталог
+          </span>
+
+          <a
+            class="admin-sidebar__link"
+            href="/admin/blog"
+          >
+            Статьи
+          </a>
+
+          <a
+            class="admin-sidebar__link admin-sidebar__link--active"
+            href="/admin/staff"
+          >
+            Сотрудники
+          </a>
+        </nav>
+
+        <div class="admin-sidebar__bottom">
+          <a
+            class="admin-sidebar__site-link"
+            href="/"
+            target="_blank"
+            rel="noopener"
+          >
+            Открыть сайт
+          </a>
+
+          <button
+            class="admin-sidebar__logout"
+            type="button"
+            data-admin-logout
+          >
+            Выйти
+          </button>
+        </div>
+      </aside>
+
+      <main class="admin-main">
+        <header class="admin-header">
+          <div>
+            <span class="admin-header__eyebrow">
+              Управление командой
+            </span>
+
+            <h1 class="admin-header__title">
+              Сотрудники
+            </h1>
+          </div>
+
+          <div class="admin-user">
+            <div class="admin-user__info">
+              <span
+                class="admin-user__role"
+                data-admin-user-role
+              >
+                —
+              </span>
+
+              <span
+                class="admin-user__email"
+                data-admin-user-email
+              >
+                —
+              </span>
+            </div>
+
+            <button
+              class="admin-user__logout-mobile"
+              type="button"
+              data-admin-logout
+            >
+              Выйти
+            </button>
+          </div>
+        </header>
+
+        <section class="admin-staff">
+          <div class="admin-staff__head">
+            <div class="admin-staff__intro">
+              <span class="admin-staff__caption">
+                Команда салона
+              </span>
+
+              <h2 class="admin-staff__title">
+                Управление сотрудниками
+              </h2>
+
+              <p class="admin-staff__description">
+                Создавайте учётные записи сотрудников, контролируйте
+                их активность, доступ к админке и открытые сессии.
+              </p>
+            </div>
+
+            <button
+              class="admin-staff__refresh"
+              type="button"
+              data-staff-refresh
+            >
+              Обновить
+            </button>
+          </div>
+
+          <div class="admin-staff__stats">
+            <article class="admin-staff-stat">
+              <span class="admin-staff-stat__label">
+                Всего сотрудников
+              </span>
+
+              <strong
+                class="admin-staff-stat__value"
+                data-staff-count="all"
+              >
+                0
+              </strong>
+
+              <span class="admin-staff-stat__note">
+                Все учётные записи STAFF
+              </span>
+            </article>
+
+            <article class="admin-staff-stat">
+              <span class="admin-staff-stat__label">
+                Активные
+              </span>
+
+              <strong
+                class="admin-staff-stat__value"
+                data-staff-count="active"
+              >
+                0
+              </strong>
+
+              <span class="admin-staff-stat__note">
+                Могут войти в админку
+              </span>
+            </article>
+
+            <article class="admin-staff-stat">
+              <span class="admin-staff-stat__label">
+                Заблокированные
+              </span>
+
+              <strong
+                class="admin-staff-stat__value"
+                data-staff-count="blocked"
+              >
+                0
+              </strong>
+
+              <span class="admin-staff-stat__note">
+                Доступ временно закрыт
+              </span>
+            </article>
+
+            <article class="admin-staff-stat">
+              <span class="admin-staff-stat__label">
+                Сейчас активны
+              </span>
+
+              <strong
+                class="admin-staff-stat__value"
+                data-staff-count="online"
+              >
+                0
+              </strong>
+
+              <span class="admin-staff-stat__note">
+                Есть действующие сессии
+              </span>
+            </article>
+          </div>
+
+          <p
+            class="admin-staff__message"
+            role="status"
+            aria-live="polite"
+            data-staff-message
+            hidden
+          ></p>
+
+          <div class="admin-staff__workspace">
+            <aside class="admin-staff__create">
+              <div class="admin-staff__section-head">
+                <span class="admin-staff__section-caption">
+                  Новая учётная запись
+                </span>
+
+                <h3 class="admin-staff__section-title">
+                  Добавить сотрудника
+                </h3>
+
+                <p class="admin-staff__section-text">
+                  Сотрудник получит роль STAFF и сможет работать
+                  только с клиентскими заявками.
+                </p>
+              </div>
+
+              <form
+                class="admin-staff__form"
+                data-staff-create-form
+              >
+                <label class="admin-staff__field">
+                  <span class="admin-staff__field-label">
+                    Имя сотрудника
+                  </span>
+
+                  <input
+                    class="admin-staff__input"
+                    name="name"
+                    type="text"
+                    minlength="2"
+                    maxlength="80"
+                    autocomplete="name"
+                    placeholder="Например: Анна"
+                    required
+                    data-staff-name
+                  />
+                </label>
+
+                <label class="admin-staff__field">
+                  <span class="admin-staff__field-label">
+                    Электронная почта
+                  </span>
+
+                  <input
+                    class="admin-staff__input"
+                    name="email"
+                    type="email"
+                    maxlength="254"
+                    autocomplete="off"
+                    spellcheck="false"
+                    placeholder="employee@example.ru"
+                    required
+                    data-staff-email
+                  />
+                </label>
+
+                <label class="admin-staff__field">
+                  <span class="admin-staff__field-label">
+                    Временный пароль
+                  </span>
+
+                  <input
+                    class="admin-staff__input"
+                    name="password"
+                    type="password"
+                    minlength="10"
+                    maxlength="128"
+                    autocomplete="new-password"
+                    placeholder="Минимум 10 символов"
+                    required
+                    data-staff-password
+                  />
+                </label>
+
+                <p class="admin-staff__password-note">
+                  Пароль должен содержать не менее 10 символов.
+                  Передайте его сотруднику безопасным способом.
+                </p>
+
+                <button
+                  class="admin-staff__submit"
+                  type="submit"
+                  data-staff-create-submit
+                >
+                  Создать сотрудника
+                </button>
+              </form>
+            </aside>
+
+            <section class="admin-staff__team">
+              <div class="admin-staff__section-head">
+                <span class="admin-staff__section-caption">
+                  Доступ к админке
+                </span>
+
+                <h3 class="admin-staff__section-title">
+                  Сотрудники салона
+                </h3>
+
+                <p class="admin-staff__section-text">
+                  Здесь отображаются статус, последний вход,
+                  активность и количество открытых сессий.
+                </p>
+              </div>
+
+              <div
+                class="admin-staff__loading"
+                aria-live="polite"
+                data-staff-loading
+              >
+                Загружаем сотрудников…
+              </div>
+
+              <div
+                class="admin-staff__empty"
+                data-staff-empty
+                hidden
+              >
+                <span class="admin-staff__empty-caption">
+                  Сотрудников пока нет
+                </span>
+
+                <h4 class="admin-staff__empty-title">
+                  Создайте первую учётную запись
+                </h4>
+
+                <p class="admin-staff__empty-text">
+                  После создания сотрудник появится в этом списке.
+                </p>
+              </div>
+
+              <div
+                class="admin-staff__list"
+                aria-live="polite"
+                data-staff-list
+                hidden
+              ></div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

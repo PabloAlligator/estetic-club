@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+
+    <meta
+      name="robots"
+      content="noindex, nofollow, noarchive"
+    />
+
+    <title>Работы — Клуб Эстетики</title>
+
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="/site/css/admin.min.css"
+    />
+
+    <script
+      src="/site/script/admin/admin.js"
+      defer
+    ></script>
+  </head>
+
+  <body
+    class="admin-body"
+    data-admin-page="works"
+  >
+    <div class="admin-shell">
+      <aside class="admin-sidebar">
+        <a
+          class="admin-sidebar__logo"
+          href="/admin/dashboard"
+        >
+          Клуб Эстетики
+        </a>
+
+        <span class="admin-sidebar__caption">
+          Управление
+        </span>
+
+        <nav
+          class="admin-sidebar__nav"
+          aria-label="Навигация админ-панели"
+        >
+          <a
+            class="admin-sidebar__link"
+            href="/admin/dashboard"
+          >
+            Обзор
+          </a>
+
+          <a
+            class="admin-sidebar__link"
+            href="/admin/requests"
+          >
+            Заявки
+          </a>
+
+          <a
+            class="admin-sidebar__link admin-sidebar__link--active"
+            href="/admin/works"
+          >
+            Работы
+          </a>
+
+          <span
+            class="admin-sidebar__link admin-sidebar__link--disabled"
+            aria-disabled="true"
+            title="Раздел будет добавлен позже"
+          >
+            Каталог
+          </span>
+
+          <a
+            class="admin-sidebar__link"
+            href="/admin/blog"
+          >
+            Статьи
+          </a>
+
+          <a
+            class="admin-sidebar__link"
+            href="/admin/staff"
+          >
+            Сотрудники
+          </a>
+        </nav>
+
+        <div class="admin-sidebar__bottom">
+          <a
+            class="admin-sidebar__site-link"
+            href="/"
+            target="_blank"
+            rel="noopener"
+          >
+            Открыть сайт
+          </a>
+
+          <button
+            class="admin-sidebar__logout"
+            type="button"
+            data-admin-logout
+          >
+            Выйти
+          </button>
+        </div>
+      </aside>
+
+      <main class="admin-main">
+        <header class="admin-header">
+          <div>
+            <span class="admin-header__eyebrow">
+              Контент сайта
+            </span>
+
+            <h1 class="admin-header__title">
+              Работы
+            </h1>
+          </div>
+
+          <div class="admin-user">
+            <div class="admin-user__info">
+              <span
+                class="admin-user__role"
+                data-admin-user-role
+              >
+                —
+              </span>
+
+              <span
+                class="admin-user__email"
+                data-admin-user-email
+              >
+                —
+              </span>
+            </div>
+
+            <button
+              class="admin-user__logout-mobile"
+              type="button"
+              data-admin-logout
+            >
+              Выйти
+            </button>
+          </div>
+        </header>
+
+        <section
+          class="admin-works"
+          data-admin-works-page
+        >
+          <div class="admin-works__head">
+            <div class="admin-works__intro">
+              <span class="admin-works__caption">
+                Портфолио салона
+              </span>
+
+              <h2 class="admin-works__title">
+                Управление работами
+              </h2>
+
+              <p class="admin-works__description">
+                Добавляйте новые beauty story, управляйте публикацией,
+                фотографиями, отображением на главной странице и
+                детальными историями преображений.
+              </p>
+            </div>
+
+            <div class="admin-works__head-actions">
+              <button
+                class="admin-works__refresh"
+                type="button"
+                data-admin-works-refresh
+              >
+                Обновить
+              </button>
+
+              <a
+                class="admin-works__create"
+                href="/admin/works/edit"
+              >
+                <span>+</span>
+                Добавить работу
+              </a>
+            </div>
+          </div>
+
+          <div class="admin-works__stats">
+            <article class="admin-work-stat">
+              <span class="admin-work-stat__label">
+                Всего работ
+              </span>
+
+              <strong
+                class="admin-work-stat__value"
+                data-admin-works-count="all"
+              >
+                0
+              </strong>
+
+              <span class="admin-work-stat__note">
+                Все записи портфолио
+              </span>
+            </article>
+
+            <article class="admin-work-stat">
+              <span class="admin-work-stat__label">
+                Опубликованы
+              </span>
+
+              <strong
+                class="admin-work-stat__value"
+                data-admin-works-count="published"
+              >
+                0
+              </strong>
+
+              <span class="admin-work-stat__note">
+                Видны посетителям сайта
+              </span>
+            </article>
+
+            <article class="admin-work-stat">
+              <span class="admin-work-stat__label">
+                Черновики
+              </span>
+
+              <strong
+                class="admin-work-stat__value"
+                data-admin-works-count="drafts"
+              >
+                0
+              </strong>
+
+              <span class="admin-work-stat__note">
+                Пока скрыты от посетителей
+              </span>
+            </article>
+
+            <article class="admin-work-stat">
+              <span class="admin-work-stat__label">
+                На главной
+              </span>
+
+              <strong
+                class="admin-work-stat__value"
+                data-admin-works-count="onHome"
+              >
+                0
+              </strong>
+
+              <span class="admin-work-stat__note">
+                Выведены в главной подборке
+              </span>
+            </article>
+          </div>
+
+          <div class="admin-works__toolbar">
+            <form
+              class="admin-works__search"
+              data-admin-works-search-form
+            >
+              <label
+                class="admin-works__search-label"
+                for="admin-works-search"
+              >
+                Поиск работ
+              </label>
+
+              <div class="admin-works__search-row">
+                <input
+                  class="admin-works__search-input"
+                  id="admin-works-search"
+                  name="search"
+                  type="search"
+                  maxlength="100"
+                  autocomplete="off"
+                  placeholder="Название, категория, техника или адрес"
+                  data-admin-works-search
+                />
+
+                <button
+                  class="admin-works__search-button"
+                  type="submit"
+                >
+                  Найти
+                </button>
+
+                <button
+                  class="admin-works__search-reset"
+                  type="button"
+                  data-admin-works-search-reset
+                  hidden
+                >
+                  Сбросить
+                </button>
+              </div>
+            </form>
+
+            <div class="admin-works__filter-row">
+              <div
+                class="admin-works__filters"
+                aria-label="Статус публикации"
+              >
+                <button
+                  class="admin-works__filter is-active"
+                  type="button"
+                  data-admin-works-status="all"
+                >
+                  Все
+                </button>
+
+                <button
+                  class="admin-works__filter"
+                  type="button"
+                  data-admin-works-status="published"
+                >
+                  Опубликованные
+                </button>
+
+                <button
+                  class="admin-works__filter"
+                  type="button"
+                  data-admin-works-status="draft"
+                >
+                  Черновики
+                </button>
+              </div>
+
+              <label class="admin-works__category">
+                <span class="admin-works__category-label">
+                  Категория
+                </span>
+
+                <select
+                  class="admin-works__category-select"
+                  data-admin-works-category
+                >
+                  <option value="">
+                    Все категории
+                  </option>
+
+                  <option value="airtouch">
+                    Аиртач
+                  </option>
+
+                  <option value="total-blond">
+                    Тотал блонд
+                  </option>
+
+                  <option value="shatush">
+                    Шатуш
+                  </option>
+
+                  <option value="toning">
+                    Тонирование
+                  </option>
+
+                  <option value="gray-hair">
+                    Работа с сединой
+                  </option>
+
+                  <option value="recovery">
+                    Восстановление
+                  </option>
+
+                  <option value="care">
+                    Уход
+                  </option>
+
+                  <option value="reconstruction">
+                    Реконструкция
+                  </option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <p
+            class="admin-works__message"
+            role="status"
+            aria-live="polite"
+            data-admin-works-message
+            hidden
+          ></p>
+
+          <div
+            class="admin-works__loading"
+            aria-live="polite"
+            data-admin-works-loading
+          >
+            Загружаем работы…
+          </div>
+
+          <div
+            class="admin-works__empty"
+            data-admin-works-empty
+            hidden
+          >
+            <span class="admin-works__empty-caption">
+              Работы не найдены
+            </span>
+
+            <h3 class="admin-works__empty-title">
+              В этой подборке пока ничего нет
+            </h3>
+
+            <p class="admin-works__empty-text">
+              Измените параметры поиска или добавьте новую работу
+              в портфолио салона.
+            </p>
+
+            <a
+              class="admin-works__empty-link"
+              href="/admin/works/edit"
+            >
+              Добавить первую работу
+            </a>
+          </div>
+
+          <div
+            class="admin-works__list"
+            aria-live="polite"
+            data-admin-works-list
+            hidden
+          ></div>
+
+          <nav
+            class="admin-works__pagination"
+            aria-label="Страницы работ"
+            data-admin-works-pagination
+            hidden
+          >
+            <button
+              class="admin-works__pagination-button"
+              type="button"
+              data-admin-works-prev
+            >
+              Назад
+            </button>
+
+            <span
+              class="admin-works__pagination-info"
+              data-admin-works-pagination-info
+            >
+              Страница 1 из 1
+            </span>
+
+            <button
+              class="admin-works__pagination-button"
+              type="button"
+              data-admin-works-next
+            >
+              Вперёд
+            </button>
+          </nav>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,892 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+
+    <title>Редактор работы — Клуб Эстетики</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="/site/css/admin.min.css" />
+
+    <script src="/site/script/admin/admin.js" defer></script>
+  </head>
+
+  <body class="admin-body" data-admin-page="work-edit">
+    <div class="admin-shell">
+      <aside class="admin-sidebar">
+        <a class="admin-sidebar__logo" href="/admin/dashboard">
+          Клуб Эстетики
+        </a>
+
+        <span class="admin-sidebar__caption"> Управление </span>
+
+        <nav class="admin-sidebar__nav" aria-label="Навигация админ-панели">
+          <a class="admin-sidebar__link" href="/admin/dashboard"> Обзор </a>
+
+          <a class="admin-sidebar__link" href="/admin/requests"> Заявки </a>
+
+          <a
+            class="admin-sidebar__link admin-sidebar__link--active"
+            href="/admin/works"
+          >
+            Работы
+          </a>
+
+          <span
+            class="admin-sidebar__link admin-sidebar__link--disabled"
+            aria-disabled="true"
+          >
+            Каталог
+          </span>
+
+          <a class="admin-sidebar__link" href="/admin/blog"> Статьи </a>
+
+          <a class="admin-sidebar__link" href="/admin/staff"> Сотрудники </a>
+        </nav>
+
+        <div class="admin-sidebar__bottom">
+          <a
+            class="admin-sidebar__site-link"
+            href="/"
+            target="_blank"
+            rel="noopener"
+          >
+            Открыть сайт
+          </a>
+
+          <button class="admin-sidebar__logout" type="button" data-admin-logout>
+            Выйти
+          </button>
+        </div>
+      </aside>
+
+      <main class="admin-main">
+        <header class="admin-header">
+          <div>
+            <span class="admin-header__eyebrow"> Портфолио </span>
+
+            <h1 class="admin-header__title">Редактор работы</h1>
+          </div>
+
+          <div class="admin-user">
+            <div class="admin-user__info">
+              <span class="admin-user__role" data-admin-user-role> — </span>
+
+              <span class="admin-user__email" data-admin-user-email> — </span>
+            </div>
+
+            <button
+              class="admin-user__logout-mobile"
+              type="button"
+              data-admin-logout
+            >
+              Выйти
+            </button>
+          </div>
+        </header>
+
+        <section class="admin-work-editor" data-work-editor-page>
+          <div class="admin-work-editor__head">
+            <div class="admin-work-editor__intro">
+              <a class="admin-work-editor__back" href="/admin/works">
+                ← Вернуться к работам
+              </a>
+
+              <span class="admin-work-editor__caption" data-work-editor-mode>
+                Новая работа
+              </span>
+
+              <h2 class="admin-work-editor__title" data-work-editor-title>
+                Создание beauty story
+              </h2>
+
+              <p class="admin-work-editor__description">
+                Заполните основные данные, фотографии и историю преображения.
+                Работу можно сохранить как черновик, а затем опубликовать.
+              </p>
+            </div>
+
+            <span class="admin-work-editor__state" data-work-editor-state>
+              Черновик
+            </span>
+          </div>
+
+          <p
+            class="admin-work-editor__message"
+            role="status"
+            aria-live="polite"
+            data-work-editor-message
+            hidden
+          ></p>
+
+          <div class="admin-work-editor__loading" data-work-editor-loading>
+            Загружаем редактор…
+          </div>
+
+          <form
+            class="admin-work-editor__form"
+            data-work-editor-form
+            hidden
+            novalidate
+          >
+            <div class="admin-work-editor__layout">
+              <div class="admin-work-editor__content">
+                <section class="admin-editor-card">
+                  <div class="admin-editor-card__head">
+                    <div>
+                      <span class="admin-editor-card__caption">
+                        Основные данные
+                      </span>
+
+                      <h3 class="admin-editor-card__title">
+                        Информация о работе
+                      </h3>
+                    </div>
+
+                    <span class="admin-editor-card__number"> 01 </span>
+                  </div>
+
+                  <div class="admin-editor-card__body">
+                    <div class="admin-editor-grid">
+                      <label
+                        class="admin-editor-field admin-editor-field--wide"
+                      >
+                        <span class="admin-editor-field__label">
+                          Название работы
+                        </span>
+
+                        <input
+                          class="admin-editor-field__input"
+                          type="text"
+                          name="title"
+                          maxlength="160"
+                          autocomplete="off"
+                          placeholder="Например: Аиртач на натуральной базе"
+                          required
+                          data-work-title
+                        />
+
+                        <span class="admin-editor-field__hint">
+                          Отображается в карточке и на детальной странице.
+                        </span>
+                      </label>
+
+                      <label
+                        class="admin-editor-field admin-editor-field--wide"
+                      >
+                        <span class="admin-editor-field__label">
+                          Адрес страницы
+                        </span>
+
+                        <div class="admin-editor-field__slug">
+                          <span>/</span>
+
+                          <input
+                            class="admin-editor-field__input"
+                            type="text"
+                            name="slug"
+                            maxlength="160"
+                            autocomplete="off"
+                            spellcheck="false"
+                            placeholder="airtouch-natural-base"
+                            required
+                            data-work-slug
+                          />
+                        </div>
+
+                        <span class="admin-editor-field__hint">
+                          Только латинские буквы, цифры и дефисы.
+                        </span>
+                      </label>
+
+                      <label class="admin-editor-field">
+                        <span class="admin-editor-field__label">
+                          Дата работы
+                        </span>
+
+                        <input
+                          class="admin-editor-field__input"
+                          type="date"
+                          name="workDate"
+                          required
+                          data-work-date
+                        />
+                      </label>
+
+                      <label class="admin-editor-field">
+                        <span class="admin-editor-field__label">
+                          Категория
+                        </span>
+
+                        <select
+                          class="admin-editor-field__select"
+                          name="categorySlug"
+                          required
+                          data-work-category
+                        >
+                          <option value="">Выберите категорию</option>
+
+                          <option value="airtouch">Аиртач</option>
+
+                          <option value="total-blond">Тотал блонд</option>
+
+                          <option value="shatush">Шатуш</option>
+
+                          <option value="toning">Тонирование</option>
+
+                          <option value="gray-hair">Работа с сединой</option>
+
+                          <option value="recovery">Восстановление</option>
+
+                          <option value="care">Уход</option>
+
+                          <option value="reconstruction">Реконструкция</option>
+                        </select>
+                      </label>
+
+                      <label class="admin-editor-field">
+                        <span class="admin-editor-field__label"> Техника </span>
+
+                        <input
+                          class="admin-editor-field__input"
+                          type="text"
+                          name="technique"
+                          maxlength="120"
+                          autocomplete="off"
+                          placeholder="Например: AirTouch"
+                          data-work-technique
+                        />
+                      </label>
+
+                      <label class="admin-editor-field">
+                        <span class="admin-editor-field__label">
+                          Длительность
+                        </span>
+
+                        <input
+                          class="admin-editor-field__input"
+                          type="text"
+                          name="duration"
+                          maxlength="80"
+                          autocomplete="off"
+                          placeholder="Например: 5 часов"
+                          data-work-duration
+                        />
+                      </label>
+
+                      <label
+                        class="admin-editor-field admin-editor-field--wide"
+                      >
+                        <span class="admin-editor-field__label">
+                          Краткое описание
+                        </span>
+
+                        <textarea
+                          class="admin-editor-field__textarea"
+                          name="excerpt"
+                          maxlength="600"
+                          rows="5"
+                          placeholder="Коротко опишите задачу, результат и особенности работы"
+                          data-work-excerpt
+                        ></textarea>
+
+                        <span class="admin-editor-field__counter">
+                          <span data-work-excerpt-counter> 0 </span>
+                          / 600
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="admin-editor-card">
+                  <div class="admin-editor-card__head">
+                    <div>
+                      <span class="admin-editor-card__caption"> Визуал </span>
+
+                      <h3 class="admin-editor-card__title">
+                        Основные фотографии
+                      </h3>
+                    </div>
+
+                    <span class="admin-editor-card__number"> 02 </span>
+                  </div>
+
+                  <div class="admin-editor-card__body">
+                    <p class="admin-editor-card__description">
+                      Сейчас указываются пути к изображениям. Загрузку файлов с
+                      компьютера подключим следующим этапом.
+                    </p>
+
+                    <div class="admin-editor-images">
+                      <article
+                        class="admin-editor-image"
+                        data-work-image-card="afterImage"
+                      >
+                        <div class="admin-editor-image__head">
+                          <div>
+                            <span class="admin-editor-image__label">
+                              Фото после
+                            </span>
+
+                            <strong class="admin-editor-image__required">
+                              Главное
+                            </strong>
+                          </div>
+
+                          <span class="admin-editor-image__mark"> После </span>
+                        </div>
+
+                        <div
+                          class="admin-editor-image__preview"
+                          data-work-image-preview
+                        >
+                          <img
+                            alt="Предпросмотр фотографии после"
+                            data-work-image-preview-img
+                            hidden
+                          />
+
+                          <button
+                            class="admin-editor-image__remove"
+                            type="button"
+                            aria-label="Удалить фотографию после"
+                            title="Удалить фотографию"
+                            data-work-image-clear="afterImage"
+                            hidden
+                          >
+                            ×
+                          </button>
+
+                          <span
+                            class="admin-editor-image__empty"
+                            data-work-image-empty
+                          >
+                            Изображение не выбрано
+                          </span>
+                        </div>
+
+                        <div class="admin-editor-image__upload">
+                          <input
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif"
+                            data-work-image-file="afterImage"
+                            hidden
+                          />
+
+                          <button
+                            class="admin-editor-image__select"
+                            type="button"
+                            data-work-image-select="afterImage"
+                          >
+                            Выбрать фото
+                          </button>
+
+                          <span
+                            class="admin-editor-image__upload-status"
+                            role="status"
+                            aria-live="polite"
+                            data-work-image-upload-status="afterImage"
+                          ></span>
+                        </div>
+
+                        <label class="admin-editor-image__field">
+                          <span>Путь к изображению</span>
+
+                          <input
+                            type="text"
+                            name="afterImage"
+                            maxlength="500"
+                            readonly
+                            placeholder="Фото ещё не загружено"
+                            data-work-image-input="afterImage"
+                          />
+                        </label>
+                      </article>
+
+                      <article
+                        class="admin-editor-image"
+                        data-work-image-card="beforeImage"
+                      >
+                        <div class="admin-editor-image__head">
+                          <div>
+                            <span class="admin-editor-image__label">
+                              Фото до
+                            </span>
+
+                            <strong class="admin-editor-image__required">
+                              Главное
+                            </strong>
+                          </div>
+
+                          <span class="admin-editor-image__mark"> До </span>
+                        </div>
+
+                        <div
+                          class="admin-editor-image__preview"
+                          data-work-image-preview
+                        >
+                          <img
+                            alt="Предпросмотр фотографии до"
+                            data-work-image-preview-img
+                            hidden
+                          />
+
+                          <button
+                            class="admin-editor-image__remove"
+                            type="button"
+                            aria-label="Удалить фотографию до"
+                            title="Удалить фотографию"
+                            data-work-image-clear="beforeImage"
+                            hidden
+                          >
+                            ×
+                          </button>
+
+                          <span
+                            class="admin-editor-image__empty"
+                            data-work-image-empty
+                          >
+                            Изображение не выбрано
+                          </span>
+                        </div>
+
+                        <div class="admin-editor-image__upload">
+                          <input
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif"
+                            data-work-image-file="beforeImage"
+                            hidden
+                          />
+
+                          <button
+                            class="admin-editor-image__select"
+                            type="button"
+                            data-work-image-select="beforeImage"
+                          >
+                            Выбрать фото
+                          </button>
+
+                          <span
+                            class="admin-editor-image__upload-status"
+                            role="status"
+                            aria-live="polite"
+                            data-work-image-upload-status="beforeImage"
+                          ></span>
+                        </div>
+
+                        <label class="admin-editor-image__field">
+                          <span>Путь к изображению</span>
+
+                          <input
+                            type="text"
+                            name="beforeImage"
+                            maxlength="500"
+                            readonly
+                            placeholder="Фото ещё не загружено"
+                            data-work-image-input="beforeImage"
+                          />
+                        </label>
+                      </article>
+
+                      <article
+                        class="admin-editor-image"
+                        data-work-image-card="heroImage"
+                      >
+                        <div class="admin-editor-image__head">
+                          <div>
+                            <span class="admin-editor-image__label">
+                              Hero-фотография
+                            </span>
+
+                            <strong class="admin-editor-image__optional">
+                              Опционально
+                            </strong>
+                          </div>
+
+                          <span class="admin-editor-image__mark"> Hero </span>
+                        </div>
+
+                        <div
+                          class="admin-editor-image__preview"
+                          data-work-image-preview
+                        >
+                          <img
+                            alt="Предпросмотр hero-фотографии"
+                            data-work-image-preview-img
+                            hidden
+                          />
+
+                          <button
+                            class="admin-editor-image__remove"
+                            type="button"
+                            aria-label="Удалить hero-фотографию"
+                            title="Удалить фотографию"
+                            data-work-image-clear="heroImage"
+                            hidden
+                          >
+                            ×
+                          </button>
+
+                          <span
+                            class="admin-editor-image__empty"
+                            data-work-image-empty
+                          >
+                            Используется фото после
+                          </span>
+                        </div>
+
+                        <div class="admin-editor-image__upload">
+                          <input
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif"
+                            data-work-image-file="heroImage"
+                            hidden
+                          />
+
+                          <button
+                            class="admin-editor-image__select"
+                            type="button"
+                            data-work-image-select="heroImage"
+                          >
+                            Выбрать фото
+                          </button>
+
+                          <span
+                            class="admin-editor-image__upload-status"
+                            role="status"
+                            aria-live="polite"
+                            data-work-image-upload-status="heroImage"
+                          ></span>
+                        </div>
+
+                        <label class="admin-editor-image__field">
+                          <span>Путь к изображению</span>
+
+                          <input
+                            type="text"
+                            name="heroImage"
+                            maxlength="500"
+                            readonly
+                            placeholder="Будет использовано фото после"
+                            data-work-image-input="heroImage"
+                          />
+                        </label>
+                      </article>
+
+                      <article
+                        class="admin-editor-image"
+                        data-work-image-card="experienceImage"
+                      >
+                        <div class="admin-editor-image__head">
+                          <div>
+                            <span class="admin-editor-image__label">
+                              Фото истории
+                            </span>
+
+                            <strong class="admin-editor-image__optional">
+                              Опционально
+                            </strong>
+                          </div>
+
+                          <span class="admin-editor-image__mark"> Story </span>
+                        </div>
+
+                        <div
+                          class="admin-editor-image__preview"
+                          data-work-image-preview
+                        >
+                          <img
+                            alt="Предпросмотр фотографии истории"
+                            data-work-image-preview-img
+                            hidden
+                          />
+
+                          <button
+                            class="admin-editor-image__remove"
+                            type="button"
+                            aria-label="Удалить фотографию истории"
+                            title="Удалить фотографию"
+                            data-work-image-clear="experienceImage"
+                            hidden
+                          >
+                            ×
+                          </button>
+
+                          <span
+                            class="admin-editor-image__empty"
+                            data-work-image-empty
+                          >
+                            Используется hero-фото
+                          </span>
+                        </div>
+
+                        <div class="admin-editor-image__upload">
+                          <input
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif"
+                            data-work-image-file="experienceImage"
+                            hidden
+                          />
+
+                          <button
+                            class="admin-editor-image__select"
+                            type="button"
+                            data-work-image-select="experienceImage"
+                          >
+                            Выбрать фото
+                          </button>
+
+                          <span
+                            class="admin-editor-image__upload-status"
+                            role="status"
+                            aria-live="polite"
+                            data-work-image-upload-status="experienceImage"
+                          ></span>
+                        </div>
+
+                        <label class="admin-editor-image__field">
+                          <span>Путь к изображению</span>
+
+                          <input
+                            type="text"
+                            name="experienceImage"
+                            maxlength="500"
+                            readonly
+                            placeholder="Будет использовано hero-фото"
+                            data-work-image-input="experienceImage"
+                          />
+                        </label>
+                      </article>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="admin-editor-card">
+                  <div class="admin-editor-card__head">
+                    <div>
+                      <span class="admin-editor-card__caption">
+                        Beauty story
+                      </span>
+
+                      <h3 class="admin-editor-card__title">
+                        История преображения
+                      </h3>
+                    </div>
+
+                    <span class="admin-editor-card__number"> 03 </span>
+                  </div>
+
+                  <div class="admin-editor-card__body">
+                    <div class="admin-editor-grid">
+                      <label
+                        class="admin-editor-field admin-editor-field--wide"
+                      >
+                        <span class="admin-editor-field__label">
+                          Цитата в hero
+                        </span>
+
+                        <textarea
+                          class="admin-editor-field__textarea"
+                          name="heroQuote"
+                          maxlength="500"
+                          rows="4"
+                          placeholder="Короткая эмоциональная фраза о результате"
+                          data-work-hero-quote
+                        ></textarea>
+
+                        <span class="admin-editor-field__counter">
+                          <span data-work-hero-quote-counter> 0 </span>
+                          / 500
+                        </span>
+                      </label>
+
+                      <label
+                        class="admin-editor-field admin-editor-field--wide"
+                      >
+                        <span class="admin-editor-field__label">
+                          Подробная история
+                        </span>
+
+                        <textarea
+                          class="admin-editor-field__textarea admin-editor-field__textarea--story"
+                          name="story"
+                          maxlength="10000"
+                          rows="14"
+                          placeholder="Расскажите о задаче, диагностике, процессе работы и полученном результате"
+                          data-work-story
+                        ></textarea>
+
+                        <span class="admin-editor-field__counter">
+                          <span data-work-story-counter> 0 </span>
+                          / 10000
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="admin-editor-card">
+                  <div class="admin-editor-card__head">
+                    <div>
+                      <span class="admin-editor-card__caption"> Галерея </span>
+
+                      <h3 class="admin-editor-card__title">
+                        Дополнительные фотографии
+                      </h3>
+                    </div>
+
+                    <span class="admin-editor-card__number"> 04 </span>
+                  </div>
+
+                  <div class="admin-editor-card__body">
+                    <div class="admin-editor-gallery-actions">
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif"
+                        multiple
+                        hidden
+                        data-work-gallery-file
+                      />
+
+                      <button
+                        class="admin-editor-gallery-actions__button"
+                        type="button"
+                        data-work-gallery-select
+                        disabled
+                      >
+                        Добавить фотографии
+                      </button>
+
+                      <span
+                        class="admin-editor-gallery-actions__status"
+                        role="status"
+                        aria-live="polite"
+                        data-work-gallery-status
+                      >
+                        Сначала сохраните работу
+                      </span>
+                    </div>
+
+                    <div
+                      class="admin-editor-gallery"
+                      data-work-gallery
+                      hidden
+                    ></div>
+
+                    <div
+                      class="admin-editor-gallery-empty"
+                      data-work-gallery-empty
+                    >
+                      <span class="admin-editor-gallery-empty__caption">
+                        Галерея пока пустая
+                      </span>
+
+                      <strong class="admin-editor-gallery-empty__title">
+                        Добавьте фотографии процесса и результата
+                      </strong>
+
+                      <p class="admin-editor-gallery-empty__text">
+                        Можно выбрать сразу несколько изображений. Максимум — 30
+                        фотографий.
+                      </p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+
+              <aside class="admin-work-editor__aside">
+                <div class="admin-editor-status">
+                  <span class="admin-editor-status__caption"> Публикация </span>
+
+                  <h3 class="admin-editor-status__title">Состояние работы</h3>
+
+                  <label class="admin-editor-switch">
+                    <input
+                      type="checkbox"
+                      name="isPublished"
+                      data-work-published
+                    />
+
+                    <span class="admin-editor-switch__control"></span>
+
+                    <span class="admin-editor-switch__content">
+                      <strong> Опубликовать </strong>
+
+                      <small> Работа появится в портфолио. </small>
+                    </span>
+                  </label>
+
+                  <label class="admin-editor-switch">
+                    <input type="checkbox" name="showOnHome" data-work-home />
+
+                    <span class="admin-editor-switch__control"></span>
+
+                    <span class="admin-editor-switch__content">
+                      <strong> Показать на главной </strong>
+
+                      <small>
+                        Доступно только для опубликованной работы.
+                      </small>
+                    </span>
+                  </label>
+
+                  <div class="admin-editor-status__divider"></div>
+
+                  <dl class="admin-editor-status__meta">
+                    <div>
+                      <dt>ID записи</dt>
+
+                      <dd data-work-meta-id>Новая</dd>
+                    </div>
+
+                    <div>
+                      <dt>Текущий статус</dt>
+
+                      <dd data-work-meta-status>Черновик</dd>
+                    </div>
+                  </dl>
+
+                  <button
+                    class="admin-editor-status__save"
+                    type="submit"
+                    data-work-save
+                  >
+                    Сохранить работу
+                  </button>
+
+                  <a class="admin-editor-status__cancel" href="/admin/works">
+                    Отмена
+                  </a>
+
+                  <a
+                    class="admin-editor-status__preview"
+                    href="#"
+                    target="_blank"
+                    rel="noopener"
+                    data-work-public-link
+                    hidden
+                  >
+                    Открыть на сайте
+                  </a>
+                </div>
+              </aside>
+            </div>
+          </form>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

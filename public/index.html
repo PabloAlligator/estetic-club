@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/site/css/main.min.css" />
+    <!-- <link rel="stylesheet" href="/site/css/footer.css" /> -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>Document</title>
+  </head>
+  <body>
+    <header class="header" data-header>
+      <div class="header__inner glass">
+        <nav class="header__nav header__nav--left" aria-label="Левая навигация">
+          <a href="#home">Главная</a>
+          <a href="/public/contacts.html">Контакты</a>
+
+        </nav>
+
+        <a href="#home" class="header__logo" aria-label="На главную">
+          <img src="site/img/logo.png" alt="Nadia Hair Studio" />
+        </a>
+
+        <nav
+          class="header__nav header__nav--right"
+          aria-label="Правая навигация"
+        >
+        <a href="#services">Услуги</a>
+        <a href="/public/works/work-main.html">Работы</a>
+        <a href="/public/blog/blog.html">Блог</a>
+
+        </nav>
+
+        <button
+          class="header__burger"
+          type="button"
+          aria-label="Открыть меню"
+          aria-expanded="false"
+          data-burger
+        >
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+
+      <nav
+        class="header__mobile"
+        aria-label="Мобильная навигация"
+        data-mobile-menu
+      >
+        <div class="header__mobile-nav">
+          <a href="#home">Главная</a>
+          <a href="#services">Услуги</a>
+          <a href="/public/works/work-main.html">Работы</a>
+          <a href="/public/blog/blog.html">Блог</a>
+          <a href="/public/contacts.html">Контакты</a>
+        </div>
+
+        <div class="header__mobile-contact">
+          <span>Записаться в салон</span>
+          <a href="tel:89233906649">8 923 390-66-49</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <span>красота в каждой детали</span>
+
+        <h1>
+          «Премиальный цвет и уход за волосами — персонально для вас»
+          <br />
+          Надежда Шумилова
+        </h1>
+      </section>
+
+      <!-- section two -->
+
+      <div class="beauty-flow" data-beauty-flow>
+        <!-- Секция два: визуальная лента направлений -->
+        <section class="section-two" aria-label="Направления салона">
+          <div class="section-two__marquee" data-section-two-marquee>
+            <div class="section-two__track" data-section-two-track>
+              <a class="section-two__card" href="#services">
+                <img src="/site/img/IMG_4749.PNG" alt="Окрашивание волос" />
+                <span>COLOR</span>
+              </a>
+
+              <a class="section-two__card" href="#services">
+                <img src="/site/img/img1aft.jpg" alt="AirTouch окрашивание" />
+                <span>AIRTOUCH</span>
+              </a>
+
+              <a class="section-two__card" href="#services">
+                <img src="/site/img/IMG_4749.PNG" alt="Уход за волосами" />
+                <span>CARE</span>
+              </a>
+
+              <a class="section-two__card" href="#services">
+                <img src="/site/img/img1aft.jpg" alt="Стрижки волос" />
+                <span>CUT</span>
+              </a>
+
+              <a class="section-two__card" href="#services">
+                <img src="/site/img/IMG_4749.PNG" alt="Укладки волос" />
+                <span>STYLE</span>
+              </a>
+
+              <a class="section-two__card" href="#services">
+                <img src="/site/img/img1aft.jpg" alt="Восстановление волос" />
+                <span>RESTORE</span>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- Секция три -->
+
+        <section class="section-three" aria-labelledby="section-three-title">
+          <div
+            class="section-three__decor section-three__decor--one"
+            aria-hidden="true"
+          >
+            <img src="/site/img/IMG_4749.PNG" alt="" />
+          </div>
+
+          <div
+            class="section-three__decor section-three__decor--two"
+            aria-hidden="true"
+          >
+            <img src="/site/img//IMG_4750.PNG" alt="" />
+          </div>
+
+          <div
+            class="section-three__decor section-three__decor--three"
+            aria-hidden="true"
+          >
+            <img src="/site/img/IMG_4749.PNG" alt="" />
+          </div>
+
+          <div
+            class="section-three__decor section-three__decor--four"
+            aria-hidden="true"
+          >
+            <img src="/site/img/IMG_4749.PNG" alt="" />
+          </div>
+
+          <div
+            class="section-three__decor section-three__decor--five"
+            aria-hidden="true"
+          >
+            <img src="/site/img/IMG_4749.PNG" alt="" />
+          </div>
+
+          <div
+            class="section-three__decor section-three__decor--six"
+            aria-hidden="true"
+          >
+            <img src="/site/img/IMG_4749.PNG" alt="" />
+          </div>
+
+          <div class="section-three__content">
+            <h2 class="section-three__title" id="section-three-title">
+              THE ART OF<br />
+              UNDERSTATED<br />
+              BEAUTY
+            </h2>
+          </div>
+        </section>
+
+        <!-- персональный сервис -->
+
+        <section
+          class="personal-service"
+          aria-labelledby="personal-service-title"
+        >
+          <div class="personal-service__content">
+            <p class="personal-service__subtitle">Бесконечные возможности с</p>
+
+            <h2 class="personal-service__title" id="personal-service-title">
+              Персональным <br />
+              подходом
+            </h2>
+
+            <a class="personal-service__link" href="#services">
+              Смотреть все услуги
+            </a>
+          </div>
+
+          <div class="personal-service__media">
+            <video
+              class="personal-service__video"
+              src="site/video/personal-service.mp4"
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="metadata"
+              data-personal-video
+            ></video>
+
+            <button
+              class="personal-service__toggle"
+              type="button"
+              aria-label="Поставить видео на паузу"
+              data-personal-video-toggle
+            >
+              <span></span>
+              <span></span>
+            </button>
+          </div>
+        </section>
+
+        <!-- результаты до / после -->
+
+        <section class="works-preview" id="works">
+          <div class="works-preview__glass">
+            <div class="works-preview__head">
+              <div class="works-preview__title-box">
+                <p class="works-preview__eyebrow">Результаты</p>
+
+                <h2 class="works-preview__title">До / после</h2>
+              </div>
+
+              <p class="works-preview__text">
+                Каждая работа — это внимание к деталям, бережное отношение к
+                волосам и индивидуальный подход к вашему образу.
+              </p>
+            </div>
+
+            <div class="works-preview__grid">
+              <article class="work-card">
+                <div
+                  class="work-card__media compare js-compare"
+                  role="slider"
+                  tabindex="0"
+                  aria-label="Сравнение результата до и после окрашивания AirTouch"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  aria-valuenow="50"
+                  data-start="50"
+                >
+                  <img
+                    class="compare__image compare__image--after"
+                    src="/site/img/img2bef.jpg"
+                    alt="Результат после окрашивания AirTouch"
+                    draggable="false"
+                  />
+
+                  <div class="compare__before">
+                    <img
+                      class="compare__image compare__image--before"
+                      src="/site/img/img2aft.jpg"
+                      alt="Волосы до окрашивания AirTouch"
+                      draggable="false"
+                    />
+                  </div>
+
+                  <span class="compare__label compare__label--before">До</span>
+                  <span class="compare__label compare__label--after"
+                    >После</span
+                  >
+
+                  <span class="compare__handle" aria-hidden="true">
+                    <span></span>
+                  </span>
+                </div>
+
+                <div class="work-card__content">
+                  <h3 class="work-card__title">AirTouch на натуральной базе</h3>
+
+                  <p class="work-card__text">
+                    Мягкий переход, чистый оттенок и сохранение качества волос.
+                  </p>
+
+                  <a class="work-card__link" href="/works"> Смотреть кейс </a>
+                </div>
+              </article>
+
+              <article class="work-card">
+                <div
+                  class="work-card__media compare js-compare"
+                  role="slider"
+                  tabindex="0"
+                  aria-label="Сравнение результата до и после выхода в холодный блонд"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  aria-valuenow="50"
+                  data-start="50"
+                >
+                  <img
+                    class="compare__image compare__image--after"
+                    src="/site/img/img1bef.jpg"
+                    alt="Результат после выхода в холодный блонд"
+                    draggable="false"
+                  />
+
+                  <div class="compare__before">
+                    <img
+                      class="compare__image compare__image--before"
+                      src="/site/img/img1aft.jpg"
+                      alt="Волосы до выхода в холодный блонд"
+                      draggable="false"
+                    />
+                  </div>
+
+                  <span class="compare__label compare__label--before">До</span>
+                  <span class="compare__label compare__label--after"
+                    >После</span
+                  >
+
+                  <span class="compare__handle" aria-hidden="true">
+                    <span></span>
+                  </span>
+                </div>
+
+                <div class="work-card__content">
+                  <h3 class="work-card__title">Холодный блонд</h3>
+
+                  <p class="work-card__text">
+                    Чистый оттенок без желтизны и визуально плотные, сияющие
+                    волосы.
+                  </p>
+
+                  <a class="work-card__link" href="/works"> Смотреть кейс </a>
+                </div>
+              </article>
+            </div>
+
+            <div class="works-preview__bottom">
+              <a class="works-preview__button" href="/works">
+                Смотреть все работы
+              </a>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer__glass">
+        <div class="footer__top">
+          <div class="footer__brand">
+            <a class="footer__logo" href="/" aria-label="NADIA HAIR">
+              NADIA HAIR
+            </a>
+
+            <p class="footer__text">
+              Премиальный уход за волосами и безупречный результат.
+              Индивидуальный подход к каждой клиентке.
+            </p>
+
+            <a class="footer__button" href="tel:+79233906649">
+              <!-- <span class="footer__button-icon">▣</span> -->
+              Записаться онлайн
+            </a>
+          </div>
+
+          <nav class="footer__nav" aria-label="Меню сайта">
+            <span class="footer__title">Меню</span>
+
+            <a href="/">Главная</a>
+            <a href="/services">Услуги</a>
+            <a href="/works">Работы</a>
+            <a href="/blog">Влог</a>
+            <a href="/contacts">Контакты</a>
+          </nav>
+
+          <nav class="footer__nav" aria-label="Услуги салона">
+            <span class="footer__title">Услуги</span>
+
+            <a href="/services">Окрашивание</a>
+            <a href="/services">AirTouch</a>
+            <a href="/services">Уход за волосами</a>
+            <a href="/services">Стрижки</a>
+            <a href="/services">Укладки</a>
+          </nav>
+
+          <div class="footer__contacts">
+            <span class="footer__title">Контакты</span>
+
+            <a class="footer__contact" href="tel:+79233906649">
+              <!-- <span>☎</span> -->
+              +7 (923) 390-66-49
+            </a>
+
+            <div class="footer__contact">
+              <!-- <span>⌖</span> -->
+              Абакан
+            </div>
+
+            <div class="footer__socials">
+              <a href="#" aria-label="Instagram">IG</a>
+              <a href="#" aria-label="VK">VK</a>
+              <a href="#" aria-label="Telegram">TG</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer__bottom">
+          <p>© NADIA HAIR, 2026</p>
+
+          <a href="/privacy-policy">Политика конфиденциальности</a>
+
+          <a href="https://shumdev.ru" target="_blank" rel="noopener">
+            Разработка ShumDev
+          </a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="/site/script/main.js"></script>
+  </body>
+</html>
