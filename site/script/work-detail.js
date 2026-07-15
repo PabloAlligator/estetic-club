@@ -37,7 +37,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   initHeader();
   initSmoothAnchorScroll();
 
-  await initWorkDetailPage();
+  const workLoaded = await initWorkDetailPage();
+
+  if (!workLoaded) {
+    return;
+  }
 
   initWorkDetailHero();
   initWorkDetailExperience();
@@ -258,46 +262,125 @@ function initSmoothAnchorScroll() {
 }
 
 async function initWorkDetailPage() {
-  const work = await loadWorkDetail();
+  try {
+    const work = await loadWorkDetail();
 
-  renderWorkDetail(work);
-  renderWorkGallery(work.gallery || []);
+    renderWorkDetail(work);
+    renderWorkGallery(work.gallery || []);
 
-  window.setTimeout(() => {
-    if (window.ScrollTrigger) {
-      ScrollTrigger.refresh();
-    }
-  }, 150);
+    window.setTimeout(() => {
+      if (window.ScrollTrigger) {
+        ScrollTrigger.refresh();
+      }
+    }, 150);
+
+    return true;
+  } catch (error) {
+    console.error('Ошибка загрузки работы:', error);
+
+    renderWorkDetailError(
+      error.message || 'Не удалось загрузить работу.',
+    );
+
+    return false;
+  }
 }
 
 async function loadWorkDetail() {
   const params = new URLSearchParams(window.location.search);
-  const slug = params.get('slug');
+
+  const slug = String(params.get('slug') || '').trim();
 
   if (!slug) {
-    return WORK_DETAIL_DEMO;
+    throw new Error('Адрес работы не указан.');
   }
 
-  try {
-    const response = await fetch(`/api/works/${encodeURIComponent(slug)}`, {
+  const response = await fetch(
+    `/api/works/${encodeURIComponent(slug)}`,
+    {
       method: 'GET',
+
       headers: {
         Accept: 'application/json',
       },
-    });
 
-    if (!response.ok) {
-      throw new Error(`Work detail API error: ${response.status}`);
-    }
+      cache: 'no-store',
+    },
+  );
 
-    const payload = await response.json();
-    const work = payload.work || payload.item || payload.data || payload;
+  let payload = null;
 
-    return normalizeWorkDetail(work);
-  } catch (error) {
-    console.error(error);
-    return WORK_DETAIL_DEMO;
+  const contentType =
+    response.headers.get('content-type') || '';
+
+  if (contentType.includes('application/json')) {
+    payload = await response.json();
   }
+
+  if (response.status === 404) {
+    throw new Error(
+      'Работа не найдена или была снята с публикации.',
+    );
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      payload?.message ||
+        'Не удалось загрузить работу.',
+    );
+  }
+
+  const work =
+    payload?.work ||
+    payload?.item ||
+    payload?.data ||
+    payload;
+
+  if (!work || typeof work !== 'object') {
+    throw new Error(
+      'Сервер вернул некорректные данные работы.',
+    );
+  }
+
+  return normalizeWorkDetail(work);
+}
+
+function renderWorkDetailError(message) {
+  const page = document.querySelector(
+    '[data-work-detail-page]',
+  );
+
+  if (!page) {
+    return;
+  }
+
+  document.title =
+    'Работа не найдена | NADIA HAIR';
+
+  page.innerHTML = `
+    <section class="work-detail-error">
+      <div class="work-detail-error__inner">
+        <p class="work-detail-error__eyebrow">
+          Beauty Story
+        </p>
+
+        <h1 class="work-detail-error__title">
+          Работа не найдена
+        </h1>
+
+        <p class="work-detail-error__text">
+          ${escapeHtml(message)}
+        </p>
+
+        <a
+          class="work-detail-error__button"
+          href="/public/works/work-main.html"
+        >
+          Вернуться к работам
+        </a>
+      </div>
+    </section>
+  `;
 }
 
 function normalizeWorkDetail(work) {

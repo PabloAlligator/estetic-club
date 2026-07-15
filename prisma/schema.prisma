@@ -91,6 +91,16 @@ model Lead {
 model BlogPost {
   id Int @id @default(autoincrement())
 
+  authorName String?
+  authorRole String?
+  expertNote String?
+
+  coverAlt String?
+
+  focusKeyword   String?
+  seoTitle       String?
+  seoDescription String?
+
   slug    String @unique
   title   String
   excerpt String

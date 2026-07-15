@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('node:fs/promises');
 const express = require('express');
 const argon2 = require('argon2');
+const sanitizeHtml = require('sanitize-html');
 const { z } = require('zod');
 
 const prisma = require('../lib/prisma');
@@ -21,17 +22,22 @@ const router = express.Router();
 
 const ADMIN_PAGES_DIR = path.join(__dirname, '..', 'admin-pages');
 
-const WORK_UPLOADS_DIR = path.join(
-  __dirname,
-  '..',
-  'site',
-  'uploads',
-  'works',
-);
+const WORK_UPLOADS_DIR = path.join(__dirname, '..', 'site', 'uploads', 'works');
 
 const WORK_UPLOADS_URL = '/site/uploads/works';
 
+const BLOG_UPLOADS_DIR = path.join(__dirname, '..', 'site', 'uploads', 'blog');
+
+const BLOG_UPLOADS_URL = '/site/uploads/blog';
+
 const MAX_WORK_GALLERY_IMAGES = 30;
+
+const WORK_IMAGE_FIELDS = [
+  'beforeImage',
+  'afterImage',
+  'heroImage',
+  'experienceImage',
+];
 
 const LEAD_STATUSES = ['NEW', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'];
 
@@ -65,6 +71,17 @@ const WORK_CATEGORIES = {
   care: 'Уход',
   reconstruction: 'Реконструкция',
 };
+
+const BLOG_CATEGORY_SLUGS = ['hair-care', 'coloring', 'airtouch', 'home-care'];
+
+const BLOG_CATEGORIES = {
+  'hair-care': 'Уход',
+  coloring: 'Окрашивание',
+  airtouch: 'AirTouch',
+  'home-care': 'Домашний уход',
+};
+
+const DEFAULT_BLOG_COVER = '/site/img/blog/blog-hero.png';
 
 const leadSelect = {
   id: true,
@@ -241,6 +258,159 @@ const workListQuerySchema = z
   })
   .strict();
 
+const blogPostListQuerySchema = z
+  .object({
+    search: z.string().trim().max(100).optional().default(''),
+
+    status: z.enum(['all', 'published', 'draft']).optional().default('all'),
+
+    category: z.enum(BLOG_CATEGORY_SLUGS).optional(),
+
+    page: z.coerce.number().int().min(1).max(100000).optional().default(1),
+
+    limit: z.coerce.number().int().min(1).max(50).optional().default(20),
+  })
+  .strict();
+
+const blogPostIdSchema = z.coerce.number().int().positive();
+
+const blogPublishedAtSchema = z
+  .string()
+  .trim()
+  .max(32)
+  .optional()
+  .default('')
+  .refine((value) => !value || parseKrasnoyarskDateTime(value) !== null, {
+    message: 'Некорректная дата публикации',
+  });
+
+const blogPostPayloadSchema = z
+  .object({
+    title: z.string().trim().min(2, 'Введите заголовок статьи').max(180),
+
+    slug: z
+      .string()
+      .trim()
+      .toLowerCase()
+      .min(2, 'Введите адрес статьи')
+      .max(180)
+      .regex(
+        /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+        'Адрес может содержать только латинские буквы, цифры и дефисы',
+      ),
+
+    excerpt: z
+      .string()
+      .trim()
+      .min(20, 'Добавьте краткое описание статьи')
+      .max(600),
+
+    content: z.string().trim().max(50000).optional().default(''),
+
+    categorySlug: z.enum(BLOG_CATEGORY_SLUGS),
+
+    readingTime: z.string().trim().max(40).optional().default(''),
+
+    coverImage: z
+      .string()
+      .trim()
+      .max(500)
+      .optional()
+      .default('')
+      .refine(
+        (value) =>
+          !value ||
+          value === DEFAULT_BLOG_COVER ||
+          isManagedBlogImagePath(value),
+        {
+          message: 'Некорректный путь обложки',
+        },
+      ),
+
+    coverAlt: z.string().trim().max(240).optional().default(''),
+
+    authorName: z.string().trim().max(120).optional().default(''),
+
+    authorRole: z.string().trim().max(160).optional().default(''),
+
+    expertNote: z.string().trim().max(1200).optional().default(''),
+
+    focusKeyword: z.string().trim().max(180).optional().default(''),
+
+    seoTitle: z.string().trim().max(180).optional().default(''),
+
+    seoDescription: z.string().trim().max(320).optional().default(''),
+
+    isPublished: z.boolean().optional().default(false),
+
+    publishedAt: blogPublishedAtSchema,
+  })
+  .strict()
+  .superRefine((data, context) => {
+    if (!data.isPublished) {
+      return;
+    }
+
+    const plainContent = createPlainBlogText(data.content);
+
+    if (plainContent.length < 300) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['content'],
+        message:
+          'Для публикации статья должна содержать не менее 300 символов полезного текста',
+      });
+    }
+
+    if (!data.coverImage || data.coverImage === DEFAULT_BLOG_COVER) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['coverImage'],
+        message: 'Для публикации загрузите обложку',
+      });
+    }
+
+    if (data.coverAlt.length < 5) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['coverAlt'],
+        message: 'Добавьте описание обложки',
+      });
+    }
+
+    if (data.authorName.length < 2) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['authorName'],
+        message: 'Укажите автора статьи',
+      });
+    }
+
+    if (data.authorRole.length < 2) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['authorRole'],
+        message: 'Укажите специализацию автора',
+      });
+    }
+
+    if (data.seoTitle.length < 20) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['seoTitle'],
+        message: 'Для публикации заполните SEO Title',
+      });
+    }
+
+    if (data.seoDescription.length < 80) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['seoDescription'],
+        message: 'Meta description должен содержать не менее 80 символов',
+      });
+    }
+  });
+
 const workPublishSchema = z
   .object({
     isPublished: z.boolean(),
@@ -323,6 +493,42 @@ const workPayloadSchema = z
       });
     }
   });
+
+const adminBlogPostListSelect = {
+  id: true,
+
+  slug: true,
+  title: true,
+  excerpt: true,
+
+  category: true,
+  categorySlug: true,
+
+  coverImage: true,
+  readingTime: true,
+
+  isPublished: true,
+  publishedAt: true,
+
+  createdAt: true,
+  updatedAt: true,
+};
+
+const adminBlogPostDetailSelect = {
+  ...adminBlogPostListSelect,
+
+  content: true,
+
+  coverAlt: true,
+
+  authorName: true,
+  authorRole: true,
+  expertNote: true,
+
+  focusKeyword: true,
+  seoTitle: true,
+  seoDescription: true,
+};
 
 const adminWorkListSelect = {
   id: true,
@@ -480,10 +686,7 @@ function isManagedWorkImagePath(imagePath) {
 
   const expectedPath = `${WORK_UPLOADS_URL}/${fileName}`;
 
-  return (
-    value === expectedPath &&
-    /^\d{13}-[a-f0-9]{24}\.webp$/.test(fileName)
-  );
+  return value === expectedPath && /^\d{13}-[a-f0-9]{24}\.webp$/.test(fileName);
 }
 
 async function removeManagedWorkImage(imagePath) {
@@ -493,16 +696,120 @@ async function removeManagedWorkImage(imagePath) {
 
   const fileName = path.posix.basename(imagePath);
 
-  const absolutePath = path.join(
-    WORK_UPLOADS_DIR,
-    fileName,
-  );
+  const absolutePath = path.join(WORK_UPLOADS_DIR, fileName);
 
   try {
     await fs.unlink(absolutePath);
   } catch (error) {
     if (error?.code !== 'ENOENT') {
       throw error;
+    }
+  }
+}
+
+async function isManagedWorkImageReferenced(imagePath) {
+  if (!isManagedWorkImagePath(imagePath)) {
+    return false;
+  }
+
+  const [workReferences, galleryReferences] = await prisma.$transaction([
+    prisma.work.count({
+      where: {
+        OR: WORK_IMAGE_FIELDS.map((fieldName) => ({
+          [fieldName]: imagePath,
+        })),
+      },
+    }),
+
+    prisma.workImage.count({
+      where: {
+        imagePath,
+      },
+    }),
+  ]);
+
+  return workReferences > 0 || galleryReferences > 0;
+}
+
+async function removeUnusedManagedWorkImages(imagePaths) {
+  const uniquePaths = [
+    ...new Set(
+      imagePaths
+        .map((imagePath) => String(imagePath || '').trim())
+        .filter(isManagedWorkImagePath),
+    ),
+  ];
+
+  for (const imagePath of uniquePaths) {
+    try {
+      const isReferenced = await isManagedWorkImageReferenced(imagePath);
+
+      if (isReferenced) {
+        continue;
+      }
+
+      await removeManagedWorkImage(imagePath);
+    } catch (error) {
+      console.error(
+        `Не удалось удалить неиспользуемое изображение ${imagePath}:`,
+        error,
+      );
+    }
+  }
+}
+
+function isManagedBlogImagePath(imagePath) {
+  const value = String(imagePath || '').trim();
+
+  const fileName = path.posix.basename(value);
+
+  const expectedPath = `${BLOG_UPLOADS_URL}/${fileName}`;
+
+  return value === expectedPath && /^\d{13}-[a-f0-9]{24}\.webp$/.test(fileName);
+}
+
+async function removeManagedBlogImage(imagePath) {
+  if (!isManagedBlogImagePath(imagePath)) {
+    return;
+  }
+
+  const fileName = path.posix.basename(imagePath);
+
+  const absolutePath = path.join(BLOG_UPLOADS_DIR, fileName);
+
+  try {
+    await fs.unlink(absolutePath);
+  } catch (error) {
+    if (error?.code !== 'ENOENT') {
+      throw error;
+    }
+  }
+}
+
+async function removeUnusedManagedBlogImages(imagePaths) {
+  const uniquePaths = [
+    ...new Set(
+      imagePaths
+        .map((imagePath) => String(imagePath || '').trim())
+        .filter(isManagedBlogImagePath),
+    ),
+  ];
+
+  for (const imagePath of uniquePaths) {
+    try {
+      const references = await prisma.blogPost.count({
+        where: {
+          coverImage: imagePath,
+        },
+      });
+
+      if (references > 0) {
+        continue;
+      }
+
+      await removeManagedBlogImage(imagePath);
+    } catch (error) {
+      console.error(`Не удалось удалить обложку ${imagePath}:`, error);
     }
   }
 }
@@ -531,8 +838,7 @@ function createWorkWriteData(data) {
     title: data.title,
     excerpt: data.excerpt,
 
-    category:
-      WORK_CATEGORIES[data.categorySlug],
+    category: WORK_CATEGORIES[data.categorySlug],
 
     categorySlug: data.categorySlug,
 
@@ -540,16 +846,13 @@ function createWorkWriteData(data) {
 
     afterImage: data.afterImage,
 
-    technique:
-      data.technique ||
-      WORK_CATEGORIES[data.categorySlug],
+    technique: data.technique || WORK_CATEGORIES[data.categorySlug],
 
     duration: data.duration,
 
     heroImage: data.heroImage,
 
-    experienceImage:
-      data.experienceImage,
+    experienceImage: data.experienceImage,
 
     heroQuote: data.heroQuote,
 
@@ -557,14 +860,9 @@ function createWorkWriteData(data) {
 
     isPublished: data.isPublished,
 
-    showOnHome:
-      data.isPublished &&
-      data.showOnHome,
+    showOnHome: data.isPublished && data.showOnHome,
 
-    createdAt:
-      createKrasnoyarskWorkDate(
-        data.workDate,
-      ),
+    createdAt: createKrasnoyarskWorkDate(data.workDate),
   };
 }
 
@@ -576,6 +874,165 @@ function getChangedWorkFields(currentWork, nextData) {
 
     if (currentValue instanceof Date && nextValue instanceof Date) {
       if (currentValue.getTime() !== nextValue.getTime()) {
+        changedFields.push(field);
+      }
+
+      continue;
+    }
+
+    if (currentValue !== nextValue) {
+      changedFields.push(field);
+    }
+  }
+
+  return changedFields;
+}
+
+function sanitizeBlogContent(value) {
+  return sanitizeHtml(String(value || ''), {
+    allowedTags: [
+      'p',
+      'h2',
+      'h3',
+      'ul',
+      'ol',
+      'li',
+      'strong',
+      'em',
+      'blockquote',
+      'a',
+      'br',
+    ],
+
+    allowedAttributes: {
+      a: ['href'],
+    },
+
+    allowedSchemes: ['http', 'https', 'mailto', 'tel'],
+
+    allowProtocolRelative: false,
+  }).trim();
+}
+
+function createPlainBlogText(value) {
+  return sanitizeHtml(String(value || ''), {
+    allowedTags: [],
+    allowedAttributes: {},
+  })
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function normalizeNullableString(value) {
+  const normalized = String(value || '').trim();
+
+  return normalized || null;
+}
+
+function calculateBlogReadingTime(content) {
+  const words = createPlainBlogText(content)
+    .split(/\s+/)
+    .filter(Boolean).length;
+
+  const minutes = Math.max(1, Math.ceil(words / 180));
+
+  return `${minutes} мин`;
+}
+
+function parseKrasnoyarskDateTime(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(
+    String(value || '').trim(),
+  );
+
+  if (!match) {
+    return null;
+  }
+
+  const [, yearValue, monthValue, dayValue, hourValue, minuteValue] = match;
+
+  const year = Number(yearValue);
+  const month = Number(monthValue);
+  const day = Number(dayValue);
+  const hour = Number(hourValue);
+  const minute = Number(minuteValue);
+
+  const date = new Date(
+    Date.UTC(year, month - 1, day, hour, minute) - KRASNOYARSK_OFFSET_MS,
+  );
+
+  const localDate = new Date(date.getTime() + KRASNOYARSK_OFFSET_MS);
+
+  const isValid =
+    localDate.getUTCFullYear() === year &&
+    localDate.getUTCMonth() === month - 1 &&
+    localDate.getUTCDate() === day &&
+    localDate.getUTCHours() === hour &&
+    localDate.getUTCMinutes() === minute;
+
+  return isValid ? date : null;
+}
+
+function createBlogPostWriteData(data, currentPost = null) {
+  const content = sanitizeBlogContent(data.content);
+
+  const isPublished = data.isPublished === true;
+
+  let publishedAt = null;
+
+  if (isPublished) {
+    publishedAt =
+      parseKrasnoyarskDateTime(data.publishedAt) ||
+      currentPost?.publishedAt ||
+      new Date();
+  }
+
+  return {
+    slug: data.slug,
+
+    title: data.title,
+    excerpt: data.excerpt,
+    content,
+
+    category: BLOG_CATEGORIES[data.categorySlug],
+
+    categorySlug: data.categorySlug,
+
+    coverImage: data.coverImage || DEFAULT_BLOG_COVER,
+
+    coverAlt: normalizeNullableString(data.coverAlt),
+
+    readingTime: data.readingTime || calculateBlogReadingTime(content),
+
+    authorName: normalizeNullableString(data.authorName),
+
+    authorRole: normalizeNullableString(data.authorRole),
+
+    expertNote: normalizeNullableString(data.expertNote),
+
+    focusKeyword: normalizeNullableString(data.focusKeyword),
+
+    seoTitle: normalizeNullableString(data.seoTitle),
+
+    seoDescription: normalizeNullableString(data.seoDescription),
+
+    isPublished,
+    publishedAt,
+  };
+}
+
+function getChangedBlogPostFields(currentPost, nextData) {
+  const changedFields = [];
+
+  for (const [field, nextValue] of Object.entries(nextData)) {
+    const currentValue = currentPost[field];
+
+    if (currentValue instanceof Date || nextValue instanceof Date) {
+      const currentTime =
+        currentValue instanceof Date ? currentValue.getTime() : null;
+
+      const nextTime = nextValue instanceof Date ? nextValue.getTime() : null;
+
+      if (currentTime !== nextTime) {
         changedFields.push(field);
       }
 
@@ -1063,6 +1520,481 @@ router.delete(
   },
 );
 
+// список статей
+
+router.get(
+  '/api/blog-posts',
+  requireAuth,
+  requireRole('OWNER'),
+  async (req, res, next) => {
+    try {
+      const parsed = blogPostListQuerySchema.safeParse(req.query);
+
+      if (!parsed.success) {
+        return res.status(400).json({
+          message: 'Некорректные параметры списка статей',
+        });
+      }
+
+      const { search, status, category, page, limit } = parsed.data;
+
+      const where = {};
+
+      if (status === 'published') {
+        where.isPublished = true;
+      }
+
+      if (status === 'draft') {
+        where.isPublished = false;
+      }
+
+      if (category) {
+        where.categorySlug = category;
+      }
+
+      if (search) {
+        where.OR = [
+          {
+            title: {
+              contains: search,
+            },
+          },
+          {
+            slug: {
+              contains: search,
+            },
+          },
+          {
+            excerpt: {
+              contains: search,
+            },
+          },
+          {
+            category: {
+              contains: search,
+            },
+          },
+          {
+            content: {
+              contains: search,
+            },
+          },
+        ];
+      }
+
+      const skip = (page - 1) * limit;
+
+      const [posts, total, all, published, drafts, categoryGroups] =
+        await prisma.$transaction([
+          prisma.blogPost.findMany({
+            where,
+
+            orderBy: [
+              {
+                updatedAt: 'desc',
+              },
+              {
+                id: 'desc',
+              },
+            ],
+
+            skip,
+            take: limit,
+
+            select: adminBlogPostListSelect,
+          }),
+
+          prisma.blogPost.count({
+            where,
+          }),
+
+          prisma.blogPost.count(),
+
+          prisma.blogPost.count({
+            where: {
+              isPublished: true,
+            },
+          }),
+
+          prisma.blogPost.count({
+            where: {
+              isPublished: false,
+            },
+          }),
+
+          prisma.blogPost.groupBy({
+            by: ['categorySlug'],
+          }),
+        ]);
+
+      return res.json({
+        posts,
+
+        counts: {
+          all,
+          published,
+          drafts,
+
+          categories: categoryGroups.filter((item) =>
+            String(item.categorySlug || '').trim(),
+          ).length,
+        },
+
+        pagination: {
+          page,
+          limit,
+          total,
+
+          pages: Math.max(1, Math.ceil(total / limit)),
+        },
+      });
+    } catch (error) {
+      return next(error);
+    }
+  },
+);
+
+// получение статьи
+
+router.get(
+  '/api/blog-posts/:id',
+  requireAuth,
+  requireRole('OWNER'),
+  async (req, res, next) => {
+    try {
+      const parsedId = blogPostIdSchema.safeParse(req.params.id);
+
+      if (!parsedId.success) {
+        return res.status(400).json({
+          message: 'Некорректный ID статьи',
+        });
+      }
+
+      const post = await prisma.blogPost.findUnique({
+        where: {
+          id: parsedId.data,
+        },
+
+        select: adminBlogPostDetailSelect,
+      });
+
+      if (!post) {
+        return res.status(404).json({
+          message: 'Статья не найдена',
+        });
+      }
+
+      return res.json({
+        post,
+      });
+    } catch (error) {
+      return next(error);
+    }
+  },
+);
+
+// создание статьи
+
+router.post(
+  '/api/blog-posts',
+  validateOrigin,
+  requireAuth,
+  requireRole('OWNER'),
+  requireCsrf,
+  async (req, res, next) => {
+    try {
+      const parsed = blogPostPayloadSchema.safeParse(req.body);
+
+      if (!parsed.success) {
+        const firstIssue = parsed.error.issues[0];
+
+        return res.status(400).json({
+          message: firstIssue?.message || 'Проверьте данные статьи',
+        });
+      }
+
+      const postData = createBlogPostWriteData(parsed.data);
+
+      const metadata = getRequestMetadata(req);
+
+      const post = await prisma.$transaction(async (tx) => {
+        const createdPost = await tx.blogPost.create({
+          data: postData,
+
+          select: adminBlogPostDetailSelect,
+        });
+
+        await tx.adminAuditLog.create({
+          data: {
+            userId: req.auth.user.id,
+
+            action: 'BLOG_POST_CREATED',
+
+            entityType: 'BlogPost',
+
+            entityId: String(createdPost.id),
+
+            details: JSON.stringify({
+              slug: createdPost.slug,
+
+              title: createdPost.title,
+
+              categorySlug: createdPost.categorySlug,
+
+              isPublished: createdPost.isPublished,
+
+              publishedAt: createdPost.publishedAt
+                ? createdPost.publishedAt.toISOString()
+                : null,
+            }),
+
+            ipAddress: metadata.ipAddress,
+
+            userAgent: metadata.userAgent,
+          },
+        });
+
+        return createdPost;
+      });
+
+      return res.status(201).json({
+        post,
+      });
+    } catch (error) {
+      if (isUniqueConstraintError(error)) {
+        return res.status(409).json({
+          message: 'Статья с таким адресом уже существует',
+        });
+      }
+
+      return next(error);
+    }
+  },
+);
+
+// редактирование статьи
+
+router.patch(
+  '/api/blog-posts/:id',
+  validateOrigin,
+  requireAuth,
+  requireRole('OWNER'),
+  requireCsrf,
+  async (req, res, next) => {
+    try {
+      const parsedId = blogPostIdSchema.safeParse(req.params.id);
+
+      if (!parsedId.success) {
+        return res.status(400).json({
+          message: 'Некорректный ID статьи',
+        });
+      }
+
+      const parsedBody = blogPostPayloadSchema.safeParse(req.body);
+
+      if (!parsedBody.success) {
+        const firstIssue = parsedBody.error.issues[0];
+
+        return res.status(400).json({
+          message: firstIssue?.message || 'Проверьте данные статьи',
+        });
+      }
+
+      const postId = parsedId.data;
+
+      const currentPost = await prisma.blogPost.findUnique({
+        where: {
+          id: postId,
+        },
+
+        select: adminBlogPostDetailSelect,
+      });
+
+      if (!currentPost) {
+        return res.status(404).json({
+          message: 'Статья не найдена',
+        });
+      }
+
+      const postData = createBlogPostWriteData(parsedBody.data, currentPost);
+
+      const changedFields = getChangedBlogPostFields(currentPost, postData);
+
+      const metadata = getRequestMetadata(req);
+
+      const [updatedPost] = await prisma.$transaction([
+        prisma.blogPost.update({
+          where: {
+            id: postId,
+          },
+
+          data: postData,
+
+          select: adminBlogPostDetailSelect,
+        }),
+
+        prisma.adminAuditLog.create({
+          data: {
+            userId: req.auth.user.id,
+
+            action: 'BLOG_POST_UPDATED',
+
+            entityType: 'BlogPost',
+
+            entityId: String(postId),
+
+            details: JSON.stringify({
+              previousSlug: currentPost.slug,
+
+              nextSlug: postData.slug,
+
+              title: postData.title,
+
+              changedFields,
+
+              previousIsPublished: currentPost.isPublished,
+
+              nextIsPublished: postData.isPublished,
+
+              publishedAt: postData.publishedAt
+                ? postData.publishedAt.toISOString()
+                : null,
+            }),
+
+            ipAddress: metadata.ipAddress,
+
+            userAgent: metadata.userAgent,
+          },
+        }),
+      ]);
+
+      if (
+        currentPost.coverImage &&
+        currentPost.coverImage !== postData.coverImage
+      ) {
+        await removeUnusedManagedBlogImages([currentPost.coverImage]);
+      }
+
+      return res.json({
+        post: updatedPost,
+      });
+    } catch (error) {
+      if (isUniqueConstraintError(error)) {
+        return res.status(409).json({
+          message: 'Статья с таким адресом уже существует',
+        });
+      }
+
+      return next(error);
+    }
+  },
+);
+
+// удаление статьи
+
+router.delete(
+  '/api/blog-posts/:id',
+  validateOrigin,
+  requireAuth,
+  requireRole('OWNER'),
+  requireCsrf,
+  async (req, res, next) => {
+    try {
+      const parsedId = blogPostIdSchema.safeParse(req.params.id);
+
+      if (!parsedId.success) {
+        return res.status(400).json({
+          message: 'Некорректный ID статьи',
+        });
+      }
+
+      const postId = parsedId.data;
+
+      const metadata = getRequestMetadata(req);
+
+      const deletedPost = await prisma.$transaction(async (tx) => {
+        const post = await tx.blogPost.findUnique({
+          where: {
+            id: postId,
+          },
+
+          select: {
+            id: true,
+            slug: true,
+            title: true,
+
+            categorySlug: true,
+
+            coverImage: true,
+
+            isPublished: true,
+            publishedAt: true,
+
+            createdAt: true,
+          },
+        });
+
+        if (!post) {
+          return null;
+        }
+
+        await tx.adminAuditLog.create({
+          data: {
+            userId: req.auth.user.id,
+
+            action: 'BLOG_POST_DELETED',
+
+            entityType: 'BlogPost',
+
+            entityId: String(post.id),
+
+            details: JSON.stringify({
+              slug: post.slug,
+              title: post.title,
+
+              categorySlug: post.categorySlug,
+
+              coverImage: post.coverImage,
+
+              isPublished: post.isPublished,
+
+              publishedAt: post.publishedAt
+                ? post.publishedAt.toISOString()
+                : null,
+
+              createdAt: post.createdAt.toISOString(),
+            }),
+
+            ipAddress: metadata.ipAddress,
+
+            userAgent: metadata.userAgent,
+          },
+        });
+
+        await tx.blogPost.delete({
+          where: {
+            id: postId,
+          },
+        });
+
+        return post;
+      });
+
+      if (!deletedPost) {
+        return res.status(404).json({
+          message: 'Статья не найдена',
+        });
+      }
+
+      await removeUnusedManagedBlogImages([deletedPost.coverImage]);
+
+      return res.status(204).send();
+    } catch (error) {
+      return next(error);
+    }
+  },
+);
+
 // список работ
 
 router.get(
@@ -1425,6 +2357,20 @@ router.patch(
         }),
       ]);
 
+      const replacedImagePaths = WORK_IMAGE_FIELDS.map((fieldName) => {
+        const previousPath = String(currentWork[fieldName] || '').trim();
+
+        const nextPath = String(workData[fieldName] || '').trim();
+
+        if (!previousPath || previousPath === nextPath) {
+          return '';
+        }
+
+        return previousPath;
+      }).filter(Boolean);
+
+      await removeUnusedManagedWorkImages(replacedImagePaths);
+
       return res.json({
         work: createAdminWorkResponse(updatedWork),
       });
@@ -1464,9 +2410,7 @@ router.post(
         const firstIssue = parsedBody.error.issues[0];
 
         return res.status(400).json({
-          message:
-            firstIssue?.message ||
-            'Некорректные данные фотографии',
+          message: firstIssue?.message || 'Некорректные данные фотографии',
         });
       }
 
@@ -1512,8 +2456,7 @@ router.post(
         ? []
         : parseWorkGallery(work.gallery);
 
-      const currentImageCount =
-        work.images.length || legacyGallery.length;
+      const currentImageCount = work.images.length || legacyGallery.length;
 
       if (currentImageCount >= MAX_WORK_GALLERY_IMAGES) {
         return res.status(409).json({
@@ -1523,88 +2466,82 @@ router.post(
 
       const metadata = getRequestMetadata(req);
 
-      const createdImage = await prisma.$transaction(
-        async (tx) => {
-          let nextSortOrder = 0;
+      const createdImage = await prisma.$transaction(async (tx) => {
+        let nextSortOrder = 0;
 
-          if (!work.images.length && legacyGallery.length) {
-            for (let index = 0; index < legacyGallery.length; index += 1) {
-              await tx.workImage.create({
-                data: {
-                  workId,
-                  imagePath: legacyGallery[index],
-                  alt: `${work.title} — фото ${index + 1}`,
-                  sortOrder: index,
-                },
-              });
-            }
-
-            nextSortOrder = legacyGallery.length;
-          } else if (work.images.length) {
-            nextSortOrder =
-              Math.max(
-                ...work.images.map((image) => image.sortOrder),
-              ) + 1;
+        if (!work.images.length && legacyGallery.length) {
+          for (let index = 0; index < legacyGallery.length; index += 1) {
+            await tx.workImage.create({
+              data: {
+                workId,
+                imagePath: legacyGallery[index],
+                alt: `${work.title} — фото ${index + 1}`,
+                sortOrder: index,
+              },
+            });
           }
 
-          await tx.work.update({
-            where: {
-              id: workId,
-            },
+          nextSortOrder = legacyGallery.length;
+        } else if (work.images.length) {
+          nextSortOrder =
+            Math.max(...work.images.map((image) => image.sortOrder)) + 1;
+        }
 
-            data: {
-              gallery: '[]',
-            },
-          });
+        await tx.work.update({
+          where: {
+            id: workId,
+          },
 
-          const image = await tx.workImage.create({
-            data: {
+          data: {
+            gallery: '[]',
+          },
+        });
+
+        const image = await tx.workImage.create({
+          data: {
+            workId,
+
+            imagePath: parsedBody.data.imagePath,
+
+            alt: parsedBody.data.alt || `${work.title} — фото галереи`,
+
+            sortOrder: nextSortOrder,
+          },
+
+          select: {
+            id: true,
+            imagePath: true,
+            alt: true,
+            sortOrder: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        });
+
+        await tx.adminAuditLog.create({
+          data: {
+            userId: req.auth.user.id,
+
+            action: 'WORK_IMAGE_CREATED',
+
+            entityType: 'WorkImage',
+
+            entityId: String(image.id),
+
+            details: JSON.stringify({
               workId,
+              workSlug: work.slug,
+              imagePath: image.imagePath,
+              sortOrder: image.sortOrder,
+            }),
 
-              imagePath: parsedBody.data.imagePath,
+            ipAddress: metadata.ipAddress,
+            userAgent: metadata.userAgent,
+          },
+        });
 
-              alt:
-                parsedBody.data.alt ||
-                `${work.title} — фото галереи`,
-
-              sortOrder: nextSortOrder,
-            },
-
-            select: {
-              id: true,
-              imagePath: true,
-              alt: true,
-              sortOrder: true,
-              createdAt: true,
-              updatedAt: true,
-            },
-          });
-
-          await tx.adminAuditLog.create({
-            data: {
-              userId: req.auth.user.id,
-
-              action: 'WORK_IMAGE_CREATED',
-
-              entityType: 'WorkImage',
-
-              entityId: String(image.id),
-
-              details: JSON.stringify({
-                workId,
-                workSlug: work.slug,
-                imagePath: image.imagePath,
-                sortOrder: image.sortOrder,
-              }),
-
-              ipAddress: metadata.ipAddress,
-              userAgent: metadata.userAgent,
-            },
-          });
-
-          return image;
-        },
-      );
+        return image;
+      });
 
       return res.status(201).json({
         image: createdImage,
@@ -1627,9 +2564,7 @@ router.delete(
     try {
       const parsedWorkId = workIdSchema.safeParse(req.params.id);
 
-      const parsedImageId = workImageIdSchema.safeParse(
-        req.params.imageId,
-      );
+      const parsedImageId = workImageIdSchema.safeParse(req.params.imageId);
 
       if (!parsedWorkId.success || !parsedImageId.success) {
         return res.status(400).json({
@@ -1726,12 +2661,7 @@ router.delete(
         });
       });
 
-      await removeManagedWorkImage(image.imagePath).catch((error) => {
-        console.error(
-          'Не удалось удалить файл фотографии галереи:',
-          error,
-        );
-      });
+      await removeUnusedManagedWorkImages([image.imagePath]);
 
       return res.status(204).send();
     } catch (error) {
@@ -1967,9 +2897,17 @@ router.delete(
             isPublished: true,
             showOnHome: true,
 
+            beforeImage: true,
+            afterImage: true,
+            heroImage: true,
+            experienceImage: true,
+
+            gallery: true,
+
             images: {
               select: {
                 id: true,
+                imagePath: true,
               },
             },
           },
@@ -2018,6 +2956,21 @@ router.delete(
           message: 'Работа не найдена',
         });
       }
+
+      const legacyGalleryPaths = parseWorkGallery(result.gallery);
+
+      const deletedImagePaths = [
+        result.beforeImage,
+        result.afterImage,
+        result.heroImage,
+        result.experienceImage,
+
+        ...result.images.map((image) => image.imagePath),
+
+        ...legacyGalleryPaths,
+      ];
+
+      await removeUnusedManagedWorkImages(deletedImagePaths);
 
       return res.status(204).send();
     } catch (error) {

@@ -2018,3 +2018,63 @@ body.is-lock {
     }
   }
 }
+
+.work-detail-error {
+  min-height: 100vh;
+  padding: 180px 80px 100px;
+  display: flex;
+  align-items: center;
+  background: #796046;
+
+  &__inner {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  &__eyebrow {
+    margin: 0 0 24px;
+    color: rgba(255, 247, 239, 0.62);
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  &__title {
+    margin: 0;
+    color: #fff7ef;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(64px, 9vw, 150px);
+    font-weight: 400;
+    line-height: 0.88;
+  }
+
+  &__text {
+    max-width: 620px;
+    margin: 36px auto 0;
+    color: rgba(255, 247, 239, 0.74);
+    font-family: 'Manrope', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+  }
+
+  &__button {
+    display: inline-flex;
+    margin-top: 42px;
+    padding: 16px 28px;
+    border-radius: 999px;
+    color: #2f231a;
+    background: #fff7ef;
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    text-decoration: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .work-detail-error {
+    padding: 140px 24px 80px;
+  }
+}

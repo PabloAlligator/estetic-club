@@ -15,6 +15,7 @@ const prisma = require('./lib/prisma');
 const authRoutes = require('./routes/auth.routes');
 const adminRoutes = require('./routes/admin.routes');
 const uploadRoutes = require('./routes/upload.routes');
+const publicRoutes = require('./routes/public.routes');
 
 const validateOrigin = require('./middleware/validate-origin');
 
@@ -791,128 +792,132 @@ app.get('/api/blog-posts/:slug', async (req, res, next) => {
   }
 });
 
-app.get('/api/works', async (req, res, next) => {
-  try {
-    const category = String(req.query.category || '')
-      .trim()
-      .toLowerCase();
+// app.get('/api/works', async (req, res, next) => {
+//   try {
+//     const category = String(req.query.category || '')
+//       .trim()
+//       .toLowerCase();
 
-    const home = String(req.query.home || '').toLowerCase();
+//     const home = String(req.query.home || '').toLowerCase();
 
-    const where = {
-      isPublished: true,
-    };
+//     const where = {
+//       isPublished: true,
+//     };
 
-    if (home === 'true') {
-      where.showOnHome = true;
-    }
+//     if (home === 'true') {
+//       where.showOnHome = true;
+//     }
 
-    if (category && category !== 'all') {
-      where.categorySlug = category;
-    }
+//     if (category && category !== 'all') {
+//       where.categorySlug = category;
+//     }
 
-    const works = await prisma.work.findMany({
-      where,
+//     const works = await prisma.work.findMany({
+//       where,
 
-      orderBy: [
-        {
-          createdAt: 'desc',
-        },
-      ],
+//       orderBy: [
+//         {
+//           createdAt: 'desc',
+//         },
+//       ],
 
-      select: {
-        id: true,
-        slug: true,
-        title: true,
-        excerpt: true,
-        category: true,
-        categorySlug: true,
-        beforeImage: true,
-        afterImage: true,
-        technique: true,
-        duration: true,
-        showOnHome: true,
-        createdAt: true,
-      },
-    });
+//       select: {
+//         id: true,
+//         slug: true,
+//         title: true,
+//         excerpt: true,
+//         category: true,
+//         categorySlug: true,
+//         beforeImage: true,
+//         afterImage: true,
+//         technique: true,
+//         duration: true,
+//         showOnHome: true,
+//         createdAt: true,
+//       },
+//     });
 
-    return res.json({
-      works,
-    });
-  } catch (error) {
-    return next(error);
-  }
-});
+//     return res.json({
+//       works,
+//     });
+//   } catch (error) {
+//     return next(error);
+//   }
+// });
 
-app.get('/api/works/:slug', async (req, res, next) => {
-  try {
-    const slug = String(req.params.slug || '').trim();
+// app.get('/api/works/:slug', async (req, res, next) => {
+//   try {
+//     const slug = String(req.params.slug || '').trim();
 
-    const work = await prisma.work.findFirst({
-      where: {
-        slug,
-        isPublished: true,
-      },
+//     const work = await prisma.work.findFirst({
+//       where: {
+//         slug,
+//         isPublished: true,
+//       },
 
-      include: {
-        images: {
-          orderBy: [
-            {
-              sortOrder: 'asc',
-            },
-            {
-              id: 'asc',
-            },
-          ],
+//       include: {
+//         images: {
+//           orderBy: [
+//             {
+//               sortOrder: 'asc',
+//             },
+//             {
+//               id: 'asc',
+//             },
+//           ],
 
-          select: {
-            imagePath: true,
-          },
-        },
-      },
-    });
+//           select: {
+//             imagePath: true,
+//           },
+//         },
+//       },
+//     });
 
-    if (!work) {
-      return res.status(404).json({
-        message: 'Работа не найдена',
-      });
-    }
+//     if (!work) {
+//       return res.status(404).json({
+//         message: 'Работа не найдена',
+//       });
+//     }
 
-    const relationGallery = Array.isArray(work.images)
-      ? work.images
-          .map((image) => String(image.imagePath || '').trim())
-          .filter(Boolean)
-      : [];
+//     const relationGallery = Array.isArray(work.images)
+//       ? work.images
+//           .map((image) => String(image.imagePath || '').trim())
+//           .filter(Boolean)
+//       : [];
 
-    let legacyGallery = [];
+//     let legacyGallery = [];
 
-    if (!relationGallery.length) {
-      try {
-        const parsedGallery = JSON.parse(work.gallery || '[]');
+//     if (!relationGallery.length) {
+//       try {
+//         const parsedGallery = JSON.parse(work.gallery || '[]');
 
-        if (Array.isArray(parsedGallery)) {
-          legacyGallery = parsedGallery
-            .map((imagePath) => String(imagePath || '').trim())
-            .filter(Boolean);
-        }
-      } catch {
-        legacyGallery = [];
-      }
-    }
+//         if (Array.isArray(parsedGallery)) {
+//           legacyGallery = parsedGallery
+//             .map((imagePath) => String(imagePath || '').trim())
+//             .filter(Boolean);
+//         }
+//       } catch {
+//         legacyGallery = [];
+//       }
+//     }
 
-    const { images, ...publicWork } = work;
+//     const { images, ...publicWork } = work;
 
-    return res.json({
-      work: {
-        ...publicWork,
+//     return res.json({
+//       work: {
+//         ...publicWork,
 
-        gallery: relationGallery.length ? relationGallery : legacyGallery,
-      },
-    });
-  } catch (error) {
-    return next(error);
-  }
-});
+//         gallery: relationGallery.length ? relationGallery : legacyGallery,
+//       },
+//     });
+//   } catch (error) {
+//     return next(error);
+//   }
+// });
+
+// работы
+
+app.use('/api', publicRoutes);
 
 // 404
 

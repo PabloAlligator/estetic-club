@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+
+    <meta
+      name="robots"
+      content="noindex, nofollow, noarchive"
+    />
+
+    <title>Статьи — Клуб Эстетики</title>
+
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="/site/css/admin.min.css"
+    />
+
+    <script
+      src="/site/script/admin/admin.js"
+      defer
+    ></script>
+  </head>
+
+  <body
+    class="admin-body"
+    data-admin-page="blog"
+  >
+    <div class="admin-shell">
+      <aside class="admin-sidebar">
+        <a
+          class="admin-sidebar__logo"
+          href="/admin/dashboard"
+        >
+          Клуб Эстетики
+        </a>
+
+        <span class="admin-sidebar__caption">
+          Управление
+        </span>
+
+        <nav
+          class="admin-sidebar__nav"
+          aria-label="Навигация админ-панели"
+        >
+          <a
+            class="admin-sidebar__link"
+            href="/admin/dashboard"
+          >
+            Обзор
+          </a>
+
+          <a
+            class="admin-sidebar__link"
+            href="/admin/requests"
+          >
+            Заявки
+          </a>
+
+          <a
+            class="admin-sidebar__link"
+            href="/admin/works"
+          >
+            Работы
+          </a>
+
+          <span
+            class="admin-sidebar__link admin-sidebar__link--disabled"
+            aria-disabled="true"
+            title="Раздел будет добавлен позже"
+          >
+            Каталог
+          </span>
+
+          <a
+            class="admin-sidebar__link admin-sidebar__link--active"
+            href="/admin/blog"
+          >
+            Статьи
+          </a>
+
+          <a
+            class="admin-sidebar__link"
+            href="/admin/staff"
+          >
+            Сотрудники
+          </a>
+        </nav>
+
+        <div class="admin-sidebar__bottom">
+          <a
+            class="admin-sidebar__site-link"
+            href="/public/blog/blog.html"
+            target="_blank"
+            rel="noopener"
+          >
+            Открыть блог
+          </a>
+
+          <button
+            class="admin-sidebar__logout"
+            type="button"
+            data-admin-logout
+          >
+            Выйти
+          </button>
+        </div>
+      </aside>
+
+      <main class="admin-main">
+        <header class="admin-header">
+          <div>
+            <span class="admin-header__eyebrow">
+              Контент сайта
+            </span>
+
+            <h1 class="admin-header__title">
+              Статьи
+            </h1>
+          </div>
+
+          <div class="admin-user">
+            <div class="admin-user__info">
+              <span
+                class="admin-user__role"
+                data-admin-user-role
+              >
+                —
+              </span>
+
+              <span
+                class="admin-user__email"
+                data-admin-user-email
+              >
+                —
+              </span>
+            </div>
+
+            <button
+              class="admin-user__logout-mobile"
+              type="button"
+              data-admin-logout
+            >
+              Выйти
+            </button>
+          </div>
+        </header>
+
+        <section
+          class="admin-works admin-blog"
+          data-admin-blog-page
+        >
+          <div class="admin-works__head">
+            <div class="admin-works__intro">
+              <span class="admin-works__caption">
+                NADIA Journal
+              </span>
+
+              <h2 class="admin-works__title">
+                Управление статьями
+              </h2>
+
+              <p class="admin-works__description">
+                Создавайте экспертные материалы о волосах,
+                окрашивании и домашнем уходе. Управляйте
+                публикацией, SEO-настройками, категориями,
+                обложками и содержимым статей.
+              </p>
+            </div>
+
+            <div class="admin-works__head-actions">
+              <button
+                class="admin-works__refresh"
+                type="button"
+                data-admin-blog-refresh
+              >
+                Обновить
+              </button>
+
+              <a
+                class="admin-works__create"
+                href="/admin/blog/edit"
+              >
+                <span>+</span>
+
+                Добавить статью
+              </a>
+            </div>
+          </div>
+
+          <div class="admin-works__stats">
+            <article class="admin-work-stat">
+              <span class="admin-work-stat__label">
+                Всего статей
+              </span>
+
+              <strong
+                class="admin-work-stat__value"
+                data-admin-blog-count="all"
+              >
+                0
+              </strong>
+
+              <span class="admin-work-stat__note">
+                Все материалы журнала
+              </span>
+            </article>
+
+            <article class="admin-work-stat">
+              <span class="admin-work-stat__label">
+                Опубликованы
+              </span>
+
+              <strong
+                class="admin-work-stat__value"
+                data-admin-blog-count="published"
+              >
+                0
+              </strong>
+
+              <span class="admin-work-stat__note">
+                Доступны посетителям сайта
+              </span>
+            </article>
+
+            <article class="admin-work-stat">
+              <span class="admin-work-stat__label">
+                Черновики
+              </span>
+
+              <strong
+                class="admin-work-stat__value"
+                data-admin-blog-count="drafts"
+              >
+                0
+              </strong>
+
+              <span class="admin-work-stat__note">
+                Ещё не опубликованы
+              </span>
+            </article>
+
+            <article class="admin-work-stat">
+              <span class="admin-work-stat__label">
+                Категории
+              </span>
+
+              <strong
+                class="admin-work-stat__value"
+                data-admin-blog-count="categories"
+              >
+                0
+              </strong>
+
+              <span class="admin-work-stat__note">
+                Тематические направления
+              </span>
+            </article>
+          </div>
+
+          <div class="admin-works__toolbar">
+            <form
+              class="admin-works__search"
+              data-admin-blog-search-form
+            >
+              <label
+                class="admin-works__search-label"
+                for="admin-blog-search"
+              >
+                Поиск статей
+              </label>
+
+              <div class="admin-works__search-row">
+                <input
+                  class="admin-works__search-input"
+                  id="admin-blog-search"
+                  name="search"
+                  type="search"
+                  maxlength="100"
+                  autocomplete="off"
+                  placeholder="Название, категория, текст или адрес"
+                  data-admin-blog-search
+                />
+
+                <button
+                  class="admin-works__search-button"
+                  type="submit"
+                >
+                  Найти
+                </button>
+
+                <button
+                  class="admin-works__search-reset"
+                  type="button"
+                  data-admin-blog-search-reset
+                  hidden
+                >
+                  Сбросить
+                </button>
+              </div>
+            </form>
+
+            <div class="admin-works__filter-row">
+              <div
+                class="admin-works__filters"
+                aria-label="Статус публикации"
+              >
+                <button
+                  class="admin-works__filter is-active"
+                  type="button"
+                  data-admin-blog-status="all"
+                >
+                  Все
+                </button>
+
+                <button
+                  class="admin-works__filter"
+                  type="button"
+                  data-admin-blog-status="published"
+                >
+                  Опубликованные
+                </button>
+
+                <button
+                  class="admin-works__filter"
+                  type="button"
+                  data-admin-blog-status="draft"
+                >
+                  Черновики
+                </button>
+              </div>
+
+              <label class="admin-works__category">
+                <span class="admin-works__category-label">
+                  Категория
+                </span>
+
+                <select
+                  class="admin-works__category-select"
+                  data-admin-blog-category
+                >
+                  <option value="">
+                    Все категории
+                  </option>
+
+                  <option value="hair-care">
+                    Уход
+                  </option>
+
+                  <option value="coloring">
+                    Окрашивание
+                  </option>
+
+                  <option value="airtouch">
+                    AirTouch
+                  </option>
+
+                  <option value="home-care">
+                    Домашний уход
+                  </option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <p
+            class="admin-works__message"
+            role="status"
+            aria-live="polite"
+            data-admin-blog-message
+            hidden
+          ></p>
+
+          <div
+            class="admin-works__loading"
+            aria-live="polite"
+            data-admin-blog-loading
+          >
+            Загружаем статьи…
+          </div>
+
+          <div
+            class="admin-works__empty"
+            data-admin-blog-empty
+            hidden
+          >
+            <span class="admin-works__empty-caption">
+              Статьи не найдены
+            </span>
+
+            <h3 class="admin-works__empty-title">
+              В журнале пока нет материалов
+            </h3>
+
+            <p class="admin-works__empty-text">
+              Измените параметры поиска или создайте первую
+              экспертную статью для блога NADIA HAIR.
+            </p>
+
+            <a
+              class="admin-works__empty-link"
+              href="/admin/blog/edit"
+            >
+              Создать первую статью
+            </a>
+          </div>
+
+          <div
+            class="admin-works__list admin-blog__list"
+            aria-live="polite"
+            data-admin-blog-list
+            hidden
+          ></div>
+
+          <nav
+            class="admin-works__pagination"
+            aria-label="Страницы статей"
+            data-admin-blog-pagination
+            hidden
+          >
+            <button
+              class="admin-works__pagination-button"
+              type="button"
+              data-admin-blog-prev
+            >
+              Назад
+            </button>
+
+            <span
+              class="admin-works__pagination-info"
+              data-admin-blog-pagination-info
+            >
+              Страница 1 из 1
+            </span>
+
+            <button
+              class="admin-works__pagination-button"
+              type="button"
+              data-admin-blog-next
+            >
+              Вперёд
+            </button>
+          </nav>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

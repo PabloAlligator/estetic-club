@@ -234,6 +234,14 @@
       if (page === 'work-edit') {
         await initAdminWorkEditorPage(data.user);
       }
+
+      if (page === 'blog-edit') {
+        await initAdminBlogEditorPage(data.user);
+      }
+
+      if (page === 'blog') {
+        await initAdminBlogPage(data.user);
+      }
     } catch (error) {
       console.error('Ошибка инициализации админ-панели:', error);
 
@@ -1267,6 +1275,1514 @@
       message.hidden = true;
 
       message.classList.remove('is-success');
+    }
+  }
+
+  // статьи
+
+  async function initAdminBlogPage(adminUser) {
+    if (adminUser?.role !== 'OWNER') {
+      window.location.replace('/admin/requests');
+      return;
+    }
+
+    const refreshButton = document.querySelector('[data-admin-blog-refresh]');
+
+    const searchForm = document.querySelector('[data-admin-blog-search-form]');
+
+    const searchInput = document.querySelector('[data-admin-blog-search]');
+
+    const searchReset = document.querySelector(
+      '[data-admin-blog-search-reset]',
+    );
+
+    const statusButtons = document.querySelectorAll('[data-admin-blog-status]');
+
+    const categorySelect = document.querySelector('[data-admin-blog-category]');
+
+    const list = document.querySelector('[data-admin-blog-list]');
+
+    const loading = document.querySelector('[data-admin-blog-loading]');
+
+    const empty = document.querySelector('[data-admin-blog-empty]');
+
+    const message = document.querySelector('[data-admin-blog-message]');
+
+    const pagination = document.querySelector('[data-admin-blog-pagination]');
+
+    const paginationInfo = document.querySelector(
+      '[data-admin-blog-pagination-info]',
+    );
+
+    const prevButton = document.querySelector('[data-admin-blog-prev]');
+
+    const nextButton = document.querySelector('[data-admin-blog-next]');
+
+    if (
+      !refreshButton ||
+      !searchForm ||
+      !searchInput ||
+      !searchReset ||
+      !categorySelect ||
+      !list ||
+      !loading ||
+      !empty ||
+      !message ||
+      !pagination ||
+      !paginationInfo ||
+      !prevButton ||
+      !nextButton
+    ) {
+      return;
+    }
+
+    const searchSubmitButton = searchForm.querySelector(
+      'button[type="submit"]',
+    );
+
+    const state = {
+      search: '',
+      status: 'all',
+      category: '',
+      page: 1,
+      limit: 20,
+      pages: 1,
+      total: 0,
+      isLoading: false,
+    };
+
+    let requestNumber = 0;
+
+    refreshButton.addEventListener('click', async () => {
+      await loadAdminBlogPosts();
+    });
+
+    searchForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      state.search = searchInput.value.trim();
+      state.page = 1;
+
+      searchReset.hidden = !state.search;
+
+      await loadAdminBlogPosts();
+    });
+
+    searchReset.addEventListener('click', async () => {
+      searchInput.value = '';
+
+      state.search = '';
+      state.page = 1;
+
+      searchReset.hidden = true;
+
+      await loadAdminBlogPosts();
+    });
+
+    statusButtons.forEach((button) => {
+      button.addEventListener('click', async () => {
+        const status = String(button.dataset.adminBlogStatus || 'all');
+
+        if (status === state.status || state.isLoading) {
+          return;
+        }
+
+        state.status = status;
+        state.page = 1;
+
+        updateActiveStatus();
+
+        await loadAdminBlogPosts();
+      });
+    });
+
+    categorySelect.addEventListener('change', async () => {
+      state.category = categorySelect.value;
+      state.page = 1;
+
+      await loadAdminBlogPosts();
+    });
+
+    prevButton.addEventListener('click', async () => {
+      if (state.isLoading || state.page <= 1) {
+        return;
+      }
+
+      state.page -= 1;
+
+      await loadAdminBlogPosts();
+    });
+
+    nextButton.addEventListener('click', async () => {
+      if (state.isLoading || state.page >= state.pages) {
+        return;
+      }
+
+      state.page += 1;
+
+      await loadAdminBlogPosts();
+    });
+
+    await loadAdminBlogPosts();
+
+    async function loadAdminBlogPosts(options = {}) {
+      const preserveMessage = options.preserveMessage === true;
+
+      const currentRequest = ++requestNumber;
+
+      if (!preserveMessage) {
+        hideAdminBlogMessage();
+      }
+
+      setAdminBlogLoading(true);
+
+      const params = new URLSearchParams({
+        page: String(state.page),
+        limit: String(state.limit),
+        status: state.status,
+      });
+
+      if (state.search) {
+        params.set('search', state.search);
+      }
+
+      if (state.category) {
+        params.set('category', state.category);
+      }
+
+      try {
+        const { response, data } = await requestJson(
+          `/admin/api/blog-posts?${params.toString()}`,
+        );
+
+        if (currentRequest !== requestNumber) {
+          return;
+        }
+
+        if (response.status === 401) {
+          redirectToLogin();
+          return;
+        }
+
+        if (response.status === 403) {
+          window.location.replace('/admin/requests');
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error(data?.message || 'Не удалось загрузить статьи');
+        }
+
+        const posts = Array.isArray(data?.posts) ? data.posts : [];
+
+        state.page = Number(data?.pagination?.page) || 1;
+
+        state.pages = Number(data?.pagination?.pages) || 1;
+
+        state.total = Number(data?.pagination?.total) || 0;
+
+        renderAdminBlogCounts(data?.counts || {});
+
+        renderAdminBlogPosts(posts);
+
+        updateAdminBlogPagination();
+        updateActiveStatus();
+
+        searchReset.hidden = !state.search;
+      } catch (error) {
+        console.error('Ошибка загрузки статей:', error);
+
+        list.hidden = true;
+        empty.hidden = true;
+        pagination.hidden = true;
+
+        showAdminBlogMessage(error.message || 'Не удалось загрузить статьи.');
+      } finally {
+        if (currentRequest === requestNumber) {
+          setAdminBlogLoading(false);
+        }
+      }
+    }
+
+    function setAdminBlogLoading(isLoading) {
+      state.isLoading = isLoading;
+
+      loading.hidden = !isLoading;
+
+      refreshButton.disabled = isLoading;
+      categorySelect.disabled = isLoading;
+
+      if (searchSubmitButton) {
+        searchSubmitButton.disabled = isLoading;
+      }
+
+      statusButtons.forEach((button) => {
+        button.disabled = isLoading;
+      });
+
+      prevButton.disabled = isLoading;
+      nextButton.disabled = isLoading;
+
+      if (isLoading) {
+        list.hidden = true;
+        empty.hidden = true;
+        pagination.hidden = true;
+      }
+    }
+
+    function renderAdminBlogCounts(counts) {
+      const values = {
+        all: Number(counts.all) || 0,
+
+        published: Number(counts.published) || 0,
+
+        drafts: Number(counts.drafts) || 0,
+
+        categories: Number(counts.categories) || 0,
+      };
+
+      Object.entries(values).forEach(([name, value]) => {
+        const element = document.querySelector(
+          `[data-admin-blog-count="${name}"]`,
+        );
+
+        if (element) {
+          element.textContent = String(value);
+        }
+      });
+    }
+
+    function renderAdminBlogPosts(posts) {
+      if (!posts.length) {
+        list.innerHTML = '';
+        list.hidden = true;
+        empty.hidden = false;
+
+        return;
+      }
+
+      empty.hidden = true;
+
+      list.innerHTML = posts.map(renderAdminBlogCard).join('');
+
+      list.hidden = false;
+
+      bindAdminBlogImages();
+    }
+
+    function renderAdminBlogCard(post) {
+      const id = Number(post.id);
+
+      const isPublished = post.isPublished === true;
+
+      const slug = String(post.slug || '');
+
+      const coverImage = String(post.coverImage || '');
+
+      const editUrl = `/admin/blog/edit?id=${encodeURIComponent(id)}`;
+
+      const publicUrl = `/public/blog/article.html?slug=${encodeURIComponent(slug)}`;
+
+      const publicationDate =
+        isPublished && post.publishedAt
+          ? formatDate(post.publishedAt)
+          : 'Не опубликована';
+
+      return `
+      <article
+        class="admin-work-card admin-blog-card${isPublished ? '' : ' is-draft'}"
+        data-admin-blog-card="${id}"
+        data-admin-blog-published="${String(isPublished)}"
+      >
+        <div class="admin-work-card__preview admin-blog-card__preview">
+       <div class="admin-work-card__image admin-blog-card__image${
+         coverImage ? '' : ' is-empty'
+       }">
+    ${
+      coverImage
+        ? `
+          <img
+            src="${escapeHtml(coverImage)}"
+            alt="Обложка статьи: ${escapeHtml(post.title || 'Статья')}"
+            loading="lazy"
+          />
+        `
+        : ''
+    }
+
+    <span>Обложка статьи</span>
+  </div>
+</div>
+
+        <div class="admin-work-card__content">
+          <div class="admin-work-card__top">
+            <div class="admin-work-card__identity">
+              <span class="admin-work-card__category">
+                ${escapeHtml(post.category || 'Без категории')}
+              </span>
+
+              <h3 class="admin-work-card__title">
+                ${escapeHtml(post.title || 'Без названия')}
+              </h3>
+            </div>
+
+            <div class="admin-work-card__badges">
+              <span
+                class="admin-work-card__badge ${
+                  isPublished
+                    ? 'admin-work-card__badge--published'
+                    : 'admin-work-card__badge--draft'
+                }"
+              >
+                ${isPublished ? 'Опубликована' : 'Черновик'}
+              </span>
+            </div>
+          </div>
+
+          <p class="admin-work-card__excerpt">
+            ${escapeHtml(
+              post.excerpt || 'Краткое описание статьи не заполнено.',
+            )}
+          </p>
+
+          <div class="admin-work-card__meta">
+            <span class="admin-work-card__meta-item">
+              Категория:
+
+              <strong>
+                ${escapeHtml(post.categorySlug || 'Не указана')}
+              </strong>
+            </span>
+
+            <span class="admin-work-card__meta-item">
+              Чтение:
+
+              <strong>
+                ${escapeHtml(post.readingTime || 'Не указано')}
+              </strong>
+            </span>
+
+            <span class="admin-work-card__meta-item">
+              Публикация:
+
+              <strong>
+                ${escapeHtml(publicationDate)}
+              </strong>
+            </span>
+
+            <span class="admin-work-card__meta-item">
+              Обновлена:
+
+              <strong>
+                ${escapeHtml(formatDate(post.updatedAt))}
+              </strong>
+            </span>
+          </div>
+
+          <p class="admin-work-card__slug">
+            /${escapeHtml(slug)}
+          </p>
+
+          <div class="admin-work-card__actions">
+            <a
+              class="admin-work-card__action admin-work-card__action--primary"
+              href="${editUrl}"
+            >
+              Редактировать
+            </a>
+
+            ${
+              isPublished
+                ? `
+                  <a
+                    class="admin-work-card__action"
+                    href="${publicUrl}"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Открыть на сайте
+                  </a>
+                `
+                : ''
+            }
+          </div>
+        </div>
+      </article>
+    `;
+    }
+
+    function bindAdminBlogImages() {
+      list.querySelectorAll('.admin-work-card__image img').forEach((image) => {
+        image.addEventListener(
+          'error',
+          () => {
+            const wrapper = image.closest('.admin-work-card__image');
+
+            wrapper?.classList.add('is-empty');
+
+            image.remove();
+          },
+          {
+            once: true,
+          },
+        );
+      });
+    }
+
+    function updateActiveStatus() {
+      statusButtons.forEach((button) => {
+        const buttonStatus = String(button.dataset.adminBlogStatus || 'all');
+
+        button.classList.toggle('is-active', buttonStatus === state.status);
+      });
+    }
+
+    function updateAdminBlogPagination() {
+      paginationInfo.textContent = `Страница ${state.page} из ${state.pages}`;
+
+      prevButton.disabled = state.page <= 1;
+
+      nextButton.disabled = state.page >= state.pages;
+
+      pagination.hidden = state.pages <= 1;
+    }
+
+    function showAdminBlogMessage(text, success = false) {
+      message.textContent = text;
+      message.hidden = false;
+
+      message.classList.toggle('is-success', success);
+    }
+
+    function hideAdminBlogMessage() {
+      message.textContent = '';
+      message.hidden = true;
+
+      message.classList.remove('is-success');
+    }
+  }
+
+  // редактор статьи
+
+  async function initAdminBlogEditorPage(adminUser) {
+    if (adminUser?.role !== 'OWNER') {
+      window.location.replace('/admin/requests');
+      return;
+    }
+
+    const form = document.querySelector('[data-blog-editor-form]');
+
+    const loading = document.querySelector('[data-blog-editor-loading]');
+
+    const message = document.querySelector('[data-blog-editor-message]');
+
+    const modeText = document.querySelector('[data-blog-editor-mode]');
+
+    const editorTitle = document.querySelector('[data-blog-editor-title]');
+
+    const editorState = document.querySelector('[data-blog-editor-state]');
+
+    const saveButton = document.querySelector('[data-blog-save]');
+
+    const deleteButton = document.querySelector('[data-blog-delete]');
+
+    const publicLink = document.querySelector('[data-blog-public-link]');
+
+    const metaId = document.querySelector('[data-blog-meta-id]');
+
+    const metaStatus = document.querySelector('[data-blog-meta-status]');
+
+    const fields = {
+      title: document.querySelector('[data-blog-title]'),
+
+      slug: document.querySelector('[data-blog-slug]'),
+
+      categorySlug: document.querySelector('[data-blog-category]'),
+
+      readingTime: document.querySelector('[data-blog-reading-time]'),
+
+      excerpt: document.querySelector('[data-blog-excerpt]'),
+
+      authorName: document.querySelector('[data-blog-author-name]'),
+
+      authorRole: document.querySelector('[data-blog-author-role]'),
+
+      expertNote: document.querySelector('[data-blog-expert-note]'),
+
+      coverImage: document.querySelector('[data-blog-cover-input]'),
+
+      coverAlt: document.querySelector('[data-blog-cover-alt]'),
+
+      content: document.querySelector('[data-blog-content]'),
+
+      focusKeyword: document.querySelector('[data-blog-focus-keyword]'),
+
+      seoTitle: document.querySelector('[data-blog-seo-title]'),
+
+      seoDescription: document.querySelector('[data-blog-seo-description]'),
+
+      isPublished: document.querySelector('[data-blog-published]'),
+
+      publishedAt: document.querySelector('[data-blog-published-at]'),
+    };
+
+    const coverPreview = document.querySelector(
+      '[data-blog-cover-preview-img]',
+    );
+
+    const coverEmpty = document.querySelector('[data-blog-cover-empty]');
+
+    const coverClearButton = document.querySelector('[data-blog-cover-clear]');
+
+    const coverSelectButton = document.querySelector(
+      '[data-blog-cover-select]',
+    );
+
+    const coverFileInput = document.querySelector('[data-blog-cover-file]');
+
+    const coverUploadStatus = document.querySelector(
+      '[data-blog-cover-upload-status]',
+    );
+
+    const seoPreviewTitle = document.querySelector(
+      '[data-blog-seo-preview-title]',
+    );
+
+    const seoPreviewUrl = document.querySelector('[data-blog-seo-preview-url]');
+
+    const seoPreviewDescription = document.querySelector(
+      '[data-blog-seo-preview-description]',
+    );
+
+    if (
+      !form ||
+      !loading ||
+      !message ||
+      !modeText ||
+      !editorTitle ||
+      !editorState ||
+      !saveButton ||
+      !deleteButton ||
+      !metaId ||
+      !metaStatus ||
+      !fields.title ||
+      !fields.slug ||
+      !fields.categorySlug ||
+      !fields.excerpt ||
+      !fields.content ||
+      !fields.isPublished
+    ) {
+      console.error('Не найдены обязательные элементы редактора статьи');
+
+      loading.hidden = true;
+      return;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+
+    const requestedId = Number(params.get('id'));
+
+    let postId =
+      Number.isInteger(requestedId) && requestedId > 0 ? requestedId : null;
+
+    let isSaving = false;
+    let isDeleting = false;
+    let isUploadingCover = false;
+    let savedIsPublished = false;
+    let savedSlug = '';
+
+    const uploadedBlogPathsThisSession = new Set();
+    let slugWasEdited = Boolean(postId);
+
+    bindCounter(fields.excerpt, '[data-blog-excerpt-counter]');
+
+    bindCounter(fields.expertNote, '[data-blog-expert-note-counter]');
+
+    bindCounter(fields.content, '[data-blog-content-counter]');
+
+    bindCounter(fields.seoTitle, '[data-blog-seo-title-counter]');
+
+    bindCounter(fields.seoDescription, '[data-blog-seo-description-counter]');
+
+    fields.title.addEventListener('input', () => {
+      if (!slugWasEdited) {
+        fields.slug.value = createBlogSlug(fields.title.value);
+      }
+
+      updateSeoPreview();
+    });
+
+    fields.slug.addEventListener('input', () => {
+      slugWasEdited = true;
+
+      fields.slug.value = normalizeBlogSlug(fields.slug.value);
+
+      updateSeoPreview();
+    });
+
+    fields.excerpt.addEventListener('input', updateSeoPreview);
+
+    fields.seoTitle?.addEventListener('input', updateSeoPreview);
+
+    fields.seoDescription?.addEventListener('input', updateSeoPreview);
+
+    fields.isPublished.addEventListener('change', () => {
+      if (
+        fields.isPublished.checked &&
+        fields.publishedAt &&
+        !fields.publishedAt.value
+      ) {
+        fields.publishedAt.value = getCurrentKrasnoyarskDateTime();
+      }
+
+      updatePublicationState();
+    });
+
+    fields.coverImage?.addEventListener('input', updateCoverPreview);
+
+    coverClearButton?.addEventListener('click', async () => {
+      if (isSaving || isDeleting || isUploadingCover) {
+        return;
+      }
+
+      const currentPath = fields.coverImage?.value.trim() || '';
+
+      fields.coverImage.value = '';
+
+      updateCoverPreview();
+
+      if (uploadedBlogPathsThisSession.has(currentPath)) {
+        await deleteUnsavedBlogCover(currentPath).catch((error) => {
+          console.error('Не удалось удалить несохранённую обложку:', error);
+        });
+      }
+
+      setCoverUploadStatus('');
+    });
+
+    coverSelectButton?.addEventListener('click', () => {
+      if (isSaving || isDeleting || isUploadingCover) {
+        return;
+      }
+
+      coverFileInput?.click();
+    });
+
+    coverFileInput?.addEventListener('change', async () => {
+      const file = coverFileInput.files?.[0];
+
+      coverFileInput.value = '';
+
+      if (!file) {
+        return;
+      }
+
+      const validationError = validateBlogCoverFile(file);
+
+      if (validationError) {
+        setCoverUploadStatus(validationError, true);
+
+        return;
+      }
+
+      await uploadBlogCover(file);
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      await saveBlogPost();
+    });
+
+    deleteButton.addEventListener('click', async () => {
+      await deleteBlogPost();
+    });
+
+    await initializeEditor();
+
+    async function initializeEditor() {
+      hideMessage();
+
+      loading.hidden = false;
+      form.hidden = true;
+
+      try {
+        if (postId) {
+          await loadBlogPost();
+        } else {
+          prepareNewPost();
+        }
+
+        updatePublicationState();
+        updateCoverPreview();
+        updateSeoPreview();
+        updateAllCounters();
+
+        form.hidden = false;
+      } catch (error) {
+        console.error('Ошибка загрузки редактора статьи:', error);
+
+        showEditorMessage(
+          error.message || 'Не удалось загрузить редактор статьи.',
+        );
+      } finally {
+        loading.hidden = true;
+      }
+    }
+
+    function prepareNewPost() {
+      modeText.textContent = 'Новая статья';
+
+      editorTitle.textContent = 'Создание экспертного материала';
+
+      metaId.textContent = 'Новая';
+
+      savedIsPublished = false;
+      savedSlug = '';
+
+      fields.categorySlug.value = fields.categorySlug.value || 'hair-care';
+
+      fields.readingTime.value = fields.readingTime.value || '3 мин';
+
+      fields.coverImage.value = '';
+
+      deleteButton.hidden = true;
+      publicLink.hidden = true;
+    }
+
+    async function loadBlogPost() {
+      const { response, data } = await requestJson(
+        `/admin/api/blog-posts/${postId}`,
+      );
+
+      if (response.status === 401) {
+        redirectToLogin();
+        return;
+      }
+
+      if (response.status === 403) {
+        window.location.replace('/admin/requests');
+
+        return;
+      }
+
+      if (!response.ok || !data?.post) {
+        throw new Error(data?.message || 'Не удалось загрузить статью');
+      }
+
+      fillBlogPostForm(data.post);
+
+      modeText.textContent = 'Редактирование статьи';
+
+      editorTitle.textContent = 'Редактирование экспертного материала';
+
+      metaId.textContent = String(data.post.id);
+
+      deleteButton.hidden = false;
+    }
+
+    function fillBlogPostForm(post) {
+      fields.title.value = post.title || '';
+
+      fields.slug.value = post.slug || '';
+
+      fields.categorySlug.value = post.categorySlug || 'hair-care';
+
+      fields.readingTime.value = post.readingTime || '3 мин';
+
+      fields.excerpt.value = post.excerpt || '';
+
+      fields.authorName.value = post.authorName || '';
+
+      fields.authorRole.value = post.authorRole || '';
+
+      fields.expertNote.value = post.expertNote || '';
+
+      fields.coverImage.value =
+        post.coverImage || '/site/img/blog/blog-hero.png';
+
+      fields.coverAlt.value = post.coverAlt || '';
+
+      fields.content.value = post.content || '';
+
+      fields.focusKeyword.value = post.focusKeyword || '';
+
+      fields.seoTitle.value = post.seoTitle || '';
+
+      fields.seoDescription.value = post.seoDescription || '';
+
+      savedIsPublished = post.isPublished === true;
+
+      savedSlug = String(post.slug || '');
+
+      fields.isPublished.checked = savedIsPublished;
+
+      if (fields.publishedAt) {
+        fields.publishedAt.value = formatKrasnoyarskDateTimeInput(
+          post.publishedAt,
+        );
+      }
+
+      slugWasEdited = true;
+    }
+
+    function validateBlogCoverFile(file) {
+      const allowedTypes = new Set([
+        'image/jpeg',
+        'image/png',
+        'image/webp',
+        'image/avif',
+        'image/heic',
+        'image/heif',
+      ]);
+
+      if (file.type && !allowedTypes.has(file.type.toLowerCase())) {
+        return 'Поддерживаются JPG, PNG, WebP, AVIF и HEIC.';
+      }
+
+      const maxSize = 12 * 1024 * 1024;
+
+      if (file.size > maxSize) {
+        return 'Обложка должна весить не больше 12 МБ.';
+      }
+
+      return '';
+    }
+
+    async function uploadBlogCover(file) {
+      const previousPath = fields.coverImage?.value.trim() || '';
+
+      isUploadingCover = true;
+
+      setEditorBusy(true);
+
+      setCoverUploadStatus('Обрабатываем обложку…');
+
+      const formData = new FormData();
+
+      formData.append('image', file);
+
+      try {
+        const { response, data } = await requestJson(
+          '/admin/api/uploads/blog-image',
+          {
+            method: 'POST',
+
+            headers: {
+              'X-CSRF-Token': csrfToken,
+            },
+
+            body: formData,
+          },
+        );
+
+        if (response.status === 401) {
+          redirectToLogin();
+
+          return;
+        }
+
+        if (response.status === 403) {
+          throw new Error('Загружать обложки может только OWNER');
+        }
+
+        if (!response.ok) {
+          throw new Error(data?.message || 'Не удалось загрузить обложку');
+        }
+
+        const uploadedPath = String(data?.image?.path || '').trim();
+
+        if (!uploadedPath) {
+          throw new Error('Сервер не вернул путь обложки');
+        }
+
+        fields.coverImage.value = uploadedPath;
+
+        uploadedBlogPathsThisSession.add(uploadedPath);
+
+        updateCoverPreview();
+
+        if (
+          previousPath &&
+          previousPath !== uploadedPath &&
+          uploadedBlogPathsThisSession.has(previousPath)
+        ) {
+          await deleteUnsavedBlogCover(previousPath).catch((error) => {
+            console.error('Не удалось удалить заменённую обложку:', error);
+          });
+        }
+
+        setCoverUploadStatus('Обложка загружена');
+      } catch (error) {
+        console.error('Ошибка загрузки обложки:', error);
+
+        setCoverUploadStatus(
+          error.message || 'Не удалось загрузить обложку',
+          true,
+        );
+      } finally {
+        isUploadingCover = false;
+
+        setEditorBusy(false);
+      }
+    }
+
+    async function deleteUnsavedBlogCover(imagePath) {
+      const { response, data } = await requestJson(
+        '/admin/api/uploads/blog-image',
+        {
+          method: 'DELETE',
+
+          headers: {
+            'Content-Type': 'application/json',
+
+            'X-CSRF-Token': csrfToken,
+          },
+
+          body: JSON.stringify({
+            path: imagePath,
+          }),
+        },
+      );
+
+      if (response.status === 401) {
+        redirectToLogin();
+
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error(data?.message || 'Не удалось удалить обложку');
+      }
+
+      uploadedBlogPathsThisSession.delete(imagePath);
+    }
+
+    function setCoverUploadStatus(text, isError = false) {
+      if (!coverUploadStatus) {
+        return;
+      }
+
+      coverUploadStatus.textContent = text;
+
+      coverUploadStatus.classList.toggle('is-error', isError);
+    }
+
+    async function saveBlogPost() {
+      if (isUploadingCover) {
+        showEditorMessage('Дождитесь окончания загрузки обложки.');
+
+        return;
+      }
+
+      if (isSaving || isDeleting) {
+        return;
+      }
+
+      hideMessage();
+
+      const payload = createBlogPostPayload();
+
+      const validationMessage = validateBlogPostPayload(payload);
+
+      if (validationMessage) {
+        showEditorMessage(validationMessage);
+
+        return;
+      }
+
+      isSaving = true;
+      setEditorBusy(true);
+
+      const isCreating = !postId;
+
+      const url = isCreating
+        ? '/admin/api/blog-posts'
+        : `/admin/api/blog-posts/${postId}`;
+
+      try {
+        const { response, data } = await requestJson(url, {
+          method: isCreating ? 'POST' : 'PATCH',
+
+          headers: {
+            'Content-Type': 'application/json',
+
+            'X-CSRF-Token': csrfToken,
+          },
+
+          body: JSON.stringify(payload),
+        });
+
+        if (response.status === 401) {
+          redirectToLogin();
+          return;
+        }
+
+        if (response.status === 403) {
+          window.location.replace('/admin/requests');
+
+          return;
+        }
+
+        if (!response.ok || !data?.post) {
+          throw new Error(data?.message || 'Не удалось сохранить статью');
+        }
+
+        const savedPost = data.post;
+
+        uploadedBlogPathsThisSession.delete(
+          String(savedPost.coverImage || '').trim(),
+        );
+
+        postId = Number(savedPost.id);
+
+        window.history.replaceState(
+          null,
+          '',
+          `/admin/blog/edit?id=${encodeURIComponent(postId)}`,
+        );
+
+        fillBlogPostForm(savedPost);
+
+        modeText.textContent = 'Редактирование статьи';
+
+        editorTitle.textContent = 'Редактирование экспертного материала';
+
+        metaId.textContent = String(postId);
+
+        deleteButton.hidden = false;
+
+        updatePublicationState();
+        updateCoverPreview();
+        updateSeoPreview();
+        updateAllCounters();
+
+        showEditorMessage(
+          isCreating
+            ? 'Статья создана и сохранена.'
+            : 'Изменения статьи сохранены.',
+          true,
+        );
+      } catch (error) {
+        console.error('Ошибка сохранения статьи:', error);
+
+        showEditorMessage(error.message || 'Не удалось сохранить статью.');
+      } finally {
+        isSaving = false;
+        setEditorBusy(false);
+      }
+    }
+
+    function createBlogPostPayload() {
+      return {
+        title: fields.title.value.trim(),
+
+        slug: normalizeBlogSlug(fields.slug.value),
+
+        categorySlug: fields.categorySlug.value,
+
+        readingTime: fields.readingTime?.value.trim() || '',
+
+        excerpt: fields.excerpt.value.trim(),
+
+        authorName: fields.authorName?.value.trim() || '',
+
+        authorRole: fields.authorRole?.value.trim() || '',
+
+        expertNote: fields.expertNote?.value.trim() || '',
+
+        coverImage: fields.coverImage?.value.trim() || '',
+
+        coverAlt: fields.coverAlt?.value.trim() || '',
+
+        content: fields.content.value.trim(),
+
+        focusKeyword: fields.focusKeyword?.value.trim() || '',
+
+        seoTitle: fields.seoTitle?.value.trim() || '',
+
+        seoDescription: fields.seoDescription?.value.trim() || '',
+
+        isPublished: fields.isPublished.checked,
+
+        publishedAt: fields.publishedAt?.value || '',
+      };
+    }
+
+    function validateBlogPostPayload(payload) {
+      if (payload.title.length < 2) {
+        return 'Введите заголовок статьи.';
+      }
+
+      if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(payload.slug)) {
+        return 'Проверьте адрес статьи: разрешены латинские буквы, цифры и дефисы.';
+      }
+
+      if (!payload.categorySlug) {
+        return 'Выберите категорию статьи.';
+      }
+
+      if (payload.excerpt.length < 20) {
+        return 'Краткое описание должно содержать не менее 20 символов.';
+      }
+
+      if (!payload.isPublished) {
+        return '';
+      }
+
+      const plainContent = createPlainText(payload.content);
+
+      if (plainContent.length < 300) {
+        return 'Для публикации добавьте не менее 300 символов полезного текста.';
+      }
+
+      if (
+        !payload.coverImage ||
+        payload.coverImage === '/site/img/blog/blog-hero.png'
+      ) {
+        return 'Для публикации загрузите уникальную обложку.';
+      }
+
+      if (payload.coverAlt.length < 5) {
+        return 'Добавьте описание обложки.';
+      }
+
+      if (payload.authorName.length < 2) {
+        return 'Укажите автора статьи.';
+      }
+
+      if (payload.authorRole.length < 2) {
+        return 'Укажите специализацию автора.';
+      }
+
+      if (payload.seoTitle.length < 20) {
+        return 'Заполните SEO Title.';
+      }
+
+      if (payload.seoDescription.length < 80) {
+        return 'Meta description должен содержать не менее 80 символов.';
+      }
+
+      return '';
+    }
+
+    async function deleteBlogPost() {
+      if (!postId || isSaving || isDeleting || isUploadingCover) {
+        return;
+      }
+
+      const title = fields.title.value.trim() || `Статья №${postId}`;
+
+      const confirmed = window.confirm(
+        `Удалить статью «${title}»?\n\nЭто действие нельзя отменить.`,
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
+      isDeleting = true;
+      setEditorBusy(true);
+
+      try {
+        const { response, data } = await requestJson(
+          `/admin/api/blog-posts/${postId}`,
+          {
+            method: 'DELETE',
+
+            headers: {
+              'X-CSRF-Token': csrfToken,
+            },
+          },
+        );
+
+        if (response.status === 401) {
+          redirectToLogin();
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error(data?.message || 'Не удалось удалить статью');
+        }
+
+        window.location.replace('/admin/blog');
+      } catch (error) {
+        console.error('Ошибка удаления статьи:', error);
+
+        showEditorMessage(error.message || 'Не удалось удалить статью.');
+
+        isDeleting = false;
+        setEditorBusy(false);
+      }
+    }
+
+    function setEditorBusy(isBusy) {
+      saveButton.disabled = isBusy;
+
+      deleteButton.disabled = isBusy;
+
+      fields.isPublished.disabled = isBusy;
+
+      if (fields.publishedAt) {
+        fields.publishedAt.disabled = isBusy;
+      }
+
+      saveButton.textContent = isSaving ? 'Сохраняем…' : 'Сохранить статью';
+
+      if (isDeleting) {
+        deleteButton.textContent = 'Удаляем…';
+      } else {
+        deleteButton.textContent = 'Удалить статью';
+      }
+    }
+
+    function updatePublicationState() {
+      const selectedIsPublished = fields.isPublished.checked;
+
+      const hasPendingChange = selectedIsPublished !== savedIsPublished;
+
+      let statusText = savedIsPublished ? 'Опубликована' : 'Черновик';
+
+      if (hasPendingChange) {
+        statusText = selectedIsPublished
+          ? 'Будет опубликована после сохранения'
+          : 'Будет снята после сохранения';
+      }
+
+      editorState.textContent = statusText;
+
+      metaStatus.textContent = statusText;
+
+      editorState.classList.toggle(
+        'is-published',
+        savedIsPublished && !hasPendingChange,
+      );
+
+      editorState.classList.toggle('is-pending', hasPendingChange);
+
+      if (publicLink && postId && savedIsPublished && savedSlug) {
+        publicLink.href = `/public/blog/article.html?slug=${encodeURIComponent(
+          savedSlug,
+        )}`;
+
+        publicLink.hidden = false;
+      } else if (publicLink) {
+        publicLink.hidden = true;
+
+        publicLink.removeAttribute('href');
+      }
+    }
+
+    function updateCoverPreview() {
+      if (
+        !coverPreview ||
+        !coverEmpty ||
+        !coverClearButton ||
+        !fields.coverImage
+      ) {
+        return;
+      }
+
+      const imagePath = fields.coverImage.value.trim();
+
+      if (!imagePath) {
+        coverPreview.hidden = true;
+        coverPreview.removeAttribute('src');
+
+        coverEmpty.hidden = false;
+        coverEmpty.textContent = 'Обложка не выбрана';
+
+        coverClearButton.hidden = true;
+
+        return;
+      }
+
+      coverPreview.onload = () => {
+        coverPreview.hidden = false;
+        coverEmpty.hidden = true;
+      };
+
+      coverPreview.onerror = () => {
+        coverPreview.hidden = true;
+
+        coverEmpty.hidden = false;
+        coverEmpty.textContent = 'Изображение не найдено';
+      };
+
+      coverPreview.src = imagePath;
+
+      coverClearButton.hidden = false;
+    }
+
+    function updateSeoPreview() {
+      const title =
+        fields.seoTitle?.value.trim() ||
+        fields.title.value.trim() ||
+        'Заголовок статьи';
+
+      const slug = fields.slug.value.trim();
+
+      const description =
+        fields.seoDescription?.value.trim() ||
+        fields.excerpt.value.trim() ||
+        'Описание страницы появится здесь после заполнения SEO-настроек.';
+
+      if (seoPreviewTitle) {
+        seoPreviewTitle.textContent = title;
+      }
+
+      if (seoPreviewUrl) {
+        seoPreviewUrl.textContent = slug
+          ? `nadia-hair.ru/public/blog/article.html?slug=${slug}`
+          : 'nadia-hair.ru/public/blog/article.html';
+      }
+
+      if (seoPreviewDescription) {
+        seoPreviewDescription.textContent = description;
+      }
+
+      updatePublicationState();
+    }
+
+    function bindCounter(input, selector) {
+      const counter = document.querySelector(selector);
+
+      if (!input || !counter) {
+        return;
+      }
+
+      const update = () => {
+        counter.textContent = String(input.value.length);
+      };
+
+      input.addEventListener('input', update);
+
+      update();
+    }
+
+    function updateAllCounters() {
+      const bindings = [
+        [fields.excerpt, '[data-blog-excerpt-counter]'],
+        [fields.expertNote, '[data-blog-expert-note-counter]'],
+        [fields.content, '[data-blog-content-counter]'],
+        [fields.seoTitle, '[data-blog-seo-title-counter]'],
+        [fields.seoDescription, '[data-blog-seo-description-counter]'],
+      ];
+
+      bindings.forEach(([input, selector]) => {
+        const counter = document.querySelector(selector);
+
+        if (input && counter) {
+          counter.textContent = String(input.value.length);
+        }
+      });
+    }
+
+    function showEditorMessage(text, success = false) {
+      message.textContent = text;
+      message.hidden = false;
+
+      message.classList.toggle('is-success', success);
+
+      message.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }
+
+    function hideMessage() {
+      message.textContent = '';
+      message.hidden = true;
+
+      message.classList.remove('is-success');
+    }
+
+    function createPlainText(value) {
+      const container = document.createElement('div');
+
+      container.innerHTML = String(value || '');
+
+      return String(container.textContent || '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function formatKrasnoyarskDateTimeInput(value) {
+      if (!value) {
+        return '';
+      }
+
+      const date = new Date(value);
+
+      if (Number.isNaN(date.getTime())) {
+        return '';
+      }
+
+      const localDate = new Date(date.getTime() + 7 * 60 * 60 * 1000);
+
+      return localDate.toISOString().slice(0, 16);
+    }
+
+    function getCurrentKrasnoyarskDateTime() {
+      const localDate = new Date(Date.now() + 7 * 60 * 60 * 1000);
+
+      return localDate.toISOString().slice(0, 16);
+    }
+
+    function createBlogSlug(value) {
+      const transliteration = {
+        а: 'a',
+        б: 'b',
+        в: 'v',
+        г: 'g',
+        д: 'd',
+        е: 'e',
+        ё: 'e',
+        ж: 'zh',
+        з: 'z',
+        и: 'i',
+        й: 'y',
+        к: 'k',
+        л: 'l',
+        м: 'm',
+        н: 'n',
+        о: 'o',
+        п: 'p',
+        р: 'r',
+        с: 's',
+        т: 't',
+        у: 'u',
+        ф: 'f',
+        х: 'h',
+        ц: 'c',
+        ч: 'ch',
+        ш: 'sh',
+        щ: 'sch',
+        ъ: '',
+        ы: 'y',
+        ь: '',
+        э: 'e',
+        ю: 'yu',
+        я: 'ya',
+      };
+
+      const result = String(value || '')
+        .trim()
+        .toLowerCase()
+        .split('')
+        .map((character) => transliteration[character] ?? character)
+        .join('');
+
+      return normalizeBlogSlug(result);
+    }
+
+    function normalizeBlogSlug(value) {
+      return String(value || '')
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '');
     }
   }
 

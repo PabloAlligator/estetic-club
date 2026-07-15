@@ -1,0 +1,997 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+
+    <meta
+      name="robots"
+      content="noindex, nofollow, noarchive"
+    />
+
+    <title>Редактор статьи — Клуб Эстетики</title>
+
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="/site/css/admin.min.css"
+    />
+
+    <script
+      src="/site/script/admin/admin.js"
+      defer
+    ></script>
+  </head>
+
+  <body
+    class="admin-body"
+    data-admin-page="blog-edit"
+  >
+    <div class="admin-shell">
+      <aside class="admin-sidebar">
+        <a
+          class="admin-sidebar__logo"
+          href="/admin/dashboard"
+        >
+          Клуб Эстетики
+        </a>
+
+        <span class="admin-sidebar__caption">
+          Управление
+        </span>
+
+        <nav
+          class="admin-sidebar__nav"
+          aria-label="Навигация админ-панели"
+        >
+          <a
+            class="admin-sidebar__link"
+            href="/admin/dashboard"
+          >
+            Обзор
+          </a>
+
+          <a
+            class="admin-sidebar__link"
+            href="/admin/requests"
+          >
+            Заявки
+          </a>
+
+          <a
+            class="admin-sidebar__link"
+            href="/admin/works"
+          >
+            Работы
+          </a>
+
+          <span
+            class="admin-sidebar__link admin-sidebar__link--disabled"
+            aria-disabled="true"
+          >
+            Каталог
+          </span>
+
+          <a
+            class="admin-sidebar__link admin-sidebar__link--active"
+            href="/admin/blog"
+          >
+            Статьи
+          </a>
+
+          <a
+            class="admin-sidebar__link"
+            href="/admin/staff"
+          >
+            Сотрудники
+          </a>
+        </nav>
+
+        <div class="admin-sidebar__bottom">
+          <a
+            class="admin-sidebar__site-link"
+            href="/public/blog/blog.html"
+            target="_blank"
+            rel="noopener"
+          >
+            Открыть блог
+          </a>
+
+          <button
+            class="admin-sidebar__logout"
+            type="button"
+            data-admin-logout
+          >
+            Выйти
+          </button>
+        </div>
+      </aside>
+
+      <main class="admin-main">
+        <header class="admin-header">
+          <div>
+            <span class="admin-header__eyebrow">
+              NADIA Journal
+            </span>
+
+            <h1 class="admin-header__title">
+              Редактор статьи
+            </h1>
+          </div>
+
+          <div class="admin-user">
+            <div class="admin-user__info">
+              <span
+                class="admin-user__role"
+                data-admin-user-role
+              >
+                —
+              </span>
+
+              <span
+                class="admin-user__email"
+                data-admin-user-email
+              >
+                —
+              </span>
+            </div>
+
+            <button
+              class="admin-user__logout-mobile"
+              type="button"
+              data-admin-logout
+            >
+              Выйти
+            </button>
+          </div>
+        </header>
+
+        <section
+          class="admin-work-editor admin-blog-editor"
+          data-blog-editor-page
+        >
+          <div class="admin-work-editor__head">
+            <div class="admin-work-editor__intro">
+              <a
+                class="admin-work-editor__back"
+                href="/admin/blog"
+              >
+                ← Вернуться к статьям
+              </a>
+
+              <span
+                class="admin-work-editor__caption"
+                data-blog-editor-mode
+              >
+                Новая статья
+              </span>
+
+              <h2
+                class="admin-work-editor__title"
+                data-blog-editor-title
+              >
+                Создание экспертного материала
+              </h2>
+
+              <p class="admin-work-editor__description">
+                Подготовьте полезную статью от лица мастера,
+                заполните SEO-настройки, добавьте обложку
+                и проверьте структуру перед публикацией.
+              </p>
+            </div>
+
+            <span
+              class="admin-work-editor__state"
+              data-blog-editor-state
+            >
+              Черновик
+            </span>
+          </div>
+
+          <p
+            class="admin-work-editor__message"
+            role="status"
+            aria-live="polite"
+            data-blog-editor-message
+            hidden
+          ></p>
+
+          <div
+            class="admin-work-editor__loading"
+            data-blog-editor-loading
+          >
+            Загружаем редактор…
+          </div>
+
+          <form
+            class="admin-work-editor__form"
+            data-blog-editor-form
+            hidden
+            novalidate
+          >
+            <div class="admin-work-editor__layout">
+              <div class="admin-work-editor__content">
+                <section class="admin-editor-card">
+                  <div class="admin-editor-card__head">
+                    <div>
+                      <span class="admin-editor-card__caption">
+                        Основные данные
+                      </span>
+
+                      <h3 class="admin-editor-card__title">
+                        Информация о статье
+                      </h3>
+                    </div>
+
+                    <span class="admin-editor-card__number">
+                      01
+                    </span>
+                  </div>
+
+                  <div class="admin-editor-card__body">
+                    <div class="admin-editor-grid">
+                      <label
+                        class="admin-editor-field admin-editor-field--wide"
+                      >
+                        <span class="admin-editor-field__label">
+                          Заголовок статьи
+                        </span>
+
+                        <input
+                          class="admin-editor-field__input"
+                          type="text"
+                          name="title"
+                          maxlength="180"
+                          autocomplete="off"
+                          placeholder="Например: Как сохранить холодный блонд после окрашивания"
+                          required
+                          data-blog-title
+                        />
+
+                        <span class="admin-editor-field__hint">
+                          Используется как основной H1 на странице.
+                        </span>
+                      </label>
+
+                      <label
+                        class="admin-editor-field admin-editor-field--wide"
+                      >
+                        <span class="admin-editor-field__label">
+                          Адрес страницы
+                        </span>
+
+                        <div class="admin-editor-field__slug">
+                          <span>/</span>
+
+                          <input
+                            class="admin-editor-field__input"
+                            type="text"
+                            name="slug"
+                            maxlength="180"
+                            autocomplete="off"
+                            spellcheck="false"
+                            placeholder="kak-sohranit-holodnyi-blond"
+                            required
+                            data-blog-slug
+                          />
+                        </div>
+
+                        <span class="admin-editor-field__hint">
+                          Только латинские буквы, цифры и дефисы.
+                        </span>
+                      </label>
+
+                      <label class="admin-editor-field">
+                        <span class="admin-editor-field__label">
+                          Категория
+                        </span>
+
+                        <select
+                          class="admin-editor-field__select"
+                          name="categorySlug"
+                          required
+                          data-blog-category
+                        >
+                          <option value="">
+                            Выберите категорию
+                          </option>
+
+                          <option value="hair-care">
+                            Уход
+                          </option>
+
+                          <option value="coloring">
+                            Окрашивание
+                          </option>
+
+                          <option value="airtouch">
+                            AirTouch
+                          </option>
+
+                          <option value="home-care">
+                            Домашний уход
+                          </option>
+                        </select>
+                      </label>
+
+                      <label class="admin-editor-field">
+                        <span class="admin-editor-field__label">
+                          Время чтения
+                        </span>
+
+                        <input
+                          class="admin-editor-field__input"
+                          type="text"
+                          name="readingTime"
+                          maxlength="40"
+                          autocomplete="off"
+                          placeholder="Например: 6 мин"
+                          data-blog-reading-time
+                        />
+                      </label>
+
+                      <label
+                        class="admin-editor-field admin-editor-field--wide"
+                      >
+                        <span class="admin-editor-field__label">
+                          Краткое описание
+                        </span>
+
+                        <textarea
+                          class="admin-editor-field__textarea"
+                          name="excerpt"
+                          maxlength="600"
+                          rows="5"
+                          placeholder="Кратко объясните, какую проблему решает статья и что читатель узнает"
+                          required
+                          data-blog-excerpt
+                        ></textarea>
+
+                        <span class="admin-editor-field__counter">
+                          <span data-blog-excerpt-counter>
+                            0
+                          </span>
+
+                          / 600
+                        </span>
+
+                        <span class="admin-editor-field__hint">
+                          Используется в карточке статьи и в hero-блоке.
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="admin-editor-card">
+                  <div class="admin-editor-card__head">
+                    <div>
+                      <span class="admin-editor-card__caption">
+                        Экспертность
+                      </span>
+
+                      <h3 class="admin-editor-card__title">
+                        Автор и профессиональный опыт
+                      </h3>
+                    </div>
+
+                    <span class="admin-editor-card__number">
+                      02
+                    </span>
+                  </div>
+
+                  <div class="admin-editor-card__body">
+                    <div class="admin-editor-grid">
+                      <label class="admin-editor-field">
+                        <span class="admin-editor-field__label">
+                          Автор статьи
+                        </span>
+
+                        <input
+                          class="admin-editor-field__input"
+                          type="text"
+                          name="authorName"
+                          maxlength="120"
+                          autocomplete="off"
+                          placeholder="Например: Надежда"
+                          data-blog-author-name
+                        />
+                      </label>
+
+                      <label class="admin-editor-field">
+                        <span class="admin-editor-field__label">
+                          Специализация автора
+                        </span>
+
+                        <input
+                          class="admin-editor-field__input"
+                          type="text"
+                          name="authorRole"
+                          maxlength="160"
+                          autocomplete="off"
+                          placeholder="Мастер-колорист, эксперт по блонду"
+                          data-blog-author-role
+                        />
+                      </label>
+
+                      <label
+                        class="admin-editor-field admin-editor-field--wide"
+                      >
+                        <span class="admin-editor-field__label">
+                          Экспертный комментарий
+                        </span>
+
+                        <textarea
+                          class="admin-editor-field__textarea"
+                          name="expertNote"
+                          maxlength="1200"
+                          rows="6"
+                          placeholder="Опишите реальный профессиональный опыт, на котором основан материал"
+                          data-blog-expert-note
+                        ></textarea>
+
+                        <span class="admin-editor-field__counter">
+                          <span data-blog-expert-note-counter>
+                            0
+                          </span>
+
+                          / 1200
+                        </span>
+
+                        <span class="admin-editor-field__hint">
+                          Указывайте только реальные факты:
+                          опыт мастера, наблюдения и практику салона.
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="admin-editor-card">
+                  <div class="admin-editor-card__head">
+                    <div>
+                      <span class="admin-editor-card__caption">
+                        Визуал
+                      </span>
+
+                      <h3 class="admin-editor-card__title">
+                        Обложка статьи
+                      </h3>
+                    </div>
+
+                    <span class="admin-editor-card__number">
+                      03
+                    </span>
+                  </div>
+
+                  <div class="admin-editor-card__body">
+                    <div class="admin-editor-images">
+                      <article
+                        class="admin-editor-image admin-blog-editor__cover"
+                        data-blog-cover-card
+                      >
+                        <div class="admin-editor-image__head">
+                          <div>
+                            <span class="admin-editor-image__label">
+                              Главная обложка
+                            </span>
+
+                            <strong class="admin-editor-image__required">
+                              Обязательно
+                            </strong>
+                          </div>
+
+                          <span class="admin-editor-image__mark">
+                            Cover
+                          </span>
+                        </div>
+
+                        <div
+                          class="admin-editor-image__preview"
+                          data-blog-cover-preview
+                        >
+                          <img
+                            alt="Предпросмотр обложки статьи"
+                            data-blog-cover-preview-img
+                            hidden
+                          />
+
+                          <button
+                            class="admin-editor-image__remove"
+                            type="button"
+                            aria-label="Удалить обложку статьи"
+                            title="Удалить обложку"
+                            data-blog-cover-clear
+                            hidden
+                          >
+                            ×
+                          </button>
+
+                          <span
+                            class="admin-editor-image__empty"
+                            data-blog-cover-empty
+                          >
+                            Обложка не выбрана
+                          </span>
+                        </div>
+
+                        <div class="admin-editor-image__upload">
+                          <input
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif"
+                            data-blog-cover-file
+                            hidden
+                          />
+
+                          <button
+                            class="admin-editor-image__select"
+                            type="button"
+                            data-blog-cover-select
+                          >
+                            Выбрать обложку
+                          </button>
+
+                          <span
+                            class="admin-editor-image__upload-status"
+                            role="status"
+                            aria-live="polite"
+                            data-blog-cover-upload-status
+                          ></span>
+                        </div>
+
+                        <label class="admin-editor-image__field">
+                          <span>Путь к изображению</span>
+
+                          <input
+                            type="text"
+                            name="coverImage"
+                            maxlength="500"
+                            readonly
+                            required
+                            placeholder="Обложка ещё не загружена"
+                            data-blog-cover-input
+                          />
+                        </label>
+                      </article>
+                    </div>
+
+                    <div
+                      class="admin-editor-grid"
+                      style="margin-top: 24px"
+                    >
+                      <label
+                        class="admin-editor-field admin-editor-field--wide"
+                      >
+                        <span class="admin-editor-field__label">
+                          Alt-текст изображения
+                        </span>
+
+                        <input
+                          class="admin-editor-field__input"
+                          type="text"
+                          name="coverAlt"
+                          maxlength="240"
+                          autocomplete="off"
+                          placeholder="Опишите, что изображено на фотографии"
+                          data-blog-cover-alt
+                        />
+
+                        <span class="admin-editor-field__hint">
+                          Не перечисляйте ключевые слова. Кратко и честно
+                          опишите содержимое фотографии.
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="admin-editor-card">
+                  <div class="admin-editor-card__head">
+                    <div>
+                      <span class="admin-editor-card__caption">
+                        Материал
+                      </span>
+
+                      <h3 class="admin-editor-card__title">
+                        Основной текст статьи
+                      </h3>
+                    </div>
+
+                    <span class="admin-editor-card__number">
+                      04
+                    </span>
+                  </div>
+
+                  <div class="admin-editor-card__body">
+                    <div class="admin-editor-grid">
+                      <label
+                        class="admin-editor-field admin-editor-field--wide"
+                      >
+                        <span class="admin-editor-field__label">
+                          Содержимое статьи
+                        </span>
+
+                        <textarea
+                          class="admin-editor-field__textarea admin-editor-field__textarea--story"
+                          name="content"
+                          maxlength="50000"
+                          rows="28"
+                          required
+                          spellcheck="true"
+                          placeholder="<p>Вступление...</p>
+
+<h2>Подзаголовок раздела</h2>
+
+<p>Основной экспертный текст...</p>
+
+<ul>
+  <li>Практический совет</li>
+  <li>Важный нюанс</li>
+</ul>"
+                          data-blog-content
+                        ></textarea>
+
+                        <span class="admin-editor-field__counter">
+                          <span data-blog-content-counter>
+                            0
+                          </span>
+
+                          / 50000
+                        </span>
+
+                        <span class="admin-editor-field__hint">
+                          Поддерживаются безопасные HTML-теги:
+                          p, h2, h3, ul, ol, li, strong,
+                          em, blockquote и ссылки.
+                        </span>
+                      </label>
+                    </div>
+
+                    <div class="admin-blog-editor__guide">
+                      <span class="admin-blog-editor__guide-caption">
+                        Рекомендуемая структура
+                      </span>
+
+                      <div class="admin-blog-editor__guide-grid">
+                        <div>
+                          <strong>01</strong>
+                          <span>Проблема клиента</span>
+                        </div>
+
+                        <div>
+                          <strong>02</strong>
+                          <span>Причины и диагностика</span>
+                        </div>
+
+                        <div>
+                          <strong>03</strong>
+                          <span>Совет мастера</span>
+                        </div>
+
+                        <div>
+                          <strong>04</strong>
+                          <span>Ошибки и ограничения</span>
+                        </div>
+
+                        <div>
+                          <strong>05</strong>
+                          <span>Домашний уход</span>
+                        </div>
+
+                        <div>
+                          <strong>06</strong>
+                          <span>Ответы на вопросы</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="admin-editor-card">
+                  <div class="admin-editor-card__head">
+                    <div>
+                      <span class="admin-editor-card__caption">
+                        Поисковая оптимизация
+                      </span>
+
+                      <h3 class="admin-editor-card__title">
+                        SEO-настройки
+                      </h3>
+                    </div>
+
+                    <span class="admin-editor-card__number">
+                      05
+                    </span>
+                  </div>
+
+                  <div class="admin-editor-card__body">
+                    <div class="admin-editor-grid">
+                      <label
+                        class="admin-editor-field admin-editor-field--wide"
+                      >
+                        <span class="admin-editor-field__label">
+                          Основной поисковый запрос
+                        </span>
+
+                        <input
+                          class="admin-editor-field__input"
+                          type="text"
+                          name="focusKeyword"
+                          maxlength="180"
+                          autocomplete="off"
+                          placeholder="Например: уход за холодным блондом"
+                          data-blog-focus-keyword
+                        />
+
+                        <span class="admin-editor-field__hint">
+                          Один основной запрос, который точно соответствует
+                          теме и намерению читателя.
+                        </span>
+                      </label>
+
+                      <label
+                        class="admin-editor-field admin-editor-field--wide"
+                      >
+                        <span class="admin-editor-field__label">
+                          SEO Title
+                        </span>
+
+                        <input
+                          class="admin-editor-field__input"
+                          type="text"
+                          name="seoTitle"
+                          maxlength="180"
+                          autocomplete="off"
+                          placeholder="Как сохранить холодный блонд: советы колориста"
+                          data-blog-seo-title
+                        />
+
+                        <span class="admin-editor-field__counter">
+                          <span data-blog-seo-title-counter>
+                            0
+                          </span>
+
+                          / 180
+                        </span>
+
+                        <span class="admin-editor-field__hint">
+                          Желательно около 50–65 символов.
+                        </span>
+                      </label>
+
+                      <label
+                        class="admin-editor-field admin-editor-field--wide"
+                      >
+                        <span class="admin-editor-field__label">
+                          Meta description
+                        </span>
+
+                        <textarea
+                          class="admin-editor-field__textarea"
+                          name="seoDescription"
+                          maxlength="320"
+                          rows="5"
+                          placeholder="Эксперт салона рассказывает, как сохранить холодный оттенок блонда и избежать желтизны после окрашивания."
+                          data-blog-seo-description
+                        ></textarea>
+
+                        <span class="admin-editor-field__counter">
+                          <span data-blog-seo-description-counter>
+                            0
+                          </span>
+
+                          / 320
+                        </span>
+
+                        <span class="admin-editor-field__hint">
+                          Желательно около 130–170 символов.
+                        </span>
+                      </label>
+                    </div>
+
+                    <div class="admin-blog-editor__seo-preview">
+                      <span class="admin-blog-editor__seo-caption">
+                        Предпросмотр поисковой выдачи
+                      </span>
+
+                      <strong
+                        class="admin-blog-editor__seo-title"
+                        data-blog-seo-preview-title
+                      >
+                        Заголовок статьи
+                      </strong>
+
+                      <span
+                        class="admin-blog-editor__seo-url"
+                        data-blog-seo-preview-url
+                      >
+                        nadia-hair.ru/public/blog/article.html
+                      </span>
+
+                      <p
+                        class="admin-blog-editor__seo-description"
+                        data-blog-seo-preview-description
+                      >
+                        Описание страницы появится здесь после заполнения
+                        SEO-настроек.
+                      </p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+
+              <aside class="admin-work-editor__aside">
+                <div class="admin-editor-status">
+                  <span class="admin-editor-status__caption">
+                    Публикация
+                  </span>
+
+                  <h3 class="admin-editor-status__title">
+                    Состояние статьи
+                  </h3>
+
+                  <label class="admin-editor-switch">
+                    <input
+                      type="checkbox"
+                      name="isPublished"
+                      data-blog-published
+                    />
+
+                    <span class="admin-editor-switch__control"></span>
+
+                    <span class="admin-editor-switch__content">
+                      <strong>
+                        Опубликовать
+                      </strong>
+
+                      <small>
+                        Статья появится в блоге.
+                      </small>
+                    </span>
+                  </label>
+
+                  <label class="admin-editor-field">
+                    <span class="admin-editor-field__label">
+                      Дата публикации
+                    </span>
+
+                    <input
+                      class="admin-editor-field__input"
+                      type="datetime-local"
+                      name="publishedAt"
+                      data-blog-published-at
+                    />
+                  </label>
+
+                  <div class="admin-editor-status__divider"></div>
+
+                  <dl class="admin-editor-status__meta">
+                    <div>
+                      <dt>ID записи</dt>
+
+                      <dd data-blog-meta-id>
+                        Новая
+                      </dd>
+                    </div>
+
+                    <div>
+                      <dt>Текущий статус</dt>
+
+                      <dd data-blog-meta-status>
+                        Черновик
+                      </dd>
+                    </div>
+                  </dl>
+
+                  <div class="admin-blog-editor__checklist">
+                    <span class="admin-blog-editor__checklist-caption">
+                      Перед публикацией
+                    </span>
+
+                    <label>
+                      <input
+                        type="checkbox"
+                        data-blog-checklist="expert"
+                      />
+
+                      <span>
+                        Факты проверены мастером
+                      </span>
+                    </label>
+
+                    <label>
+                      <input
+                        type="checkbox"
+                        data-blog-checklist="structure"
+                      />
+
+                      <span>
+                        Есть заголовки H2 и H3
+                      </span>
+                    </label>
+
+                    <label>
+                      <input
+                        type="checkbox"
+                        data-blog-checklist="value"
+                      />
+
+                      <span>
+                        Есть практическая польза
+                      </span>
+                    </label>
+
+                    <label>
+                      <input
+                        type="checkbox"
+                        data-blog-checklist="seo"
+                      />
+
+                      <span>
+                        Заполнены SEO-поля
+                      </span>
+                    </label>
+                  </div>
+
+                  <button
+                    class="admin-editor-status__save"
+                    type="submit"
+                    data-blog-save
+                  >
+                    Сохранить статью
+                  </button>
+
+                  <a
+                    class="admin-editor-status__cancel"
+                    href="/admin/blog"
+                  >
+                    Отмена
+                  </a>
+
+                  <a
+                    class="admin-editor-status__preview"
+                    href="#"
+                    target="_blank"
+                    rel="noopener"
+                    data-blog-public-link
+                    hidden
+                  >
+                    Открыть на сайте
+                  </a>
+
+                  <button
+                    class="admin-blog-editor__delete"
+                    type="button"
+                    data-blog-delete
+                    hidden
+                  >
+                    Удалить статью
+                  </button>
+                </div>
+              </aside>
+            </div>
+          </form>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

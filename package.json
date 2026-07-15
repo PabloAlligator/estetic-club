@@ -23,7 +23,7 @@
     "helmet": "^8.0.0",
     "multer": "^2.2.0",
     "nodemailer": "^9.0.3",
-    "sanitize-html": "^2.17.5",
+    "sanitize-html": "^2.17.6",
     "sharp": "^0.35.3",
     "zod": "^4.4.3"
   },
