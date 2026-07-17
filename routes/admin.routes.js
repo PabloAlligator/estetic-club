@@ -1715,6 +1715,16 @@ router.post(
 
       const postData = createBlogPostWriteData(parsed.data);
 
+      if (
+        postData.isPublished &&
+        createPlainBlogText(postData.content).length < 300
+      ) {
+        return res.status(400).json({
+          message:
+            'После очистки статья должна содержать не менее 300 символов полезного текста',
+        });
+      }
+
       const metadata = getRequestMetadata(req);
 
       const post = await prisma.$transaction(async (tx) => {
@@ -1817,6 +1827,16 @@ router.patch(
       }
 
       const postData = createBlogPostWriteData(parsedBody.data, currentPost);
+
+      if (
+        postData.isPublished &&
+        createPlainBlogText(postData.content).length < 300
+      ) {
+        return res.status(400).json({
+          message:
+            'После очистки статья должна содержать не менее 300 символов полезного текста',
+        });
+      }
 
       const changedFields = getChangedBlogPostFields(currentPost, postData);
 

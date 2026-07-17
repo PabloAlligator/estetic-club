@@ -8,20 +8,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function initHeaderSafe() {
   const header = document.querySelector('[data-header]');
-  if (!header) return;
+
+  if (!header) {
+    return;
+  }
 
   const burger = header.querySelector('[data-burger]');
+
   const mobileMenu = header.querySelector('[data-mobile-menu]');
 
   let lastScrollY = window.scrollY;
+
   let ticking = false;
 
   const closeMenu = () => {
     header.classList.remove('is-menu-open');
+
     document.body.classList.remove('is-lock');
 
     if (burger) {
       burger.setAttribute('aria-expanded', 'false');
+
+      burger.setAttribute('aria-label', 'Открыть меню');
     }
   };
 
@@ -29,10 +37,16 @@ function initHeaderSafe() {
     const isOpen = header.classList.contains('is-menu-open');
 
     header.classList.toggle('is-menu-open', !isOpen);
+
     document.body.classList.toggle('is-lock', !isOpen);
 
     if (burger) {
       burger.setAttribute('aria-expanded', String(!isOpen));
+
+      burger.setAttribute(
+        'aria-label',
+        isOpen ? 'Открыть меню' : 'Закрыть меню',
+      );
     }
   };
 
@@ -60,29 +74,37 @@ function initHeaderSafe() {
 
   const updateHeader = () => {
     const currentScrollY = window.scrollY;
+
     const isScrollingDown = currentScrollY > lastScrollY;
 
     header.classList.toggle('is-scrolled', currentScrollY > 20);
+
     header.classList.toggle(
       'is-hidden',
       isScrollingDown &&
         currentScrollY > 120 &&
-        !header.classList.contains('is-menu-open')
+        !header.classList.contains('is-menu-open'),
     );
 
     lastScrollY = Math.max(currentScrollY, 0);
+
     ticking = false;
   };
 
   window.addEventListener(
     'scroll',
     () => {
-      if (!ticking) {
-        window.requestAnimationFrame(updateHeader);
-        ticking = true;
+      if (ticking) {
+        return;
       }
+
+      window.requestAnimationFrame(updateHeader);
+
+      ticking = true;
     },
-    { passive: true }
+    {
+      passive: true,
+    },
   );
 
   updateHeader();
@@ -90,105 +112,577 @@ function initHeaderSafe() {
 
 async function initArticlePage() {
   const page = document.querySelector('[data-article-page]');
-  if (!page) return;
+
+  if (!page) {
+    return;
+  }
 
   const params = new URLSearchParams(window.location.search);
-  const slug = params.get('slug');
+
+  const slug = String(params.get('slug') || '')
+    .trim()
+    .toLowerCase();
 
   const loading = document.querySelector('[data-article-loading]');
+
   const error = document.querySelector('[data-article-error]');
+
   const body = document.querySelector('[data-article-body]');
 
-  if (!slug) {
+  if (!isValidArticleSlug(slug)) {
     showArticleError();
+
     return;
   }
 
   try {
-    const response = await fetch(`/api/blog-posts/${encodeURIComponent(slug)}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
+    const response = await fetch(
+      `/api/blog-posts/${encodeURIComponent(slug)}`,
+      {
+        method: 'GET',
+
+        headers: {
+          Accept: 'application/json',
+        },
+
+        cache: 'no-store',
       },
-    });
+    );
 
     const payload = await response.json().catch(() => ({}));
 
     if (!response.ok || !payload.post) {
-      throw new Error(payload.message || 'Статья не найдена');
+      if (response.status === 404) {
+        showArticleError({
+          title: 'Статья снята с публикации',
+          description:
+            'Этот материал больше не доступен. Вернитесь в журнал, чтобы посмотреть другие статьи.',
+        });
+
+        return;
+      }
+
+      throw new Error(payload.message || 'Не удалось загрузить статью');
     }
 
-    renderArticle(payload.post);
-  } catch (err) {
-    console.error(err);
-    showArticleError();
+    renderArticle(payload.post, slug);
+  } catch (requestError) {
+    console.error('Ошибка загрузки статьи:', requestError);
+
+    showArticleError({
+      title: 'Не удалось загрузить статью',
+      description:
+        'Произошла ошибка соединения с сервером. Попробуйте обновить страницу.',
+    });
   } finally {
-    if (loading) loading.hidden = true;
+    if (loading) {
+      loading.hidden = true;
+    }
   }
 
-  function showArticleError() {
-    if (loading) loading.hidden = true;
-    if (error) error.hidden = false;
-    if (body) body.hidden = true;
+  function showArticleError({
+    title = 'Статья временно недоступна',
+    description = 'Не удалось загрузить материал. Попробуйте открыть страницу позже.',
+  } = {}) {
+    const articleTitle = document.querySelector('[data-article-title]');
 
-    document.title = 'Статья не найдена | NADIA HAIR';
+    const articleExcerpt = document.querySelector('[data-article-excerpt]');
+
+    const articleCategory = document.querySelector('[data-article-category]');
+
+    const articleDate = document.querySelector('[data-article-date]');
+
+    const articleReadingTime = document.querySelector(
+      '[data-article-reading-time]',
+    );
+
+    const articleMedia = document.querySelector('.article-hero__media');
+
+    const author = document.querySelector('[data-article-author]');
+
+    const expert = document.querySelector('[data-article-expert]');
+
+    if (loading) {
+      loading.hidden = true;
+    }
+
+    if (body) {
+      body.hidden = true;
+    }
+
+    if (author) {
+      author.hidden = true;
+    }
+
+    if (expert) {
+      expert.hidden = true;
+    }
+
+    if (error) {
+      error.textContent = description;
+      error.hidden = false;
+    }
+
+    if (articleTitle) {
+      articleTitle.textContent = title;
+    }
+
+    if (articleExcerpt) {
+      articleExcerpt.textContent = description;
+    }
+
+    if (articleCategory) {
+      articleCategory.textContent = 'Журнал';
+    }
+
+    if (articleDate) {
+      articleDate.hidden = true;
+      articleDate.removeAttribute('datetime');
+    }
+
+    if (articleReadingTime) {
+      articleReadingTime.hidden = true;
+    }
+
+    if (articleMedia) {
+      articleMedia.hidden = true;
+    }
+
+    page.classList.add('is-unavailable');
+
+    document.title = `${title} | Клуб Эстетики`;
+
+    setMetaContent('[data-article-description]', description);
+
+    setMetaContent('[data-article-og-title]', `${title} | Клуб Эстетики`);
+
+    setMetaContent('[data-article-og-description]', description);
+
+    setMetaContent('[data-article-twitter-title]', `${title} | Клуб Эстетики`);
+
+    setMetaContent('[data-article-twitter-description]', description);
+
+    const robotsMeta = document.querySelector('meta[name="robots"]');
+
+    robotsMeta?.setAttribute('content', 'noindex, nofollow');
   }
 }
 
-function renderArticle(post) {
+function renderArticle(post, slug) {
   const title = document.querySelector('[data-article-title]');
+
   const excerpt = document.querySelector('[data-article-excerpt]');
+
   const category = document.querySelector('[data-article-category]');
+
   const date = document.querySelector('[data-article-date]');
+
   const readingTime = document.querySelector('[data-article-reading-time]');
+
   const cover = document.querySelector('[data-article-cover]');
+
   const body = document.querySelector('[data-article-body]');
 
-  const safeTitle = post.title || 'Статья NADIA HAIR';
-  const safeExcerpt = post.excerpt || 'Материал журнала NADIA HAIR.';
-  const safeCategory = post.category || 'Журнал';
-  const safeReadingTime = post.readingTime || '3 мин';
-  const safeCover = post.coverImage || '/site/img/blog/blog-hero.png';
+  const author = document.querySelector('[data-article-author]');
 
-  document.title = `${safeTitle} | NADIA HAIR`;
+  const authorName = document.querySelector('[data-article-author-name]');
 
-  const descriptionMeta = document.querySelector('meta[name="description"]');
-  if (descriptionMeta) {
-    descriptionMeta.setAttribute('content', safeExcerpt);
+  const authorRole = document.querySelector('[data-article-author-role]');
+
+  const expert = document.querySelector('[data-article-expert]');
+
+  const expertNote = document.querySelector('[data-article-expert-note]');
+
+  const expertAuthor = document.querySelector('[data-article-expert-author]');
+
+  const expertName = document.querySelector('[data-article-expert-name]');
+
+  const expertRole = document.querySelector('[data-article-expert-role]');
+
+  const articleTitle =
+    String(post.title || '').trim() || 'Статья Клуба Эстетики';
+
+  const articleExcerpt =
+    String(post.excerpt || '').trim() || 'Экспертный материал Клуба Эстетики.';
+
+  const articleCategory = String(post.category || '').trim() || 'Журнал';
+
+  const articleReadingTime = String(post.readingTime || '').trim() || '3 мин';
+
+  const articleCover =
+    String(post.coverImage || '').trim() || '/site/img/blog/blog-hero.png';
+
+  const articleCoverAlt = String(post.coverAlt || '').trim() || articleTitle;
+
+  const articleAuthorName = String(post.authorName || '').trim();
+
+  const articleAuthorRole = String(post.authorRole || '').trim();
+
+  const articleExpertNote = String(post.expertNote || '').trim();
+
+  if (title) {
+    title.textContent = articleTitle;
   }
 
-  if (title) title.textContent = safeTitle;
-  if (excerpt) excerpt.textContent = safeExcerpt;
-  if (category) category.textContent = safeCategory;
-  if (readingTime) readingTime.textContent = safeReadingTime;
-
-  if (date) {
-    const formattedDate = formatBlogDate(post.publishedAt || post.createdAt);
-
-    date.textContent = formattedDate;
-
-    if (post.publishedAt || post.createdAt) {
-      date.setAttribute('datetime', post.publishedAt || post.createdAt);
-    }
-
-    if (!formattedDate) {
-      date.hidden = true;
-    }
+  if (excerpt) {
+    excerpt.textContent = articleExcerpt;
   }
+
+  if (category) {
+    category.textContent = articleCategory;
+  }
+
+  if (readingTime) {
+    readingTime.textContent = articleReadingTime;
+  }
+
+  renderArticleDate(date, post.publishedAt || post.createdAt);
 
   if (cover) {
-    cover.src = safeCover;
-    cover.alt = safeTitle;
+    cover.src = articleCover;
+
+    cover.alt = articleCoverAlt;
+
+    cover.addEventListener(
+      'error',
+      () => {
+        cover.src = '/site/img/blog/blog-hero.png';
+
+        cover.alt = articleTitle;
+      },
+      {
+        once: true,
+      },
+    );
   }
 
   if (body) {
-    body.innerHTML = post.content || `<p>${escapeHtml(safeExcerpt)}</p>`;
+    const fallbackContent = `<p>${escapeHtml(articleExcerpt)}</p>`;
+
+    body.innerHTML = sanitizeArticleHtml(post.content || fallbackContent);
+
     body.hidden = false;
+  }
+
+  if (author) {
+    const hasAuthor = Boolean(articleAuthorName) || Boolean(articleAuthorRole);
+
+    author.hidden = !hasAuthor;
+
+    if (authorName) {
+      authorName.textContent = articleAuthorName || 'Команда Клуба Эстетики';
+    }
+
+    if (authorRole) {
+      authorRole.textContent = articleAuthorRole;
+
+      authorRole.hidden = !articleAuthorRole;
+    }
+  }
+
+  if (expert) {
+    expert.hidden = !articleExpertNote;
+
+    if (expertNote) {
+      expertNote.textContent = articleExpertNote;
+    }
+
+    const hasExpertAuthor =
+      Boolean(articleAuthorName) || Boolean(articleAuthorRole);
+
+    if (expertAuthor) {
+      expertAuthor.hidden = !hasExpertAuthor;
+    }
+
+    if (expertName) {
+      expertName.textContent = articleAuthorName;
+    }
+
+    if (expertRole) {
+      expertRole.textContent = articleAuthorRole;
+
+      expertRole.hidden = !articleAuthorRole;
+    }
+  }
+
+  updateArticleSeo({
+    post,
+    slug,
+    articleTitle,
+    articleExcerpt,
+    articleCover,
+    articleCoverAlt,
+    articleAuthorName,
+  });
+}
+
+function updateArticleSeo({
+  post,
+  slug,
+  articleTitle,
+  articleExcerpt,
+  articleCover,
+  articleCoverAlt,
+  articleAuthorName,
+}) {
+  const seoTitle = String(post.seoTitle || '').trim() || articleTitle;
+
+  const seoDescription =
+    String(post.seoDescription || '').trim() || articleExcerpt;
+
+  const documentTitle = /клуб эстетики/i.test(seoTitle)
+    ? seoTitle
+    : `${seoTitle} | Клуб Эстетики`;
+
+  const canonicalUrl = new URL(
+    '/public/blog/article.html',
+    window.location.origin,
+  );
+
+  canonicalUrl.searchParams.set('slug', slug);
+
+  const absoluteCoverUrl = new URL(articleCover, window.location.origin).href;
+
+  document.title = documentTitle;
+
+  setMetaContent('[data-article-description]', seoDescription);
+
+  setLinkHref('[data-article-canonical]', canonicalUrl.href);
+
+  setMetaContent('[data-article-og-title]', documentTitle);
+
+  setMetaContent('[data-article-og-description]', seoDescription);
+
+  setMetaContent('[data-article-og-url]', canonicalUrl.href);
+
+  setMetaContent('[data-article-og-image]', absoluteCoverUrl);
+
+  setMetaContent('[data-article-og-image-alt]', articleCoverAlt);
+
+  setMetaContent('[data-article-twitter-title]', documentTitle);
+
+  setMetaContent('[data-article-twitter-description]', seoDescription);
+
+  setMetaContent('[data-article-twitter-image]', absoluteCoverUrl);
+
+  setOptionalMetaContent('[data-article-published-time]', post.publishedAt);
+
+  setOptionalMetaContent('[data-article-modified-time]', post.updatedAt);
+
+  updateArticleJsonLd({
+    post,
+    articleTitle,
+    seoDescription,
+    absoluteCoverUrl,
+    canonicalUrl: canonicalUrl.href,
+    articleAuthorName,
+  });
+}
+
+function updateArticleJsonLd({
+  post,
+  articleTitle,
+  seoDescription,
+  absoluteCoverUrl,
+  canonicalUrl,
+  articleAuthorName,
+}) {
+  const script = document.querySelector('[data-article-json-ld]');
+
+  if (!script) {
+    return;
+  }
+
+  const schema = {
+    '@context': 'https://schema.org',
+
+    '@type': 'Article',
+
+    headline: articleTitle,
+
+    description: seoDescription,
+
+    image: [absoluteCoverUrl],
+
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+
+      '@id': canonicalUrl,
+    },
+
+    author: articleAuthorName
+      ? {
+          '@type': 'Person',
+
+          name: articleAuthorName,
+        }
+      : {
+          '@type': 'Organization',
+
+          name: 'Клуб Эстетики',
+        },
+
+    publisher: {
+      '@type': 'Organization',
+
+      name: 'Клуб Эстетики',
+
+      logo: {
+        '@type': 'ImageObject',
+
+        url: new URL('/site/img/logo.png', window.location.origin).href,
+      },
+    },
+  };
+
+  if (post.publishedAt) {
+    schema.datePublished = post.publishedAt;
+  }
+
+  if (post.updatedAt) {
+    schema.dateModified = post.updatedAt;
+  }
+
+  script.textContent = JSON.stringify(schema);
+}
+
+function renderArticleDate(element, value) {
+  if (!element) {
+    return;
+  }
+
+  const formattedDate = formatBlogDate(value);
+
+  if (!formattedDate) {
+    element.hidden = true;
+
+    element.removeAttribute('datetime');
+
+    return;
+  }
+
+  element.textContent = formattedDate;
+
+  element.setAttribute('datetime', value);
+
+  element.hidden = false;
+}
+
+function sanitizeArticleHtml(value) {
+  const template = document.createElement('template');
+
+  template.innerHTML = String(value || '');
+
+  const allowedTags = new Set([
+    'p',
+    'h2',
+    'h3',
+    'ul',
+    'ol',
+    'li',
+    'strong',
+    'em',
+    'blockquote',
+    'a',
+    'br',
+  ]);
+
+  const elements = Array.from(template.content.querySelectorAll('*')).reverse();
+
+  elements.forEach((element) => {
+    const tagName = element.tagName.toLowerCase();
+
+    if (!allowedTags.has(tagName)) {
+      const fragment = document.createDocumentFragment();
+
+      while (element.firstChild) {
+        fragment.appendChild(element.firstChild);
+      }
+
+      element.replaceWith(fragment);
+
+      return;
+    }
+
+    const href =
+      tagName === 'a' ? String(element.getAttribute('href') || '').trim() : '';
+
+    Array.from(element.attributes).forEach((attribute) => {
+      element.removeAttribute(attribute.name);
+    });
+
+    if (tagName === 'a' && isSafeArticleHref(href)) {
+      element.setAttribute('href', href);
+
+      element.setAttribute('rel', 'noopener noreferrer');
+    }
+  });
+
+  return template.innerHTML.trim();
+}
+
+function isSafeArticleHref(value) {
+  if (!value) {
+    return false;
+  }
+
+  if (value.startsWith('#')) {
+    return true;
+  }
+
+  try {
+    const url = new URL(value, window.location.origin);
+
+    return ['http:', 'https:', 'mailto:', 'tel:'].includes(url.protocol);
+  } catch {
+    return false;
   }
 }
 
+function setMetaContent(selector, value) {
+  const element = document.querySelector(selector);
+
+  if (!element) {
+    return;
+  }
+
+  element.setAttribute('content', String(value || '').trim());
+}
+
+function setOptionalMetaContent(selector, value) {
+  const element = document.querySelector(selector);
+
+  if (!element) {
+    return;
+  }
+
+  if (!value) {
+    element.removeAttribute('content');
+
+    return;
+  }
+
+  element.setAttribute('content', value);
+}
+
+function setLinkHref(selector, value) {
+  const element = document.querySelector(selector);
+
+  if (!element) {
+    return;
+  }
+
+  element.setAttribute('href', value);
+}
+
+function isValidArticleSlug(value) {
+  return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(String(value || ''));
+}
+
 function formatBlogDate(value) {
-  if (!value) return '';
+  if (!value) {
+    return '';
+  }
 
   const date = new Date(value);
 
@@ -198,22 +692,28 @@ function formatBlogDate(value) {
 
   return new Intl.DateTimeFormat('ru-RU', {
     day: 'numeric',
+
     month: 'long',
+
     year: 'numeric',
   }).format(date);
 }
 
 function escapeHtml(value) {
-  return String(value ?? '').replace(/[&<>"']/g, (char) => {
+  return String(value ?? '').replace(/[&<>"']/g, (character) => {
     const entities = {
       '&': '&amp;',
+
       '<': '&lt;',
+
       '>': '&gt;',
+
       '"': '&quot;',
+
       "'": '&#039;',
     };
 
-    return entities[char];
+    return entities[character];
   });
 }
 
@@ -221,42 +721,52 @@ function escapeHtml(value) {
 
 function initSmoothAnchorScroll() {
   const header = document.querySelector('[data-header]');
+
   const prefersReducedMotion = window.matchMedia(
-    '(prefers-reduced-motion: reduce)'
+    '(prefers-reduced-motion: reduce)',
   ).matches;
 
   const getHeaderOffset = () => {
-    if (!header) return 24;
+    if (!header) {
+      return 24;
+    }
 
-    const headerHeight = header.getBoundingClientRect().height;
-
-    return headerHeight + 28;
+    return header.getBoundingClientRect().height + 28;
   };
 
   const closeMobileMenu = () => {
-    if (!header) return;
+    if (!header) {
+      return;
+    }
 
     const burger = header.querySelector('[data-burger]');
 
     header.classList.remove('is-menu-open');
+
     document.body.classList.remove('is-lock');
 
     if (burger) {
       burger.setAttribute('aria-expanded', 'false');
+
       burger.setAttribute('aria-label', 'Открыть меню');
     }
   };
 
   const scrollToTarget = (target, shouldUpdateHash = true) => {
-    if (!target) return;
+    if (!target) {
+      return;
+    }
 
     const targetTop =
-      target.getBoundingClientRect().top + window.pageYOffset - getHeaderOffset();
+      target.getBoundingClientRect().top +
+      window.pageYOffset -
+      getHeaderOffset();
 
     closeMobileMenu();
 
     window.scrollTo({
       top: Math.max(targetTop, 0),
+
       behavior: prefersReducedMotion ? 'auto' : 'smooth',
     });
 
@@ -268,11 +778,15 @@ function initSmoothAnchorScroll() {
   document.addEventListener('click', (event) => {
     const link = event.target.closest('a[href]');
 
-    if (!link) return;
+    if (!link) {
+      return;
+    }
 
     const href = link.getAttribute('href');
 
-    if (!href || href === '#') return;
+    if (!href || href === '#') {
+      return;
+    }
 
     let url;
 
@@ -282,32 +796,40 @@ function initSmoothAnchorScroll() {
       return;
     }
 
-    if (!url.hash) return;
-
     const isSamePage =
       url.origin === window.location.origin &&
       url.pathname === window.location.pathname;
 
-    if (!isSamePage) return;
+    if (!url.hash || !isSamePage) {
+      return;
+    }
 
     const targetId = decodeURIComponent(url.hash.slice(1));
+
     const target = document.getElementById(targetId);
 
-    if (!target) return;
+    if (!target) {
+      return;
+    }
 
     event.preventDefault();
 
     scrollToTarget(target);
   });
 
-  if (window.location.hash) {
-    const targetId = decodeURIComponent(window.location.hash.slice(1));
-    const target = document.getElementById(targetId);
-
-    if (!target) return;
-
-    window.setTimeout(() => {
-      scrollToTarget(target, false);
-    }, 120);
+  if (!window.location.hash) {
+    return;
   }
+
+  const targetId = decodeURIComponent(window.location.hash.slice(1));
+
+  const target = document.getElementById(targetId);
+
+  if (!target) {
+    return;
+  }
+
+  window.setTimeout(() => {
+    scrollToTarget(target, false);
+  }, 120);
 }

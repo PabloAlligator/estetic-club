@@ -2,45 +2,154 @@
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/site/css/blog.min.css" />
-    <!-- <link rel="stylesheet" href="/site/css/footer.css" /> -->
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+
+    <title>Журнал эстетики — Клуб Эстетики</title>
+
+    <meta
+      name="description"
+      content="Экспертные статьи Клуба Эстетики об уходе за волосами, окрашивании, восстановлении и сохранении салонного результата."
+    />
+
+    <meta
+      name="robots"
+      content="index, follow, max-image-preview:large"
+    />
+
+    <link
+      rel="canonical"
+      href="/public/blog/blog.html"
+    />
+
+    <meta
+      property="og:type"
+      content="website"
+    />
+
+    <meta
+      property="og:site_name"
+      content="Клуб Эстетики"
+    />
+
+    <meta
+      property="og:title"
+      content="Журнал эстетики — Клуб Эстетики"
+    />
+
+    <meta
+      property="og:description"
+      content="Экспертные статьи об уходе за волосами, окрашивании и сохранении салонного результата."
+    />
+
+    <meta
+      property="og:image"
+      content="/site/img/blog/blog-hero.png"
+    />
+
+    <meta
+      property="og:image:alt"
+      content="Журнал Клуба Эстетики"
+    />
+
+    <meta
+      name="twitter:card"
+      content="summary_large_image"
+    />
+
+    <meta
+      name="twitter:title"
+      content="Журнал эстетики — Клуб Эстетики"
+    />
+
+    <meta
+      name="twitter:description"
+      content="Экспертные статьи об уходе за волосами, окрашивании и сохранении салонного результата."
+    />
+
+    <meta
+      name="twitter:image"
+      content="/site/img/blog/blog-hero.png"
+    />
+
+    <link
+      rel="stylesheet"
+      href="/site/css/blog.min.css"
+    />
+
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+
     <link
       href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600&display=swap"
       rel="stylesheet"
     />
+
     <link
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <title>Document</title>
   </head>
+
   <body>
-    <header class="header" data-header>
+    <header
+      class="header"
+      data-header
+    >
       <div class="header__inner glass">
-        <nav class="header__nav header__nav--left" aria-label="Левая навигация">
-          <a href="/public/index.html">Главная</a>
-          <a href="/public/contacts.html">Контакты</a>
+        <nav
+          class="header__nav header__nav--left"
+          aria-label="Левая навигация"
+        >
+          <a href="/public/index.html">
+            Главная
+          </a>
+
+          <a href="/public/contacts.html">
+            Контакты
+          </a>
         </nav>
 
         <a
-          href="/public/index.html"
           class="header__logo"
+          href="/public/index.html"
           aria-label="На главную"
         >
-          <img src="/site/img/logo.png" alt="Nadia Hair Studio" />
+          <img
+            src="/site/img/logo.png"
+            alt="Клуб Эстетики"
+          />
         </a>
 
         <nav
           class="header__nav header__nav--right"
           aria-label="Правая навигация"
         >
-          <a href="/public/index.html#works">Работы</a>
-          <a href="/public/index.html#services">Услуги</a>
-          <a href="/public/blog/blog.html">Блог</a>
+          <a href="/public/index.html#works">
+            Работы
+          </a>
+
+          <a href="/public/index.html#services">
+            Услуги
+          </a>
+
+          <a
+            href="/public/blog/blog.html"
+            aria-current="page"
+          >
+            Блог
+          </a>
         </nav>
 
         <button
@@ -61,29 +170,63 @@
         data-mobile-menu
       >
         <div class="header__mobile-nav">
-          <a href="/public/index.html">Главная</a>
-          <a href="/public/index.html#services">Услуги</a>
-          <a href="/public/index.html#works">Работы</a>
-          <a href="/public/blog/blog.html">Блог</a>
-          <a href="/public/contacts.html">Контакты</a>
+          <a href="/public/index.html">
+            Главная
+          </a>
+
+          <a href="/public/index.html#services">
+            Услуги
+          </a>
+
+          <a href="/public/index.html#works">
+            Работы
+          </a>
+
+          <a
+            href="/public/blog/blog.html"
+            aria-current="page"
+          >
+            Блог
+          </a>
+
+          <a href="/public/contacts.html">
+            Контакты
+          </a>
         </div>
 
         <div class="header__mobile-contact">
-          <span>Записаться в салон</span>
-          <a href="tel:89235853333">8 923 585-33-33</a>
+          <span>
+            Записаться в салон
+          </span>
+
+          <a href="tel:+79233906649">
+            +7 (923) 390-66-49
+          </a>
         </div>
       </nav>
     </header>
 
     <main class="blog-page">
-      <section class="blog-hero js-blog-hero" aria-labelledby="blog-hero-title">
-        <div class="blog-hero__bg" aria-hidden="true">
-          <img src="/site/img/blog/blog-hero.png" alt="" draggable="false" />
+      <section
+        class="blog-hero js-blog-hero"
+        aria-labelledby="blog-hero-title"
+      >
+        <div
+          class="blog-hero__bg"
+          aria-hidden="true"
+        >
+          <img
+            src="/site/img/blog/blog-hero.png"
+            alt=""
+            draggable="false"
+          />
         </div>
 
         <div class="blog-hero__inner">
           <div class="blog-hero__content">
-            <p class="blog-hero__eyebrow js-blog-hero-reveal">NADIA Journal</p>
+            <p class="blog-hero__eyebrow js-blog-hero-reveal">
+              NADIA Journal
+            </p>
 
             <h1
               class="blog-hero__title js-blog-hero-reveal"
@@ -94,23 +237,35 @@
             </h1>
 
             <p class="blog-hero__text js-blog-hero-reveal">
-              Статьи о волосах, уходе, цвете и маленьких деталях, которые
-              помогают сохранить красоту после визита в салон.
+              Статьи о волосах, уходе, цвете и маленьких деталях,
+              которые помогают сохранить красоту после визита в салон.
             </p>
 
             <div class="blog-hero__actions js-blog-hero-reveal">
-              <a class="blog-hero__button" href="#blog-list"> Читать статьи </a>
+              <a
+                class="blog-hero__button"
+                href="#blog-list"
+              >
+                Читать статьи
+              </a>
 
-              <a class="blog-hero__link" href="/contacts.html">
+              <a
+                class="blog-hero__link"
+                href="/public/contacts.html"
+              >
                 Задать вопрос мастеру
               </a>
             </div>
           </div>
 
           <div class="blog-hero__note js-blog-hero-reveal">
-            <span>01</span>
+            <span>
+              01
+            </span>
+
             <p>
-              Уход начинается не с баночки на полке, а с понимания ваших волос.
+              Уход начинается не с баночки на полке,
+              а с понимания ваших волос.
             </p>
           </div>
         </div>
@@ -124,24 +279,33 @@
       >
         <div class="blog-list__inner">
           <div class="blog-list__head">
-            <p class="blog-list__eyebrow">Beauty notes</p>
+            <p class="blog-list__eyebrow">
+              Beauty notes
+            </p>
 
-            <h2 class="blog-list__title" id="blog-list-title">
+            <h2
+              class="blog-list__title"
+              id="blog-list-title"
+            >
               Свежие статьи<br />
               о красоте волос
             </h2>
 
             <p class="blog-list__text">
-              Подборка материалов о домашнем уходе, окрашивании, AirTouch,
-              восстановлении волос и маленьких деталях, которые продлевают
-              ощущение салонного результата.
+              Подборка материалов о домашнем уходе, окрашивании,
+              AirTouch, восстановлении волос и деталях,
+              которые продлевают ощущение салонного результата.
             </p>
           </div>
 
-          <div class="blog-list__toolbar" aria-label="Фильтр статей">
+          <div
+            class="blog-list__toolbar"
+            aria-label="Фильтр статей"
+          >
             <button
               class="blog-list__filter is-active"
               type="button"
+              aria-pressed="true"
               data-blog-filter="all"
             >
               Все статьи
@@ -150,6 +314,7 @@
             <button
               class="blog-list__filter"
               type="button"
+              aria-pressed="false"
               data-blog-filter="hair-care"
             >
               Уход
@@ -158,6 +323,7 @@
             <button
               class="blog-list__filter"
               type="button"
+              aria-pressed="false"
               data-blog-filter="coloring"
             >
               Окрашивание
@@ -166,6 +332,7 @@
             <button
               class="blog-list__filter"
               type="button"
+              aria-pressed="false"
               data-blog-filter="airtouch"
             >
               AirTouch
@@ -174,6 +341,7 @@
             <button
               class="blog-list__filter"
               type="button"
+              aria-pressed="false"
               data-blog-filter="home-care"
             >
               Домашний уход
@@ -182,6 +350,8 @@
 
           <div
             class="blog-list__status blog-list__status--loading"
+            role="status"
+            aria-live="polite"
             data-blog-loading
           >
             Загружаем журнал эстетики...
@@ -189,22 +359,30 @@
 
           <div
             class="blog-list__status blog-list__status--error"
+            role="alert"
             data-blog-error
             hidden
           >
-            Не получилось загрузить статьи. Попробуйте обновить страницу.
+            Не получилось загрузить статьи.
+            Попробуйте обновить страницу.
           </div>
 
           <div
             class="blog-list__status blog-list__status--empty"
+            role="status"
             data-blog-empty
             hidden
           >
-            Пока статей нет, но скоро здесь появятся материалы о волосах, уходе
-            и окрашиваниях.
+            Пока статей нет, но скоро здесь появятся
+            материалы о волосах, уходе и окрашиваниях.
           </div>
 
-          <div class="blog-list__grid" data-blog-grid aria-live="polite"></div>
+          <div
+            class="blog-list__grid"
+            aria-live="polite"
+            aria-busy="true"
+            data-blog-grid
+          ></div>
         </div>
       </section>
     </main>
@@ -213,8 +391,12 @@
       <div class="footer__glass">
         <div class="footer__top">
           <div class="footer__brand">
-            <a class="footer__logo" href="/" aria-label="NADIA HAIR">
-              NADIA HAIR
+            <a
+              class="footer__logo"
+              href="/public/index.html"
+              aria-label="Клуб Эстетики"
+            >
+              Клуб Эстетики
             </a>
 
             <p class="footer__text">
@@ -222,59 +404,127 @@
               Индивидуальный подход к каждой клиентке.
             </p>
 
-            <a class="footer__button" href="tel:+79233906649">
-              <!-- <span class="footer__button-icon">▣</span> -->
+            <a
+              class="footer__button"
+              href="tel:+79233906649"
+            >
               Записаться онлайн
             </a>
           </div>
 
-          <nav class="footer__nav" aria-label="Меню сайта">
-            <span class="footer__title">Меню</span>
+          <nav
+            class="footer__nav"
+            aria-label="Меню сайта"
+          >
+            <span class="footer__title">
+              Меню
+            </span>
 
-            <a href="/public/index.html">Главная</a>
-            <a href="/public/index.html#services">Услуги</a>
-            <a href="/public/index.html#works">Работы</a>
-            <a href="/public/blog/blog.html">Блог</a>
-            <a href="/public/contacts.html">Контакты</a>
+            <a href="/public/index.html">
+              Главная
+            </a>
+
+            <a href="/public/index.html#services">
+              Услуги
+            </a>
+
+            <a href="/public/index.html#works">
+              Работы
+            </a>
+
+            <a href="/public/blog/blog.html">
+              Блог
+            </a>
+
+            <a href="/public/contacts.html">
+              Контакты
+            </a>
           </nav>
 
-          <nav class="footer__nav" aria-label="Услуги салона">
-            <span class="footer__title">Услуги</span>
+          <nav
+            class="footer__nav"
+            aria-label="Услуги салона"
+          >
+            <span class="footer__title">
+              Услуги
+            </span>
 
-            <a href="/public/index.html#services">Окрашивание</a>
-            <a href="/public/index.html#services">AirTouch</a>
-            <a href="/public/index.html#services">Уход за волосами</a>
-            <a href="/public/index.html#services">Стрижки</a>
-            <a href="/public/index.html#services">Укладки</a>
+            <a href="/public/index.html#services">
+              Окрашивание
+            </a>
+
+            <a href="/public/index.html#services">
+              AirTouch
+            </a>
+
+            <a href="/public/index.html#services">
+              Уход за волосами
+            </a>
+
+            <a href="/public/index.html#services">
+              Стрижки
+            </a>
+
+            <a href="/public/index.html#services">
+              Укладки
+            </a>
           </nav>
 
           <div class="footer__contacts">
-            <span class="footer__title">Контакты</span>
+            <span class="footer__title">
+              Контакты
+            </span>
 
-            <a class="footer__contact" href="tel:+79233906649">
-              <!-- <span>☎</span> -->
+            <a
+              class="footer__contact"
+              href="tel:+79233906649"
+            >
               +7 (923) 390-66-49
             </a>
 
             <div class="footer__contact">
-              <!-- <span>⌖</span> -->
               Абакан
             </div>
 
             <div class="footer__socials">
-              <a href="#" aria-label="Instagram">IG</a>
-              <a href="#" aria-label="VK">VK</a>
-              <a href="#" aria-label="Telegram">TG</a>
+              <a
+                href="#"
+                aria-label="Instagram"
+              >
+                IG
+              </a>
+
+              <a
+                href="#"
+                aria-label="VK"
+              >
+                VK
+              </a>
+
+              <a
+                href="#"
+                aria-label="Telegram"
+              >
+                TG
+              </a>
             </div>
           </div>
         </div>
 
         <div class="footer__bottom">
-          <p>© NADIA HAIR, 2026</p>
+          <p>
+            © Клуб Эстетики, 2026
+          </p>
 
-          <a href="/privacy-policy">Политика конфиденциальности</a>
+          <a href="/public/privacy-policy.html">
+            Политика конфиденциальности
+          </a>
 
-          <a href="https://shumdev.ru" target="_blank" rel="noopener">
+          <a
+            href="https://shumdev.ru"
+            target="_blank"
+            rel="noopener"
+          >
             Разработка ShumDev
           </a>
         </div>
@@ -286,6 +536,9 @@
       defer
     ></script>
 
-    <script src="/site/script/blog.js" defer></script>
+    <script
+      src="/site/script/blog.js"
+      defer
+    ></script>
   </body>
 </html>
