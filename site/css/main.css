@@ -1537,6 +1537,9 @@ body.is-lock {
   width: fit-content;
   margin-top: auto;
   padding: 17px 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: #fff7ef;
   color: #796046;
   border-radius: 8px;

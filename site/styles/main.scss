@@ -1772,6 +1772,10 @@ body.is-lock {
     margin-top: auto;
     padding: 17px 26px;
 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     background: $color-text-light;
     color: $color-brown;
 
