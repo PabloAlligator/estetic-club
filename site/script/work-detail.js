@@ -355,7 +355,7 @@ function renderWorkDetailError(message) {
   }
 
   document.title =
-    'Работа не найдена | NADIA HAIR';
+    'Работа не найдена | Культура волос';
 
   page.innerHTML = `
     <section class="work-detail-error">
@@ -470,7 +470,7 @@ function renderWorkDetail(work) {
   const pageDescription = document.querySelector('[data-page-description]');
 
   if (pageTitle) {
-    pageTitle.textContent = `${work.title} | NADIA HAIR`;
+    pageTitle.textContent = `${work.title} | Культура волос`;
   }
 
   if (pageDescription) {
@@ -493,7 +493,7 @@ function renderWorkGallery(images) {
         <figure class="work-detail-gallery__item ${modifier}">
           <img
             src="${escapeHtml(image)}"
-            alt="Фотография преображения NADIA HAIR ${index + 1}"
+            alt="Фотография преображения Культура волос ${index + 1}"
             loading="lazy"
           />
         </figure>
@@ -838,7 +838,7 @@ function setImage(selector, src, alt = '') {
   if (!image || !src) return;
 
   image.src = src;
-  image.alt = alt ? `NADIA HAIR — ${alt}` : 'NADIA HAIR';
+  image.alt = alt ? `Культура волос — ${alt}` : 'Культура волос';
 }
 
 function escapeHtml(value) {

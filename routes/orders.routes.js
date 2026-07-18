@@ -178,7 +178,7 @@ async function sendOrderNotification(order) {
   await transporter.sendMail({
     from: String(process.env.SMTP_FROM || process.env.SMTP_USER || '').trim(),
     to,
-    subject: `Новый заказ ${order.publicNumber} — NADIA HAIR`,
+    subject: `Новый заказ ${order.publicNumber} — Культура волос`,
     text: [
       `Новый заказ ${order.publicNumber}`,
       `Клиент: ${order.customerName}`,

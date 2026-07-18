@@ -202,7 +202,7 @@
       >
         <div class="catalog-search-overlay__head">
           <div>
-            <span>NADIA STORE</span>
+            <span>КУЛЬТУРА ВОЛОС — КАТАЛОГ</span>
             <h2 id="catalog-search-title">Поиск по каталогу</h2>
           </div>
 
@@ -460,7 +460,7 @@
 
         <div class="catalog-product-card__body">
           <span class="catalog-product-card__meta">
-            ${escapeHtml(product.brand?.name || product.category?.name || 'NADIA STORE')}
+            ${escapeHtml(product.brand?.name || product.category?.name || 'КУЛЬТУРА ВОЛОС — КАТАЛОГ')}
           </span>
 
           <h3>
@@ -1189,7 +1189,7 @@
 
         <div class="catalog-preview__body">
           <span class="catalog-preview__brand">
-            ${escapeHtml(product.brand?.name || product.category?.name || 'NADIA STORE')}
+            ${escapeHtml(product.brand?.name || product.category?.name || 'КУЛЬТУРА ВОЛОС — КАТАЛОГ')}
           </span>
 
           <h3>${escapeHtml(product.title)}</h3>
@@ -1397,7 +1397,7 @@
       }
 
       if (productMeta) {
-        productMeta.textContent = product.brand?.name || product.category?.name || 'NADIA STORE';
+        productMeta.textContent = product.brand?.name || product.category?.name || 'КУЛЬТУРА ВОЛОС — КАТАЛОГ';
       }
 
       if (image) {
@@ -1451,7 +1451,7 @@
         imageElement.hidden = true;
       }
 
-      brandElement.textContent = product.brand?.name || product.category?.name || 'NADIA STORE';
+      brandElement.textContent = product.brand?.name || product.category?.name || 'КУЛЬТУРА ВОЛОС — КАТАЛОГ';
       titleElement.textContent = product.title;
       variantElement.textContent = variant.name;
       priceElement.textContent = formatMoney(variant.price);
@@ -1513,7 +1513,7 @@
     }
 
     function renderProduct() {
-      document.title = product.seoTitle || `${product.title} — Клуб Эстетики`;
+      document.title = product.seoTitle || `${product.title} — Культура волос`;
       const descriptionMeta = document.querySelector('meta[name="description"]');
       if (descriptionMeta && product.seoDescription) descriptionMeta.content = product.seoDescription;
 
@@ -1528,7 +1528,7 @@
             <div class="product-detail__thumbs">${images.map((image, index) => `<button type="button" class="${index === 0 ? 'is-active' : ''}" data-product-thumb="${index}"><img src="${escapeHtml(image.imagePath)}" alt="" /></button>`).join('')}</div>
           </section>
           <section class="product-detail__info">
-            <span class="product-detail__brand">${escapeHtml(product.brand?.name || 'NADIA STORE')}</span>
+            <span class="product-detail__brand">${escapeHtml(product.brand?.name || 'КУЛЬТУРА ВОЛОС — КАТАЛОГ')}</span>
             <h1>${escapeHtml(product.title)}</h1>
             <div class="product-detail__price" data-product-price>${renderVariantPrice(selected)}</div>
             <p class="product-detail__lead">${escapeHtml(product.shortDescription || '')}</p>
@@ -1622,7 +1622,7 @@
         list.innerHTML = data.items.map((item) => `
           <article class="cart-product">
             <a class="cart-product__image" href="/catalog/product/${encodeURIComponent(item.product.slug)}">${item.product.image ? `<img src="${escapeHtml(item.product.image.imagePath)}" alt="${escapeHtml(item.product.image.alt || item.product.title)}" />` : ''}</a>
-            <div class="cart-product__info"><span>${escapeHtml(item.product.badge || 'NADIA STORE')}</span><h2><a href="/catalog/product/${encodeURIComponent(item.product.slug)}">${escapeHtml(item.product.title)}</a></h2><p>${escapeHtml(item.variantName)}</p><strong>${formatMoney(item.price)}</strong></div>
+            <div class="cart-product__info"><span>${escapeHtml(item.product.badge || 'КУЛЬТУРА ВОЛОС — КАТАЛОГ')}</span><h2><a href="/catalog/product/${encodeURIComponent(item.product.slug)}">${escapeHtml(item.product.title)}</a></h2><p>${escapeHtml(item.variantName)}</p><strong>${formatMoney(item.price)}</strong></div>
             <div class="cart-product__quantity"><button type="button" data-cart-action="decrease" data-variant-id="${item.variantId}">−</button><span>${item.quantity}</span><button type="button" data-cart-action="increase" data-variant-id="${item.variantId}">+</button></div>
             <strong class="cart-product__total">${formatMoney(item.lineTotal)}</strong>
             <button class="cart-product__remove" type="button" aria-label="Удалить товар" data-cart-action="remove" data-variant-id="${item.variantId}">×</button>

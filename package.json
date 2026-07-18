@@ -1,7 +1,7 @@
 {
   "name": "nadia-hair",
   "version": "1.0.0",
-  "description": "NADIA HAIR website",
+  "description": "Сайт студии «Культура волос»",
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",

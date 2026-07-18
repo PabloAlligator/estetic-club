@@ -1192,7 +1192,7 @@ body.is-lock {
   background: radial-gradient(circle at 50% 32%, rgba(255, 247, 239, 0.78), transparent 34%), linear-gradient(135deg, #e8d7c3, #c7a78b);
 }
 .blog-card__image.is-empty::after {
-  content: "NADIA Journal";
+  content: "КУЛЬТУРА ВОЛОС — ЖУРНАЛ";
   position: absolute;
   inset: 0;
   display: flex;

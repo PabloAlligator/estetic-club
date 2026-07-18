@@ -167,7 +167,7 @@ function buildLeadEmailText(lead) {
     `Источник: ${lead.source}`,
     `Получена: ${formatLeadDate(lead.createdAt)}`,
     '',
-    'Заявка сохранена в административной панели NADIA HAIR.',
+    'Заявка сохранена в административной панели Культура волос.',
   ].join('\n');
 }
 
@@ -189,7 +189,7 @@ function buildLeadEmailHtml(lead) {
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width">
-        <title>Новая заявка NADIA HAIR</title>
+        <title>Новая заявка Культура волос</title>
       </head>
 
       <body
@@ -269,7 +269,7 @@ function buildLeadEmailHtml(lead) {
                         letter-spacing: -0.035em;
                       "
                     >
-                      NADIA HAIR
+                      Культура волос
                     </div>
 
                     <div
@@ -571,7 +571,7 @@ function buildLeadEmailHtml(lead) {
                       line-height: 1.6;
                     "
                   >
-                    Заявка сохранена в административной панели NADIA HAIR.
+                    Заявка сохранена в административной панели Культура волос.
                   </td>
                 </tr>
               </table>
@@ -596,7 +596,7 @@ async function sendLeadEmail(lead) {
   const safeSubjectService = cleanMailHeader(lead.service);
 
   return smtpTransporter.sendMail({
-    from: `"NADIA HAIR" <${smtpUser}>`,
+    from: `"Культура волос" <${smtpUser}>`,
     to: toEmail,
 
     subject:

@@ -544,7 +544,7 @@ function normalizeWorks(payload) {
   return rawWorks
     .map((work) => {
       const slug = work.slug || work.id || '';
-      const title = work.title || work.name || 'Работа NADIA HAIR';
+      const title = work.title || work.name || 'Работа Культура волос';
 
       return {
         id: work.id || slug,

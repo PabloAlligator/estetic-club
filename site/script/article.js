@@ -250,15 +250,15 @@ async function initArticlePage() {
 
     page.classList.add('is-unavailable');
 
-    document.title = `${title} | Клуб Эстетики`;
+    document.title = `${title} | Культура волос`;
 
     setMetaContent('[data-article-description]', description);
 
-    setMetaContent('[data-article-og-title]', `${title} | Клуб Эстетики`);
+    setMetaContent('[data-article-og-title]', `${title} | Культура волос`);
 
     setMetaContent('[data-article-og-description]', description);
 
-    setMetaContent('[data-article-twitter-title]', `${title} | Клуб Эстетики`);
+    setMetaContent('[data-article-twitter-title]', `${title} | Культура волос`);
 
     setMetaContent('[data-article-twitter-description]', description);
 
@@ -300,10 +300,10 @@ function renderArticle(post, slug) {
   const expertRole = document.querySelector('[data-article-expert-role]');
 
   const articleTitle =
-    String(post.title || '').trim() || 'Статья Клуба Эстетики';
+    String(post.title || '').trim() || 'Статья студии «Культура волос»';
 
   const articleExcerpt =
-    String(post.excerpt || '').trim() || 'Экспертный материал Клуба Эстетики.';
+    String(post.excerpt || '').trim() || 'Экспертный материал студии «Культура волос».';
 
   const articleCategory = String(post.category || '').trim() || 'Журнал';
 
@@ -370,7 +370,7 @@ function renderArticle(post, slug) {
     author.hidden = !hasAuthor;
 
     if (authorName) {
-      authorName.textContent = articleAuthorName || 'Команда Клуба Эстетики';
+      authorName.textContent = articleAuthorName || 'Команда студии «Культура волос»';
     }
 
     if (authorRole) {
@@ -432,7 +432,7 @@ function updateArticleSeo({
 
   const documentTitle = /клуб эстетики/i.test(seoTitle)
     ? seoTitle
-    : `${seoTitle} | Клуб Эстетики`;
+    : `${seoTitle} | Культура волос`;
 
   const canonicalUrl = new URL(
     '/public/blog/article.html',
@@ -519,13 +519,13 @@ function updateArticleJsonLd({
       : {
           '@type': 'Organization',
 
-          name: 'Клуб Эстетики',
+          name: 'Культура волос',
         },
 
     publisher: {
       '@type': 'Organization',
 
-      name: 'Клуб Эстетики',
+      name: 'Культура волос',
 
       logo: {
         '@type': 'ImageObject',
