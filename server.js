@@ -13,6 +13,7 @@ const { z } = require('zod');
 const sanitizeHtml = require('sanitize-html');
 
 const prisma = require('./lib/prisma');
+const { getServiceBySlug } = require('./config/services');
 
 const authRoutes = require('./routes/auth.routes');
 const adminRoutes = require('./routes/admin.routes');
@@ -132,9 +133,7 @@ function createSeoDescription(...values) {
 function createSeoTitle(value, fallback) {
   const title = stripHtml(value) || fallback;
 
-  return /культура волос/i.test(title)
-    ? title
-    : `${title} | Культура волос`;
+  return /культура волос/i.test(title) ? title : `${title} | Культура волос`;
 }
 
 function createAbsoluteUrl(siteOrigin, value, fallbackPath = '/') {
@@ -165,10 +164,7 @@ function replaceTemplateTokens(template, replacements) {
 }
 
 function setDynamicPageCache(res) {
-  res.set(
-    'Cache-Control',
-    'public, max-age=60, stale-while-revalidate=300',
-  );
+  res.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
 }
 
 function sendPublicNotFound(res) {
@@ -209,8 +205,7 @@ function createWorkPageData(work) {
     technique: work.technique || work.category,
     duration: work.duration,
     heroImage: work.heroImage || work.afterImage,
-    experienceImage:
-      work.experienceImage || work.heroImage || work.afterImage,
+    experienceImage: work.experienceImage || work.heroImage || work.afterImage,
     heroQuote: work.heroQuote,
     story: work.story,
     gallery: relationGallery.length ? relationGallery : legacyGallery,
@@ -413,10 +408,9 @@ async function createProductPageHtml(req, product) {
   const imageUrls = data.images.map((image) =>
     createAbsoluteUrl(siteOrigin, image.imagePath),
   );
-  const mainImageUrl = imageUrls[0] || createAbsoluteUrl(
-    siteOrigin,
-    '/site/img/main-hero-bg.webp',
-  );
+  const mainImageUrl =
+    imageUrls[0] ||
+    createAbsoluteUrl(siteOrigin, '/site/img/main-hero-bg.webp');
   const offers = data.variants.map((variant) => ({
     '@type': 'Offer',
     url: canonicalUrl,
@@ -445,9 +439,7 @@ async function createProductPageHtml(req, product) {
     ...(data.category?.name ? { category: data.category.name } : {}),
     offers: offers.length === 1 ? offers[0] : offers,
   };
-  const template = await getHtmlTemplate(
-    path.join('catalog', 'product.html'),
-  );
+  const template = await getHtmlTemplate(path.join('catalog', 'product.html'));
 
   return replaceTemplateTokens(template, {
     SEO_TITLE: escapeHtml(seoTitle),
@@ -457,6 +449,260 @@ async function createProductPageHtml(req, product) {
     OG_IMAGE_ALT: escapeHtml(data.title),
     JSON_LD: escapeJsonForHtml(schema),
     INITIAL_PRODUCT_JSON: escapeJsonForHtml({ product: data }),
+  });
+}
+function createServiceParagraphsHtml(items) {
+  return (Array.isArray(items) ? items : [])
+    .map((item) => `<p>${escapeHtml(item)}</p>`)
+    .join('\n');
+}
+
+function createServiceListItemsHtml(items) {
+  return (Array.isArray(items) ? items : [])
+    .map((item) => `<li>${escapeHtml(item)}</li>`)
+    .join('\n');
+}
+
+function createServiceBenefitsHtml(items) {
+  return (Array.isArray(items) ? items : [])
+    .map(
+      (item, index) => `
+        <li data-services-reveal>
+          <span>${String(index + 1).padStart(2, '0')}</span>
+          <p>${escapeHtml(item)}</p>
+        </li>
+      `,
+    )
+    .join('\n');
+}
+
+function createServiceStepsHtml(items) {
+  return (Array.isArray(items) ? items : [])
+    .map(
+      (step, index) => `
+        <li
+          class="service-detail-step"
+          data-services-reveal
+        >
+          <span class="service-detail-step__number">
+            ${String(index + 1).padStart(2, '0')}
+          </span>
+
+          <div>
+            <h3>${escapeHtml(step.title)}</h3>
+            <p>${escapeHtml(step.text)}</p>
+          </div>
+        </li>
+      `,
+    )
+    .join('\n');
+}
+
+function createServiceFaqHtml(items) {
+  return (Array.isArray(items) ? items : [])
+    .map(
+      (item) => `
+        <details
+          class="service-detail-faq__item"
+          data-services-reveal
+        >
+          <summary>
+            <span>${escapeHtml(item.question)}</span>
+            <i aria-hidden="true"></i>
+          </summary>
+
+          <div class="service-detail-faq__answer">
+            <p>${escapeHtml(item.answer)}</p>
+          </div>
+        </details>
+      `,
+    )
+    .join('\n');
+}
+
+function createRelatedServicesHtml(slugs) {
+  return (Array.isArray(slugs) ? slugs : [])
+    .map((slug) => getServiceBySlug(slug))
+    .filter(Boolean)
+    .map(
+      (service) => `
+        <a
+          class="service-detail-related-card"
+          href="/services"
+        >
+          <span>${escapeHtml(service.number)}</span>
+          <h3>${escapeHtml(service.name)}</h3>
+          <p>${escapeHtml(service.shortDescription)}</p>
+
+          <strong>
+            Смотреть услуги
+            <span aria-hidden="true">→</span>
+          </strong>
+        </a>
+      `,
+    )
+    .join('\n');
+}
+
+function createServiceSchema(req, service, canonicalUrl, imageUrl) {
+  const siteOrigin = getSiteOrigin(req);
+  const serviceId = `${canonicalUrl}#service`;
+  const webpageId = `${canonicalUrl}#webpage`;
+  const breadcrumbId = `${canonicalUrl}#breadcrumb`;
+  const faqId = `${canonicalUrl}#faq`;
+
+  const graph = [
+    {
+      '@type': 'WebPage',
+      '@id': webpageId,
+      url: canonicalUrl,
+      name: service.seoTitle,
+      description: service.seoDescription,
+      primaryImageOfPage: {
+        '@type': 'ImageObject',
+        url: imageUrl,
+        contentUrl: imageUrl,
+        caption: service.imageAlt,
+      },
+      breadcrumb: {
+        '@id': breadcrumbId,
+      },
+      mainEntity: {
+        '@id': serviceId,
+      },
+      inLanguage: 'ru-RU',
+    },
+    {
+      '@type': 'BreadcrumbList',
+      '@id': breadcrumbId,
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Главная',
+          item: createAbsoluteUrl(siteOrigin, '/'),
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Услуги',
+          item: createAbsoluteUrl(siteOrigin, '/services'),
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: service.name,
+          item: canonicalUrl,
+        },
+      ],
+    },
+    {
+      '@type': 'Service',
+      '@id': serviceId,
+      name: service.name,
+      serviceType: service.serviceType,
+      description: service.seoDescription,
+      url: canonicalUrl,
+      image: imageUrl,
+      provider: {
+        '@type': 'HairSalon',
+        '@id': `${siteOrigin}/#organization`,
+        name: 'Культура волос',
+        url: siteOrigin,
+      },
+      areaServed: {
+        '@type': 'City',
+        name: 'Абакан',
+      },
+      mainEntityOfPage: {
+        '@id': webpageId,
+      },
+    },
+  ];
+
+  if (Array.isArray(service.faq) && service.faq.length) {
+    graph.push({
+      '@type': 'FAQPage',
+      '@id': faqId,
+      url: `${canonicalUrl}#service-faq-title`,
+      mainEntity: service.faq.map((item) => ({
+        '@type': 'Question',
+        name: item.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: item.answer,
+        },
+      })),
+    });
+  }
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': graph,
+  };
+}
+
+async function createServicePageHtml(req, service) {
+  const siteOrigin = getSiteOrigin(req);
+  const canonicalUrl = createAbsoluteUrl(
+    siteOrigin,
+    `/services/${encodeURIComponent(service.slug)}`,
+  );
+
+  const seoTitle = createSeoTitle(service.seoTitle, service.h1);
+
+  const seoDescription = createSeoDescription(
+    service.seoDescription,
+    service.shortDescription,
+  );
+
+  const imageUrl = createAbsoluteUrl(
+    siteOrigin,
+    service.image,
+    '/site/img/main-hero-bg.webp',
+  );
+
+  const schema = createServiceSchema(req, service, canonicalUrl, imageUrl);
+
+  const template = await getHtmlTemplate(
+    path.join('services', 'service-detail.html'),
+  );
+
+  return replaceTemplateTokens(template, {
+    SEO_TITLE: escapeHtml(seoTitle),
+    SEO_DESCRIPTION: escapeHtml(seoDescription),
+    CANONICAL_URL: escapeHtml(canonicalUrl),
+    OG_IMAGE_URL: escapeHtml(imageUrl),
+    OG_IMAGE_ALT: escapeHtml(service.imageAlt),
+
+    SERVICE_NAME: escapeHtml(service.name),
+    SERVICE_NAME_PREPOSITIONAL: escapeHtml(
+      service.namePrepositional || service.name,
+    ),
+    SERVICE_NUMBER: escapeHtml(service.number),
+    SERVICE_EYEBROW: escapeHtml(service.eyebrow),
+    SERVICE_H1: escapeHtml(service.h1),
+    SERVICE_LEAD: escapeHtml(service.lead),
+    SERVICE_PRICE: escapeHtml(service.priceLabel),
+    SERVICE_PRICE_NOTE: escapeHtml(service.priceNote),
+    SERVICE_DURATION: escapeHtml(service.duration),
+
+    SERVICE_IMAGE: escapeHtml(service.image),
+    SERVICE_IMAGE_ALT: escapeHtml(service.imageAlt),
+    SERVICE_IMAGE_WIDTH: escapeHtml(service.imageWidth),
+    SERVICE_IMAGE_HEIGHT: escapeHtml(service.imageHeight),
+    SERVICE_IMAGE_SRCSET: escapeHtml(service.imageSrcset),
+
+    SERVICE_INTRO_HTML: createServiceParagraphsHtml(service.intro),
+    SERVICE_BENEFITS_HTML: createServiceBenefitsHtml(service.benefits),
+    SERVICE_INDICATIONS_HTML: createServiceListItemsHtml(service.indications),
+    SERVICE_LIMITATIONS_HTML: createServiceListItemsHtml(service.limitations),
+    SERVICE_STEPS_HTML: createServiceStepsHtml(service.steps),
+    SERVICE_AFTERCARE_HTML: createServiceListItemsHtml(service.aftercare),
+    SERVICE_FAQ_HTML: createServiceFaqHtml(service.faq),
+    RELATED_SERVICES_HTML: createRelatedServicesHtml(service.relatedSlugs),
+
+    JSON_LD: escapeJsonForHtml(schema),
   });
 }
 
@@ -469,18 +715,12 @@ function escapeXml(value) {
     "'": '&apos;',
   };
 
-  return String(value ?? '').replace(
-    /[&<>"']/g,
-    (symbol) => symbols[symbol],
-  );
+  return String(value ?? '').replace(/[&<>"']/g, (symbol) => symbols[symbol]);
 }
 
 function createSitemapUrl(siteOrigin, pathname, lastModified) {
   const location = new URL(pathname, `${siteOrigin}/`).href;
-  const lines = [
-    '  <url>',
-    `    <loc>${escapeXml(location)}</loc>`,
-  ];
+  const lines = ['  <url>', `    <loc>${escapeXml(location)}</loc>`];
 
   if (lastModified) {
     lines.push(
@@ -568,9 +808,7 @@ async function getSitemapEntries(siteOrigin) {
   ];
 
   return [
-    ...staticPaths.map((pathname) =>
-      createSitemapUrl(siteOrigin, pathname),
-    ),
+    ...staticPaths.map((pathname) => createSitemapUrl(siteOrigin, pathname)),
     ...posts.map((post) =>
       createSitemapUrl(
         siteOrigin,
@@ -1232,6 +1470,10 @@ const LEGACY_PRODUCT_PATHS = new Set([
   '/catalog/product.html',
   '/public/catalog/product.html',
 ]);
+const SERVICE_TEMPLATE_PATHS = new Set([
+  '/services/service-detail.html',
+  '/public/services/service-detail.html',
+]);
 
 function buildRedirectUrl(req, pathname, excludedParams = []) {
   const excluded = new Set(excludedParams);
@@ -1274,7 +1516,7 @@ function shouldRemoveTrailingSlash(pathname) {
 
   return (
     staticPages.has(pathname) ||
-    /^\/(?:blog|works)\/[^/]+\/$/.test(pathname) ||
+    /^\/(?:blog|works|services)\/[^/]+\/$/.test(pathname) ||
     /^\/catalog\/product\/[^/]+\/$/.test(pathname)
   );
 }
@@ -1288,6 +1530,9 @@ app.use((req, res, next) => {
 
   if (pathname === '/404.html' || pathname === '/public/404.html') {
     return res.status(404).sendFile(path.join(PUBLIC_DIR, '404.html'));
+  }
+  if (SERVICE_TEMPLATE_PATHS.has(pathname)) {
+    return sendPublicNotFound(res);
   }
 
   if (LEGACY_ARTICLE_PATHS.has(pathname)) {
@@ -1414,6 +1659,41 @@ app.get('/services', (req, res, next) => {
   );
 });
 
+app.get('/services/:slug', async (req, res, next) => {
+  try {
+    const rawSlug = String(req.params.slug || '').trim();
+    const slug = normalizeDynamicSlug(rawSlug);
+
+    if (!slug) {
+      return sendPublicNotFound(res);
+    }
+
+    if (rawSlug !== slug) {
+      return res.redirect(
+        301,
+        buildRedirectUrl(
+          req,
+          `/services/${encodeURIComponent(slug)}`,
+        ),
+      );
+    }
+
+    const service = getServiceBySlug(slug);
+
+    if (!service || !service.isReady) {
+      return sendPublicNotFound(res);
+    }
+
+    const html = await createServicePageHtml(req, service);
+
+    setDynamicPageCache(res);
+
+    return res.type('html').send(html);
+  } catch (error) {
+    return next(error);
+  }
+});
+
 app.get('/works', (req, res, next) => {
   return sendSeoPage(
     req,
@@ -1499,13 +1779,7 @@ app.get('/works/:slug', async (req, res, next) => {
 });
 
 app.get('/blog', (req, res, next) => {
-  return sendSeoPage(
-    req,
-    res,
-    next,
-    path.join('blog', 'blog.html'),
-    '/blog',
-  );
+  return sendSeoPage(req, res, next, path.join('blog', 'blog.html'), '/blog');
 });
 
 app.get('/blog/:slug', async (req, res, next) => {
@@ -1602,10 +1876,7 @@ app.get('/catalog/product/:slug', async (req, res, next) => {
     if (rawSlug !== slug) {
       return res.redirect(
         301,
-        buildRedirectUrl(
-          req,
-          `/catalog/product/${encodeURIComponent(slug)}`,
-        ),
+        buildRedirectUrl(req, `/catalog/product/${encodeURIComponent(slug)}`),
       );
     }
 

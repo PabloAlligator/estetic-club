@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initHeader();
   initSmoothAnchorScroll();
   initServicesBackground();
-  initServiceModal();
   initServicesReveal();
 });
 
@@ -121,7 +120,7 @@ function initHeader() {
     },
     {
       passive: true,
-    }
+    },
   );
 
   document.addEventListener(
@@ -139,7 +138,7 @@ function initHeader() {
     },
     {
       passive: true,
-    }
+    },
   );
 
   updateHeader();
@@ -150,7 +149,7 @@ function initHeader() {
 function initSmoothAnchorScroll() {
   const header = document.querySelector('[data-header]');
   const prefersReducedMotion = window.matchMedia(
-    '(prefers-reduced-motion: reduce)'
+    '(prefers-reduced-motion: reduce)',
   ).matches;
 
   const getHeaderOffset = () => {
@@ -242,136 +241,15 @@ function initSmoothAnchorScroll() {
   }
 }
 
-// услуги
-
-const servicesData = {
-  airtouch: {
-    number: '01',
-    eyebrow: 'Сложное окрашивание',
-    title: 'AirTouch',
-    description:
-      'Воздушная техника осветления с мягкой растяжкой цвета. Позволяет получить объёмный оттенок без резкой границы у корней.',
-    duration: '5–8 часов',
-    price: 'от 15 000 ₽',
-    image: '/site/img/img1aft.webp',
-    benefits: [
-      'мягкий и естественный блонд',
-      'плавное и аккуратное отрастание',
-      'визуальный объём и игру оттенков',
-      'длительный результат без частой коррекции',
-    ],
-  },
-
-  shatush: {
-    number: '02',
-    eyebrow: 'Сложное окрашивание',
-    title: 'Шатуш',
-    description:
-      'Свободная техника окрашивания с эффектом естественно выгоревших прядей. Создаёт мягкие блики и сохраняет глубину натурального цвета.',
-    duration: '4–6 часов',
-    price: 'от 12 000 ₽',
-    image: '/site/img/img2aft.webp',
-    benefits: [
-      'добавить волосам солнечные блики',
-      'освежить образ без резкой смены цвета',
-      'сохранить натуральный оттенок у корней',
-      'получить мягкий рельеф и глубину',
-    ],
-  },
-
-  highlights: {
-    number: '03',
-    eyebrow: 'Осветление прядей',
-    title: 'Мелирование волос',
-    description:
-      'Деликатное осветление отдельных прядей для создания рельефа, движения и визуального объёма. Рисунок подбирается индивидуально.',
-    duration: '4–6 часов',
-    price: 'от 10 000 ₽',
-    image: '/site/img/img1bef.webp',
-    benefits: [
-      'сделать цвет более рельефным',
-      'мягко перейти к более светлому образу',
-      'добавить объём тонким волосам',
-      'освежить оттенок без полного окрашивания',
-    ],
-  },
-
-  'total-blonde': {
-    number: '04',
-    eyebrow: 'Полное осветление',
-    title: 'Тотал блонд',
-    description:
-      'Полное осветление и создание чистого светлого оттенка. Формула и домашний уход подбираются с учётом состояния волос.',
-    duration: '5–8 часов',
-    price: 'от 14 000 ₽',
-    image: '/site/img/img2bef.webp',
-    benefits: [
-      'получить выразительный светлый образ',
-      'скорректировать нежелательный оттенок',
-      'добиться чистого и равномерного цвета',
-      'сохранить максимально возможное качество волос',
-    ],
-  },
-
-  toning: {
-    number: '05',
-    eyebrow: 'Коррекция оттенка',
-    title: 'Тонирование волос',
-    description:
-      'Мягкая коррекция оттенка, которая возвращает цвету глубину, блеск и ухоженный вид без радикального изменения образа.',
-    duration: '2–3 часа',
-    price: 'от 7 000 ₽',
-    image: '/site/img/img_4750.webp',
-    benefits: [
-      'обновить потускневший цвет',
-      'нейтрализовать нежелательный оттенок',
-      'добавить волосам блеск и плотность',
-      'поддержать результат сложного окрашивания',
-    ],
-  },
-
-  reconstruction: {
-    number: '06',
-    eyebrow: 'Выпрямление',
-    title: 'Реконструкция волос',
-    description:
-      'Процедура для гладкости, плотности и дисциплины волос. Состав подбирается после диагностики с учётом структуры и желаемого результата.',
-    duration: '3–5 часов',
-    price: 'от 8 000 ₽',
-    image: '/site/img/img_4749.webp',
-    benefits: [
-      'уменьшить пушистость и пористость',
-      'облегчить ежедневную укладку',
-      'получить гладкость и зеркальный блеск',
-      'сделать полотно волос более дисциплинированным',
-    ],
-  },
-
-  care: {
-    number: '07',
-    eyebrow: 'Восстановление',
-    title: 'Индивидуальный уход для волос',
-    description:
-      'Персональная программа восстановления, составленная после диагностики. Помогает вернуть волосам мягкость, эластичность и ухоженный вид.',
-    duration: '1,5–3 часа',
-    price: 'от 5 000 ₽',
-    image: '/site/img/img_4750.webp',
-    benefits: [
-      'восстановить волосы после окрашивания',
-      'уменьшить сухость и ломкость',
-      'вернуть мягкость и эластичность',
-      'подобрать профессиональный домашний уход',
-    ],
-  },
-};
-
 // переход фона
 
 function initServicesBackground() {
   const flow = document.querySelector('[data-services-flow]');
-  const catalog = document.querySelector('.services-catalog');
+  const transitionTarget = document.querySelector(
+    '.services-catalog, .service-detail-intro',
+  );
 
-  if (!flow || !catalog) return;
+  if (!flow || !transitionTarget) return;
 
   const darkColor = [47, 35, 26];
   const lightColor = [251, 247, 240];
@@ -379,42 +257,39 @@ function initServicesBackground() {
   let isTicking = false;
 
   function update() {
-    const rect = catalog.getBoundingClientRect();
+    const rect = transitionTarget.getBoundingClientRect();
     const start = window.innerHeight * 0.92;
     const end = window.innerHeight * 0.3;
     const progress = clamp((start - rect.top) / (start - end), 0, 1);
 
-    const [red, green, blue] = mixColor(
-      darkColor,
-      lightColor,
-      progress
-    );
+    const [red, green, blue] = mixColor(darkColor, lightColor, progress);
 
     const [textRed, textGreen, textBlue] = mixColor(
       [255, 247, 239],
       [47, 35, 26],
-      progress
+      progress,
     );
 
     const [mutedRed, mutedGreen, mutedBlue] = mixColor(
       [232, 215, 195],
       [91, 69, 52],
-      progress
+      progress,
     );
 
-    flow.style.setProperty(
-      '--services-bg',
-      `rgb(${red}, ${green}, ${blue})`
-    );
+    flow.style.setProperty('--services-bg', `rgb(${red}, ${green}, ${blue})`);
 
     flow.style.setProperty(
       '--services-copy',
-      `rgb(${textRed}, ${textGreen}, ${textBlue})`
+      `rgb(${textRed}, ${textGreen}, ${textBlue})`,
     );
 
     flow.style.setProperty(
       '--services-copy-muted',
-      `rgb(${mutedRed}, ${mutedGreen}, ${mutedBlue})`
+      `rgb(${mutedRed}, ${mutedGreen}, ${mutedBlue})`,
+    );
+    document.body.classList.toggle(
+      'is-services-light-header',
+      progress >= 0.45,
     );
 
     isTicking = false;
@@ -436,158 +311,15 @@ function initServicesBackground() {
   window.addEventListener('resize', requestUpdate);
 }
 
-// попап услуг
-
-function initServiceModal() {
-  const modal = document.querySelector('[data-service-modal]');
-
-  if (!modal) return;
-
-  const dialog = modal.querySelector('.service-modal__dialog');
-  const image = modal.querySelector('[data-modal-image]');
-  const number = modal.querySelector('[data-modal-number]');
-  const eyebrow = modal.querySelector('[data-modal-eyebrow]');
-  const title = modal.querySelector('[data-modal-title]');
-  const description = modal.querySelector('[data-modal-description]');
-  const duration = modal.querySelector('[data-modal-duration]');
-  const price = modal.querySelector('[data-modal-price]');
-  const benefits = modal.querySelector('[data-modal-benefits]');
-  const bookButton = modal.querySelector('[data-modal-book]');
-
-  let lastFocusedElement = null;
-
-  function getFocusableElements() {
-    return [
-      ...dialog.querySelectorAll(
-        'a[href], button:not([disabled])'
-      ),
-    ];
-  }
-
-  function openModal(key, trigger) {
-    const service = servicesData[key];
-
-    if (!service) return;
-
-    lastFocusedElement = trigger;
-
-    window.KulturaImage.apply(image, service.image, {
-      sizes: '(max-width: 760px) 100vw, 45vw',
-      loading: 'eager',
-      fallbackWidth: 1170,
-      fallbackHeight: 1390,
-    });
-    image.alt = service.title;
-    number.textContent = service.number;
-    eyebrow.textContent = service.eyebrow;
-    title.textContent = service.title;
-    description.textContent = service.description;
-    duration.textContent = service.duration;
-    price.textContent = service.price;
-
-    benefits.innerHTML = service.benefits
-      .map((benefit) => `<li>${benefit}</li>`)
-      .join('');
-
-    bookButton.setAttribute(
-      'aria-label',
-      `Записаться на услугу ${service.title}`
-    );
-
-    modal.classList.add('is-open');
-    modal.setAttribute('aria-hidden', 'false');
-
-    document.body.classList.add('is-service-modal-open');
-
-    window.requestAnimationFrame(() => {
-      const closeButton = modal.querySelector(
-        '[data-service-close]'
-      );
-
-      if (closeButton) {
-        closeButton.focus();
-      }
-    });
-  }
-
-  function closeModal() {
-    if (!modal.classList.contains('is-open')) return;
-
-    modal.classList.remove('is-open');
-    modal.setAttribute('aria-hidden', 'true');
-
-    document.body.classList.remove('is-service-modal-open');
-
-    if (lastFocusedElement) {
-      lastFocusedElement.focus();
-    }
-  }
-
-  document.addEventListener('click', (event) => {
-    const openButton = event.target.closest(
-      '[data-service-open]'
-    );
-
-    const closeButton = event.target.closest(
-      '[data-service-close]'
-    );
-
-    if (openButton) {
-      openModal(
-        openButton.dataset.serviceOpen,
-        openButton
-      );
-    }
-
-    if (closeButton) {
-      closeModal();
-    }
-  });
-
-  document.addEventListener('keydown', (event) => {
-    if (!modal.classList.contains('is-open')) return;
-
-    if (event.key === 'Escape') {
-      closeModal();
-      return;
-    }
-
-    if (event.key !== 'Tab') return;
-
-    const focusableElements = getFocusableElements();
-    const firstElement = focusableElements[0];
-    const lastElement =
-      focusableElements[focusableElements.length - 1];
-
-    if (!firstElement || !lastElement) return;
-
-    if (
-      event.shiftKey &&
-      document.activeElement === firstElement
-    ) {
-      event.preventDefault();
-      lastElement.focus();
-    } else if (
-      !event.shiftKey &&
-      document.activeElement === lastElement
-    ) {
-      event.preventDefault();
-      firstElement.focus();
-    }
-  });
-}
-
 // появление блоков
 
 function initServicesReveal() {
-  const elements = document.querySelectorAll(
-    '[data-services-reveal]'
-  );
+  const elements = document.querySelectorAll('[data-services-reveal]');
 
   if (!elements.length) return;
 
   const prefersReducedMotion = window.matchMedia(
-    '(prefers-reduced-motion: reduce)'
+    '(prefers-reduced-motion: reduce)',
   ).matches;
 
   if (prefersReducedMotion) {
@@ -609,7 +341,7 @@ function initServicesReveal() {
     },
     {
       threshold: 0.12,
-    }
+    },
   );
 
   elements.forEach((element) => {

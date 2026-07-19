@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>{{SEO_TITLE}}</title>
+
+    <meta name="description" content="{{SEO_DESCRIPTION}}" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+
+    <link rel="canonical" href="{{CANONICAL_URL}}" />
+
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Культура волос" />
+    <meta property="og:title" content="{{SEO_TITLE}}" />
+    <meta property="og:description" content="{{SEO_DESCRIPTION}}" />
+    <meta property="og:url" content="{{CANONICAL_URL}}" />
+    <meta property="og:image" content="{{OG_IMAGE_URL}}" />
+    <meta property="og:image:alt" content="{{OG_IMAGE_ALT}}" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{{SEO_TITLE}}" />
+    <meta name="twitter:description" content="{{SEO_DESCRIPTION}}" />
+    <meta name="twitter:image" content="{{OG_IMAGE_URL}}" />
+    <meta name="twitter:image:alt" content="{{OG_IMAGE_ALT}}" />
+
+    <link rel="stylesheet" href="/site/css/services.min.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <script type="application/ld+json">
+      {{JSON_LD}}
+    </script>
+  </head>
+
+  <body class="services-page service-detail-page">
+    <header class="header" data-header>
+      <div class="header__inner glass">
+        <a href="#home" class="header__logo" aria-label="На главную">
+          <img src="/site/img/logo.png" alt="Культура волос" decoding="async" />
+        </a>
+
+        <nav class="header__nav header__nav" aria-label="Левая навигация">
+          <a href="/">Главная</a>
+          <a href="/services" aria-current="page">Услуги</a>
+          <a href="/catalog">Каталог</a>
+          <a href="/works">Работы</a>
+          <a href="/blog">Блог</a>
+          <a href="/contacts">Контакты</a>
+        </nav>
+
+        <a class="header__button" href="tel:+79235853333"> Записаться</a>
+
+        <button
+          class="header__burger"
+          type="button"
+          aria-label="Открыть меню"
+          aria-expanded="false"
+          data-burger
+        >
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+
+      <nav
+        class="header__mobile"
+        aria-label="Мобильная навигация"
+        data-mobile-menu
+      >
+        <div class="header__mobile-nav">
+          <a href="/">Главная</a>
+          <a href="/services" aria-current="page">Услуги</a>
+          <a href="/catalog">Каталог</a>
+          <a href="/works">Работы</a>
+          <a href="/blog">Блог</a>
+          <a href="/contacts">Контакты</a>
+        </div>
+
+        <div class="header__mobile-contact">
+          <span>Записаться в салон</span>
+          <a href="tel:89233906649">8 923 390-66-49</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section
+        class="services-hero service-detail-hero"
+        id="home"
+        aria-labelledby="service-title"
+      >
+        <div class="services-hero__glow" aria-hidden="true"></div>
+
+        <div class="services-hero__content">
+          <div class="services-hero__copy">
+            <nav class="service-breadcrumbs" aria-label="Хлебные крошки">
+              <a href="/">Главная</a>
+              <span aria-hidden="true">/</span>
+              <a href="/services">Услуги</a>
+              <span aria-hidden="true">/</span>
+              <span aria-current="page">{{SERVICE_NAME}}</span>
+            </nav>
+
+            <div class="services-hero__eyebrow">
+              <span>КУЛЬТУРА ВОЛОС — {{SERVICE_EYEBROW}}</span>
+              <span>{{SERVICE_NUMBER}}</span>
+            </div>
+
+            <h1 id="service-title">{{SERVICE_H1}}</h1>
+
+            <p>{{SERVICE_LEAD}}</p>
+
+            <div
+              class="service-detail-hero__facts"
+              aria-label="Стоимость и продолжительность услуги"
+            >
+              <div>
+                <span>Стоимость</span>
+                <strong>{{SERVICE_PRICE}}</strong>
+              </div>
+
+              <div>
+                <span>Продолжительность</span>
+                <strong>{{SERVICE_DURATION}}</strong>
+              </div>
+            </div>
+
+            <a
+              class="services-button services-button--light"
+              href="/contacts#contact-form"
+            >
+              <span>Записаться на консультацию</span>
+            </a>
+          </div>
+
+          <div class="services-hero__visual">
+            <img
+              class="services-hero__image service-detail-hero__image"
+              src="{{SERVICE_IMAGE}}"
+              alt="{{SERVICE_IMAGE_ALT}}"
+              decoding="async"
+              loading="eager"
+              fetchpriority="high"
+              width="{{SERVICE_IMAGE_WIDTH}}"
+              height="{{SERVICE_IMAGE_HEIGHT}}"
+              srcset="{{SERVICE_IMAGE_SRCSET}}"
+              sizes="(max-width: 900px) 100vw, 55vw"
+            />
+
+            <div class="services-hero__note">
+              <strong>{{SERVICE_NAME}}</strong>
+              <span>индивидуальный результат</span>
+            </div>
+          </div>
+
+          <div
+            class="services-hero__meta"
+            aria-label="Основная информация об услуге"
+          >
+            <span>Диагностика</span>
+            <i></i>
+            <span>Персональная схема</span>
+            <i></i>
+            <span>Рекомендации по уходу</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="services-flow service-detail-flow" data-services-flow>
+        <section
+          class="service-detail-intro"
+          aria-labelledby="service-about-title"
+        >
+          <div class="services-container">
+            <div class="service-detail-intro__heading" data-services-reveal>
+              <span class="services-label">Об услуге</span>
+              <h2 id="service-about-title">
+                Что такое<br />
+                {{SERVICE_NAME}}
+              </h2>
+            </div>
+
+            <div class="service-detail-intro__content" data-services-reveal>
+              {{SERVICE_INTRO_HTML}}
+            </div>
+          </div>
+        </section>
+
+        <section
+          class="service-detail-result"
+          aria-labelledby="service-result-title"
+        >
+          <div class="services-container">
+            <div class="service-detail-section-heading" data-services-reveal>
+              <span class="services-label">Результат</span>
+              <h2 id="service-result-title">
+                Что даёт<br />
+                процедура
+              </h2>
+            </div>
+
+            <ul class="service-detail-benefits" data-services-reveal>
+              {{SERVICE_BENEFITS_HTML}}
+            </ul>
+          </div>
+        </section>
+
+        <section
+          class="service-detail-suitability"
+          aria-labelledby="service-suitability-title"
+        >
+          <div class="services-container">
+            <div class="service-detail-section-heading" data-services-reveal>
+              <span class="services-label">Предварительная диагностика</span>
+              <h2 id="service-suitability-title">
+                Кому подходит<br />
+                {{SERVICE_NAME}}
+              </h2>
+            </div>
+
+            <div class="service-detail-suitability__grid">
+              <article class="service-detail-list-card" data-services-reveal>
+                <span class="service-detail-list-card__number">01</span>
+                <h3>Процедура может подойти, если</h3>
+
+                <ul>
+                  {{SERVICE_INDICATIONS_HTML}}
+                </ul>
+              </article>
+
+              <article
+                class="service-detail-list-card service-detail-list-card--accent"
+                data-services-reveal
+              >
+                <span class="service-detail-list-card__number">02</span>
+                <h3>Что важно учесть</h3>
+
+                <ul>
+                  {{SERVICE_LIMITATIONS_HTML}}
+                </ul>
+              </article>
+            </div>
+
+            <p class="service-detail-disclaimer" data-services-reveal>
+              Окончательное решение о возможности процедуры принимается после
+              очной диагностики состояния волос и обсуждения истории предыдущих
+              окрашиваний.
+            </p>
+          </div>
+        </section>
+
+        <section
+          class="service-detail-steps"
+          aria-labelledby="service-steps-title"
+        >
+          <div class="services-container">
+            <div class="service-detail-section-heading" data-services-reveal>
+              <span class="services-label">Процесс</span>
+              <h2 id="service-steps-title">
+                Как проходит<br />
+                процедура
+              </h2>
+            </div>
+
+            <ol class="service-detail-steps__list">
+              {{SERVICE_STEPS_HTML}}
+            </ol>
+          </div>
+        </section>
+
+        <section
+          class="service-detail-price"
+          aria-labelledby="service-price-title"
+        >
+          <div class="services-container">
+            <div class="service-detail-price__panel" data-services-reveal>
+              <div class="service-detail-price__heading">
+                <span class="services-label">Стоимость и время</span>
+                <h2 id="service-price-title">
+                  Индивидуальный<br />
+                  расчёт
+                </h2>
+              </div>
+
+              <div class="service-detail-price__content">
+                <div class="service-detail-price__facts">
+                  <div>
+                    <span>Стоимость</span>
+                    <strong>{{SERVICE_PRICE}}</strong>
+                  </div>
+
+                  <div>
+                    <span>Продолжительность</span>
+                    <strong>{{SERVICE_DURATION}}</strong>
+                  </div>
+                </div>
+
+                <p>{{SERVICE_PRICE_NOTE}}</p>
+
+                <a
+                  class="services-button services-button--brown"
+                  href="/contacts#contact-form"
+                >
+                  <span>Уточнить стоимость</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section
+          class="service-detail-aftercare"
+          aria-labelledby="service-aftercare-title"
+        >
+          <div class="services-container">
+            <div class="service-detail-section-heading" data-services-reveal>
+              <span class="services-label">После процедуры</span>
+              <h2 id="service-aftercare-title">
+                Как поддерживать<br />
+                результат
+              </h2>
+            </div>
+
+            <ul class="service-detail-aftercare__list" data-services-reveal>
+              {{SERVICE_AFTERCARE_HTML}}
+            </ul>
+          </div>
+        </section>
+
+        <section class="service-detail-faq" aria-labelledby="service-faq-title">
+          <div class="services-container">
+            <div class="service-detail-section-heading" data-services-reveal>
+              <span class="services-label">Вопросы и ответы</span>
+              <h2 id="service-faq-title">
+                Часто спрашивают<br />
+                о {{SERVICE_NAME_PREPOSITIONAL}}
+              </h2>
+            </div>
+
+            <div class="service-detail-faq__list">{{SERVICE_FAQ_HTML}}</div>
+          </div>
+        </section>
+
+        <section
+          class="service-detail-related"
+          aria-labelledby="service-related-title"
+        >
+          <div class="services-container">
+            <div class="service-detail-section-heading" data-services-reveal>
+              <span class="services-label">Другие направления</span>
+              <h2 id="service-related-title">
+                Связанные<br />
+                услуги
+              </h2>
+            </div>
+
+            <div class="service-detail-related__grid">
+              {{RELATED_SERVICES_HTML}}
+            </div>
+
+            <a class="service-detail-related__all" href="/services">
+              Все услуги
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </section>
+
+        <section
+          class="services-consultation"
+          aria-labelledby="consultation-title"
+        >
+          <div class="services-container">
+            <div class="services-consultation__panel" data-services-reveal>
+              <img
+                src="{{SERVICE_IMAGE}}"
+                alt=""
+                decoding="async"
+                loading="lazy"
+                width="{{SERVICE_IMAGE_WIDTH}}"
+                height="{{SERVICE_IMAGE_HEIGHT}}"
+                srcset="{{SERVICE_IMAGE_SRCSET}}"
+                sizes="(max-width: 760px) calc(100vw - 32px), 40vw"
+              />
+
+              <div class="services-consultation__content">
+                <span class="services-label">Персональная консультация</span>
+
+                <h2 id="consultation-title">
+                  Подберём решение<br />
+                  для ваших волос
+                </h2>
+
+                <p>
+                  Оценим состояние волос, обсудим желаемый результат и определим
+                  подходящую технику, оттенок и план ухода.
+                </p>
+
+                <a
+                  class="services-button services-button--brown"
+                  href="/contacts#contact-form"
+                >
+                  <span>Записаться на консультацию</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer__glass">
+        <div class="footer__top">
+          <div class="footer__brand">
+            <a class="footer__logo" href="/" aria-label="Культура волос">
+              Культура волос
+            </a>
+
+            <p class="footer__text">
+              Премиальный уход за волосами и безупречный результат.
+              Индивидуальный подход к каждой клиентке.
+            </p>
+
+            <a class="footer__button" href="tel:+79233906649">
+              Записаться онлайн
+            </a>
+          </div>
+
+          <nav class="footer__nav" aria-label="Меню сайта">
+            <span class="footer__title">Меню</span>
+            <a href="/">Главная</a>
+            <a href="/services">Услуги</a>
+            <a href="/works">Работы</a>
+            <a href="/blog">Влог</a>
+            <a href="/contacts">Контакты</a>
+          </nav>
+
+          <nav class="footer__nav" aria-label="Услуги салона">
+            <span class="footer__title">Услуги</span>
+            <a href="/services">Окрашивание</a>
+            <a href="/services">AirTouch</a>
+            <a href="/services">Уход за волосами</a>
+            <a href="/services">Стрижки</a>
+            <a href="/services">Укладки</a>
+          </nav>
+
+          <div class="footer__contacts">
+            <span class="footer__title">Контакты</span>
+            <a class="footer__contact" href="tel:+79233906649">
+              +7 (923) 390-66-49
+            </a>
+            <div class="footer__contact">Абакан</div>
+            <div class="footer__socials">
+              <a href="#" aria-label="Instagram">IG</a>
+              <a href="#" aria-label="VK">VK</a>
+              <a href="#" aria-label="Telegram">TG</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer__bottom">
+          <p>© Культура волос, 2026</p>
+          <a href="/privacy-policy">Политика конфиденциальности</a>
+          <a href="https://shumdev.ru" target="_blank" rel="noopener">
+            Разработка ShumDev
+          </a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="/site/script/image-performance.js"></script>
+    <script src="/site/script/services.js"></script>
+  </body>
+</html>
