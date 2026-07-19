@@ -249,7 +249,7 @@ const SERVICES = Object.freeze([
       },
     ],
 
-    relatedServices: [
+    relatedSlugs: [
       'airtouch',
       'tonirovanie-volos',
       'uhod-i-vosstanovlenie-volos',
@@ -384,7 +384,7 @@ const SERVICES = Object.freeze([
       },
     ],
 
-    relatedServices: ['airtouch', 'shatush', 'tonirovanie-volos'],
+    relatedSlugs: ['airtouch', 'shatush', 'tonirovanie-volos'],
 
     seoTitle: 'Мелирование волос в Абакане — цена | Культура волос',
     seoDescription:
@@ -515,7 +515,7 @@ const SERVICES = Object.freeze([
       },
     ],
 
-    relatedServices: [
+    relatedSlugs: [
       'tonirovanie-volos',
       'uhod-i-vosstanovlenie-volos',
       'rekonstrukciya-volos',
@@ -651,7 +651,7 @@ const SERVICES = Object.freeze([
       },
     ],
 
-    relatedServices: ['airtouch', 'melirovanie-volos', 'total-blond'],
+    relatedSlugs: ['airtouch', 'melirovanie-volos', 'total-blond'],
 
     seoTitle: 'Тонирование волос в Абакане — цена | Культура волос',
     seoDescription:
@@ -782,7 +782,7 @@ const SERVICES = Object.freeze([
       },
     ],
 
-    relatedServices: [
+    relatedSlugs: [
       'uhod-i-vosstanovlenie-volos',
       'tonirovanie-volos',
       'airtouch',
@@ -916,7 +916,7 @@ const SERVICES = Object.freeze([
       },
     ],
 
-    relatedServices: ['rekonstrukciya-volos', 'tonirovanie-volos', 'airtouch'],
+    relatedSlugs: ['rekonstrukciya-volos', 'tonirovanie-volos', 'airtouch'],
 
     seoTitle: 'Уход и восстановление волос в Абакане — цена | Культура волос',
     seoDescription:

@@ -528,14 +528,14 @@ function createRelatedServicesHtml(slugs) {
       (service) => `
         <a
           class="service-detail-related-card"
-          href="/services"
+          href="/services/${service.slug}"
         >
           <span>${escapeHtml(service.number)}</span>
           <h3>${escapeHtml(service.name)}</h3>
           <p>${escapeHtml(service.shortDescription)}</p>
 
           <strong>
-            Смотреть услуги
+            Подробнее об услуге
             <span aria-hidden="true">→</span>
           </strong>
         </a>
