@@ -286,10 +286,22 @@ async function initWorkDetailPage() {
   }
 }
 
-async function loadWorkDetail() {
+function getWorkSlug() {
+  const pathParts = window.location.pathname.split('/').filter(Boolean);
+  const pathSlug =
+    pathParts[0] === 'works' && pathParts.length === 2 ? pathParts[1] : '';
   const params = new URLSearchParams(window.location.search);
+  const rawSlug = pathSlug || params.get('slug') || '';
 
-  const slug = String(params.get('slug') || '').trim();
+  try {
+    return decodeURIComponent(String(rawSlug)).trim().toLowerCase();
+  } catch {
+    return '';
+  }
+}
+
+async function loadWorkDetail() {
+  const slug = getWorkSlug();
 
   if (!slug) {
     throw new Error('Адрес работы не указан.');
@@ -374,7 +386,7 @@ function renderWorkDetailError(message) {
 
         <a
           class="work-detail-error__button"
-          href="/public/works/work-main.html"
+          href="/works"
         >
           Вернуться к работам
         </a>

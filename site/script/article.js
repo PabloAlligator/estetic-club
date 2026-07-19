@@ -110,6 +110,20 @@ function initHeaderSafe() {
   updateHeader();
 }
 
+function getArticleSlug() {
+  const pathParts = window.location.pathname.split('/').filter(Boolean);
+  const pathSlug =
+    pathParts[0] === 'blog' && pathParts.length === 2 ? pathParts[1] : '';
+  const params = new URLSearchParams(window.location.search);
+  const rawSlug = pathSlug || params.get('slug') || '';
+
+  try {
+    return decodeURIComponent(String(rawSlug)).trim().toLowerCase();
+  } catch {
+    return '';
+  }
+}
+
 async function initArticlePage() {
   const page = document.querySelector('[data-article-page]');
 
@@ -117,11 +131,7 @@ async function initArticlePage() {
     return;
   }
 
-  const params = new URLSearchParams(window.location.search);
-
-  const slug = String(params.get('slug') || '')
-    .trim()
-    .toLowerCase();
+  const slug = getArticleSlug();
 
   const loading = document.querySelector('[data-article-loading]');
 
@@ -445,11 +455,9 @@ function updateArticleSeo({
     : `${seoTitle} | Культура волос`;
 
   const canonicalUrl = new URL(
-    '/public/blog/article.html',
+    `/blog/${encodeURIComponent(slug)}`,
     window.location.origin,
   );
-
-  canonicalUrl.searchParams.set('slug', slug);
 
   const absoluteCoverUrl = new URL(articleCover, window.location.origin).href;
 

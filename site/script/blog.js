@@ -2,7 +2,7 @@
 
 const BLOG_API_URL = '/api/blog-posts';
 
-const BLOG_ARTICLE_PAGE_URL = '/public/blog/article.html';
+const BLOG_ARTICLE_PAGE_URL = '/blog';
 
 document.addEventListener('DOMContentLoaded', () => {
   initHeaderSafe();
@@ -417,8 +417,7 @@ function normalizeBlogPosts(payload) {
 }
 
 function createBlogCardTemplate(post) {
-  const postUrl =
-    `${BLOG_ARTICLE_PAGE_URL}?slug=` + encodeURIComponent(post.slug);
+  const postUrl = `${BLOG_ARTICLE_PAGE_URL}/${encodeURIComponent(post.slug)}`;
 
   const dateLabel = formatBlogDate(post.publishedAt);
 

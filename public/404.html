@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Страница не найдена — Культура волос</title>
+    <meta
+      name="description"
+      content="Запрошенная страница не найдена. Перейдите на главную страницу сайта «Культура волос» или выберите нужный раздел."
+    />
+    <meta name="robots" content="noindex, follow" />
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: Manrope, Arial, sans-serif;
+        color: #2f231a;
+        background: #f3ece4;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-width: 320px;
+        min-height: 100vh;
+        margin: 0;
+        background:
+          radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.9), transparent 32%),
+          linear-gradient(145deg, #f7f1ea 0%, #e4d5c7 100%);
+      }
+
+      .error-page {
+        display: grid;
+        min-height: 100vh;
+        padding: 32px;
+        place-items: center;
+      }
+
+      .error-page__card {
+        width: min(100%, 860px);
+        padding: clamp(36px, 7vw, 88px);
+        text-align: center;
+        background: rgba(255, 250, 245, 0.84);
+        border: 1px solid rgba(79, 59, 43, 0.14);
+        border-radius: 32px;
+        box-shadow: 0 30px 100px rgba(47, 35, 26, 0.12);
+        backdrop-filter: blur(18px);
+      }
+
+      .error-page__brand,
+      .error-page__code {
+        display: block;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+      }
+
+      .error-page__brand {
+        margin-bottom: 42px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .error-page__code {
+        margin-bottom: 18px;
+        color: #87684f;
+        font-size: clamp(42px, 9vw, 88px);
+        font-weight: 300;
+      }
+
+      .error-page__title {
+        margin: 0;
+        font-size: clamp(30px, 5vw, 58px);
+        font-weight: 400;
+        line-height: 1.08;
+      }
+
+      .error-page__text {
+        max-width: 590px;
+        margin: 24px auto 0;
+        color: rgba(47, 35, 26, 0.72);
+        font-size: 16px;
+        line-height: 1.75;
+      }
+
+      .error-page__actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 38px;
+      }
+
+      .error-page__link {
+        display: inline-flex;
+        min-height: 50px;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 22px;
+        color: #2f231a;
+        border: 1px solid rgba(79, 59, 43, 0.22);
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition:
+          transform 180ms ease,
+          background-color 180ms ease;
+      }
+
+      .error-page__link:hover,
+      .error-page__link:focus-visible {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.78);
+      }
+
+      .error-page__link--primary {
+        color: #fffaf5;
+        background: #795f49;
+        border-color: #795f49;
+      }
+
+      .error-page__link--primary:hover,
+      .error-page__link--primary:focus-visible {
+        background: #684e3b;
+      }
+
+      @media (max-width: 560px) {
+        .error-page {
+          padding: 18px;
+        }
+
+        .error-page__card {
+          padding: 38px 22px;
+          border-radius: 24px;
+        }
+
+        .error-page__actions {
+          flex-direction: column;
+        }
+
+        .error-page__link {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="error-page">
+      <section class="error-page__card" aria-labelledby="error-title">
+        <span class="error-page__brand">Культура волос</span>
+        <span class="error-page__code" aria-hidden="true">404</span>
+        <h1 class="error-page__title" id="error-title">Страница не найдена</h1>
+        <p class="error-page__text">
+          Возможно, адрес изменился или страница была удалена. Перейдите на
+          главную либо выберите нужный раздел сайта.
+        </p>
+        <nav class="error-page__actions" aria-label="Основные разделы">
+          <a class="error-page__link error-page__link--primary" href="/">
+            На главную
+          </a>
+          <a class="error-page__link" href="/services">Услуги</a>
+          <a class="error-page__link" href="/works">Работы</a>
+          <a class="error-page__link" href="/blog">Блог</a>
+          <a class="error-page__link" href="/contacts">Контакты</a>
+        </nav>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1600,7 +1600,7 @@
 
       const editUrl = `/admin/blog/edit?id=${encodeURIComponent(id)}`;
 
-      const publicUrl = `/public/blog/article.html?slug=${encodeURIComponent(slug)}`;
+      const publicUrl = `/blog/${encodeURIComponent(slug)}`;
 
       const publicationDate =
         isPublished && post.publishedAt
@@ -2580,9 +2580,7 @@
       editorState.classList.toggle('is-pending', hasPendingChange);
 
       if (publicLink && postId && savedIsPublished && savedSlug) {
-        publicLink.href = `/public/blog/article.html?slug=${encodeURIComponent(
-          savedSlug,
-        )}`;
+        publicLink.href = `/blog/${encodeURIComponent(savedSlug)}`;
 
         publicLink.hidden = false;
       } else if (publicLink) {
@@ -2652,8 +2650,8 @@
 
       if (seoPreviewUrl) {
         seoPreviewUrl.textContent = slug
-          ? `nadia-hair.ru/public/blog/article.html?slug=${slug}`
-          : 'nadia-hair.ru/public/blog/article.html';
+          ? `nadia-hair.ru/blog/${slug}`
+          : 'nadia-hair.ru/blog/slug-stati';
       }
 
       if (seoPreviewDescription) {
@@ -3114,9 +3112,7 @@
 
       const slug = String(work.slug || '');
 
-      const publicUrl = `/public/works/work-detail.html?slug=${encodeURIComponent(
-        slug,
-      )}`;
+      const publicUrl = `/works/${encodeURIComponent(slug)}`;
 
       const editUrl = `/admin/works/edit?id=${encodeURIComponent(id)}`;
 
@@ -4075,9 +4071,7 @@
       publicLink.hidden = !canOpen;
 
       if (canOpen) {
-        publicLink.href = `/public/works/work-detail.html?slug=${encodeURIComponent(
-          slug,
-        )}`;
+        publicLink.href = `/works/${encodeURIComponent(slug)}`;
       } else {
         publicLink.removeAttribute('href');
       }

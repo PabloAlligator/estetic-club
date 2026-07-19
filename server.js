@@ -631,10 +631,149 @@ app.use(
 
 app.use(cookieParser());
 
-app.use('/site', express.static(SITE_DIR));
-app.use('/public', express.static(PUBLIC_DIR));
+// старые адреса
+const LEGACY_PAGE_REDIRECTS = new Map([
+  ['/public', '/'],
+  ['/public/', '/'],
+  ['/index.html', '/'],
+  ['/public/index.html', '/'],
+  ['/services/services.html', '/services'],
+  ['/public/services/services.html', '/services'],
+  ['/catalog/catalog.html', '/catalog'],
+  ['/public/catalog/catalog.html', '/catalog'],
+  ['/works/work-main.html', '/works'],
+  ['/public/works/work-main.html', '/works'],
+  ['/blog/blog.html', '/blog'],
+  ['/public/blog/blog.html', '/blog'],
+  ['/contacts.html', '/contacts'],
+  ['/public/contacts.html', '/contacts'],
+  ['/cart.html', '/cart'],
+  ['/public/cart.html', '/cart'],
+  ['/checkout.html', '/checkout'],
+  ['/public/checkout.html', '/checkout'],
+  ['/order-success.html', '/order-success'],
+  ['/public/order-success.html', '/order-success'],
+]);
 
-app.use(express.static(PUBLIC_DIR));
+const LEGACY_ARTICLE_PATHS = new Set([
+  '/blog/article.html',
+  '/public/blog/article.html',
+]);
+
+const LEGACY_WORK_PATHS = new Set([
+  '/works/work-detail.html',
+  '/public/works/work-detail.html',
+]);
+
+const LEGACY_PRODUCT_PATHS = new Set([
+  '/catalog/product.html',
+  '/public/catalog/product.html',
+]);
+
+function buildRedirectUrl(req, pathname, excludedParams = []) {
+  const excluded = new Set(excludedParams);
+  const params = new URLSearchParams();
+
+  Object.entries(req.query || {}).forEach(([key, value]) => {
+    if (excluded.has(key) || value === undefined || value === null) {
+      return;
+    }
+
+    const values = Array.isArray(value) ? value : [value];
+
+    values.forEach((item) => {
+      params.append(key, String(item));
+    });
+  });
+
+  const query = params.toString();
+
+  return query ? `${pathname}?${query}` : pathname;
+}
+
+function getLegacySlug(req) {
+  return String(req.query?.slug || '')
+    .trim()
+    .toLowerCase();
+}
+
+function shouldRemoveTrailingSlash(pathname) {
+  const staticPages = new Set([
+    '/services/',
+    '/works/',
+    '/blog/',
+    '/contacts/',
+    '/catalog/',
+    '/cart/',
+    '/checkout/',
+    '/order-success/',
+  ]);
+
+  return (
+    staticPages.has(pathname) ||
+    /^\/(?:blog|works)\/[^/]+\/$/.test(pathname) ||
+    /^\/catalog\/product\/[^/]+\/$/.test(pathname)
+  );
+}
+
+app.use((req, res, next) => {
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
+    return next();
+  }
+
+  const pathname = req.path;
+
+  if (pathname === '/404.html' || pathname === '/public/404.html') {
+    return res.status(404).sendFile(path.join(PUBLIC_DIR, '404.html'));
+  }
+
+  if (LEGACY_ARTICLE_PATHS.has(pathname)) {
+    const slug = getLegacySlug(req);
+    const target = slug ? `/blog/${encodeURIComponent(slug)}` : '/blog';
+
+    return res.redirect(301, buildRedirectUrl(req, target, ['slug']));
+  }
+
+  if (LEGACY_WORK_PATHS.has(pathname)) {
+    const slug = getLegacySlug(req);
+    const target = slug ? `/works/${encodeURIComponent(slug)}` : '/works';
+
+    return res.redirect(301, buildRedirectUrl(req, target, ['slug']));
+  }
+
+  if (LEGACY_PRODUCT_PATHS.has(pathname)) {
+    const slug = getLegacySlug(req);
+    const target = slug
+      ? `/catalog/product/${encodeURIComponent(slug)}`
+      : '/catalog';
+
+    return res.redirect(301, buildRedirectUrl(req, target, ['slug']));
+  }
+
+  const legacyTarget = LEGACY_PAGE_REDIRECTS.get(pathname);
+
+  if (legacyTarget) {
+    return res.redirect(301, buildRedirectUrl(req, legacyTarget));
+  }
+
+  if (shouldRemoveTrailingSlash(pathname)) {
+    const target = pathname.replace(/\/+$/, '');
+
+    return res.redirect(301, buildRedirectUrl(req, target));
+  }
+
+  return next();
+});
+
+const publicStaticOptions = {
+  index: false,
+  redirect: false,
+};
+
+app.use('/site', express.static(SITE_DIR, publicStaticOptions));
+app.use('/public', express.static(PUBLIC_DIR, publicStaticOptions));
+
+app.use(express.static(PUBLIC_DIR, publicStaticOptions));
 
 // админ
 
@@ -652,7 +791,31 @@ app.get('/', (req, res) => {
   return res.sendFile(path.join(PUBLIC_DIR, 'index.html'));
 });
 
-app.get(['/catalog', '/catalog/'], (req, res) => {
+app.get('/services', (req, res) => {
+  return res.sendFile(path.join(PUBLIC_DIR, 'services', 'services.html'));
+});
+
+app.get('/works', (req, res) => {
+  return res.sendFile(path.join(PUBLIC_DIR, 'works', 'work-main.html'));
+});
+
+app.get('/works/:slug', (req, res) => {
+  return res.sendFile(path.join(PUBLIC_DIR, 'works', 'work-detail.html'));
+});
+
+app.get('/blog', (req, res) => {
+  return res.sendFile(path.join(PUBLIC_DIR, 'blog', 'blog.html'));
+});
+
+app.get('/blog/:slug', (req, res) => {
+  return res.sendFile(path.join(PUBLIC_DIR, 'blog', 'article.html'));
+});
+
+app.get('/contacts', (req, res) => {
+  return res.sendFile(path.join(PUBLIC_DIR, 'contacts.html'));
+});
+
+app.get('/catalog', (req, res) => {
   return res.sendFile(path.join(PUBLIC_DIR, 'catalog', 'catalog.html'));
 });
 
@@ -768,7 +931,7 @@ app.use('/api', (req, res) => {
 });
 
 app.use((req, res) => {
-  return res.status(404).sendFile(path.join(PUBLIC_DIR, 'index.html'));
+  return res.status(404).sendFile(path.join(PUBLIC_DIR, '404.html'));
 });
 
 // ошибки

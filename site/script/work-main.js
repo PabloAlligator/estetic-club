@@ -616,9 +616,7 @@ function normalizeWorkCategorySlug(value) {
 }
 
 function createWorkCardTemplate(work) {
-  const detailUrl = `/public/works/work-detail.html?slug=${encodeURIComponent(
-    work.slug
-  )}`;
+  const detailUrl = `/works/${encodeURIComponent(work.slug)}`;
 
   return `
     <article class="work-card js-work-card" data-category="${escapeHtml(
