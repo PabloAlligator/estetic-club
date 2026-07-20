@@ -1454,6 +1454,7 @@ const LEGACY_PAGE_REDIRECTS = new Map([
   ['/public/checkout.html', '/checkout'],
   ['/order-success.html', '/order-success'],
   ['/public/order-success.html', '/order-success'],
+  ['/public/privacy-policy.html', '/privacy-policy'],
 ]);
 
 const LEGACY_ARTICLE_PATHS = new Set([
@@ -1850,6 +1851,9 @@ app.get('/blog/:slug', async (req, res, next) => {
   }
 });
 
+app.get('/privacy-policy', (req, res) => {
+  return res.sendFile(path.join(PUBLIC_DIR, 'privacy-policy.html'));
+});
 app.get('/contacts', (req, res, next) => {
   return sendSeoPage(req, res, next, 'contacts.html', '/contacts');
 });
