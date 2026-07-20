@@ -257,3 +257,59 @@
     height: 42px;
   }
 }
+/* соцсети */
+.footer__social-icon {
+  display: block;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  background-color: currentColor;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+.footer__social-icon--instagram {
+  -webkit-mask-image: url("/site/img/social/instagram.svg");
+  mask-image: url("/site/img/social/instagram.svg");\n  background: linear-gradient(45deg, #FEDA75 0%, #FA7E1E 25%, #D62976 50%, #962FBF 75%, #4F5BD5 100%);
+}
+
+.footer__social-icon--vk {
+  -webkit-mask-image: url("/site/img/social/vk.svg");
+  mask-image: url("/site/img/social/vk.svg");\n  background-color: #0077FF;
+}
+
+.footer__social-icon--telegram {
+  -webkit-mask-image: url("/site/img/social/telegram.svg");
+  mask-image: url("/site/img/social/telegram.svg");\n  background-color: #26A5E4;
+}
+
+.footer__social-icon--whatsapp {
+  -webkit-mask-image: url("/site/img/social/whatsapp.svg");
+  mask-image: url("/site/img/social/whatsapp.svg");\n  background-color: #25D366;
+}
+\n\n.footer__social-icon {\n  transition: transform 180ms ease, filter 180ms ease;\n}\n\n.footer__socials a:hover .footer__social-icon,\n.footer__socials a:focus-visible .footer__social-icon {\n  transform: translateY(-1px) scale(1.08);\n  filter: brightness(1.08);\n}\n
+/* social brand colors start */
+.footer__socials a .footer__social-icon {
+  background: currentColor;
+}
+
+.footer__socials a .footer__social-icon--instagram {
+  background: linear-gradient(45deg, #feda75 0%, #fa7e1e 24%, #d62976 48%, #962fbf 72%, #4f5bd5 100%);
+}
+
+.footer__socials a .footer__social-icon--vk {
+  background: #0077ff;
+}
+
+.footer__socials a .footer__social-icon--telegram {
+  background: #26a5e4;
+}
+
+.footer__socials a .footer__social-icon--whatsapp {
+  background: #25d366;
+}
+/* social brand colors end */
