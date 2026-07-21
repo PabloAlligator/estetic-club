@@ -2214,3 +2214,39 @@ body.is-lock {
     background: #2f231a;
   }
 }
+
+// Mobile typography guard for long service titles
+@media (max-width: 680px) {
+  .service-detail-page .services-hero__copy h1 {
+    max-width: 100%;
+    font-size: clamp(34px, 9.5vw, 44px);
+    line-height: 0.94;
+    letter-spacing: -0.045em;
+  }
+
+  .service-detail-intro__heading,
+  .service-detail-price__heading,
+  .service-detail-section-heading {
+    min-width: 0;
+  }
+
+  .service-detail-section-heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    justify-content: initial;
+    gap: 18px;
+  }
+
+  .service-detail-intro__heading h2,
+  .service-detail-price__heading h2,
+  .service-detail-section-heading h2 {
+    width: 100%;
+    max-width: 100%;
+    font-size: clamp(32px, 9vw, 42px);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+}

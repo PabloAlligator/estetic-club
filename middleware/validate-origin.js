@@ -6,13 +6,19 @@ function buildAllowedOrigins() {
     'http://127.0.0.1:3000',
   ]);
 
-  const configuredOrigins = String(process.env.APP_ORIGIN || '')
-    .split(',')
+  const configuredOrigins = [
+    ...String(process.env.APP_ORIGIN || '').split(','),
+    String(process.env.SITE_URL || ''),
+  ]
     .map((value) => value.trim())
     .filter(Boolean);
 
-  for (const origin of configuredOrigins) {
-    origins.add(origin);
+  for (const value of configuredOrigins) {
+    try {
+      origins.add(new URL(value).origin);
+    } catch {
+      // Некорректное значение не добавляем в белый список.
+    }
   }
 
   return origins;

@@ -13,7 +13,7 @@ const { z } = require('zod');
 const sanitizeHtml = require('sanitize-html');
 
 const prisma = require('./lib/prisma');
-const { getServiceBySlug } = require('./config/services');
+const { SERVICES, getServiceBySlug } = require('./config/services');
 
 const authRoutes = require('./routes/auth.routes');
 const adminRoutes = require('./routes/admin.routes');
@@ -299,6 +299,7 @@ async function createArticlePageHtml(req, post) {
     CANONICAL_URL: escapeHtml(canonicalUrl),
     OG_IMAGE_URL: escapeHtml(coverUrl),
     OG_IMAGE_ALT: escapeHtml(coverAlt),
+    ARTICLE_COVER_ALT: escapeHtml(coverAlt),
     PUBLISHED_AT: escapeHtml(publishedAt.toISOString()),
     MODIFIED_AT: escapeHtml(post.updatedAt.toISOString()),
     JSON_LD: escapeJsonForHtml(schema),
@@ -805,6 +806,10 @@ async function getSitemapEntries(siteOrigin) {
     '/blog',
     '/catalog',
     '/contacts',
+    '/privacy-policy',
+    ...SERVICES.filter((service) => service.isReady).map(
+      (service) => `/services/${encodeURIComponent(service.slug)}`,
+    ),
   ];
 
   return [
@@ -1454,6 +1459,7 @@ const LEGACY_PAGE_REDIRECTS = new Map([
   ['/public/checkout.html', '/checkout'],
   ['/order-success.html', '/order-success'],
   ['/public/order-success.html', '/order-success'],
+  ['/privacy-policy.html', '/privacy-policy'],
   ['/public/privacy-policy.html', '/privacy-policy'],
 ]);
 
@@ -1513,6 +1519,7 @@ function shouldRemoveTrailingSlash(pathname) {
     '/cart/',
     '/checkout/',
     '/order-success/',
+    '/privacy-policy/',
   ]);
 
   return (
@@ -1851,8 +1858,8 @@ app.get('/blog/:slug', async (req, res, next) => {
   }
 });
 
-app.get('/privacy-policy', (req, res) => {
-  return res.sendFile(path.join(PUBLIC_DIR, 'privacy-policy.html'));
+app.get('/privacy-policy', (req, res, next) => {
+  return sendSeoPage(req, res, next, 'privacy-policy.html', '/privacy-policy');
 });
 app.get('/contacts', (req, res, next) => {
   return sendSeoPage(req, res, next, 'contacts.html', '/contacts');
@@ -2003,7 +2010,7 @@ app.get('/order-success', (req, res) => {
 app.get('/api/health', (req, res) => {
   return res.json({
     ok: true,
-    message: 'NADIA API is working',
+    message: 'Kultura Volos API is working',
   });
 });
 
@@ -2100,11 +2107,23 @@ app.use((req, res) => {
 // ошибки
 
 app.use((error, req, res, next) => {
-  console.error(error);
-
   if (res.headersSent) {
     return next(error);
   }
+
+  if (error?.type === 'entity.parse.failed' || error?.status === 400) {
+    return res.status(400).json({
+      message: 'Некорректный JSON в теле запроса.',
+    });
+  }
+
+  if (error?.type === 'entity.too.large' || error?.status === 413) {
+    return res.status(413).json({
+      message: 'Размер запроса превышает допустимый лимит.',
+    });
+  }
+
+  console.error(error);
 
   return res.status(500).json({
     message: 'Произошла ошибка сервера. Попробуйте ещё раз.',
@@ -2114,7 +2133,7 @@ app.use((error, req, res, next) => {
 //  SHUTDOWN
 
 async function shutdown(signal) {
-  console.log(`${signal}: завершение работы NADIA server`);
+  console.log(`${signal}: завершение работы Kultura Volos server`);
 
   await prisma.$disconnect();
 
@@ -2132,7 +2151,7 @@ process.on('SIGTERM', () => {
 //  START
 
 app.listen(PORT, async () => {
-  console.log(`NADIA server started: http://localhost:${PORT}`);
+  console.log(`Kultura Volos server started: http://localhost:${PORT}`);
 
   try {
     await smtpTransporter.verify();

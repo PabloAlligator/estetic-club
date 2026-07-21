@@ -51,7 +51,7 @@
              <span class="header__logo-mark" aria-hidden="true"></span>
              <span class="header__logo-text">Культура волос</span>
            </a>
-        <nav class="header__nav header__nav" aria-label="Левая навигация">
+        <nav class="header__nav" aria-label="Левая навигация">
           <a href="/">Главная</a>
           <a href="/services">Услуги</a>
           <a href="/catalog" aria-current="page">Каталог</a>
@@ -117,26 +117,77 @@
       </div>
       <div class="product-detail__content" data-product-content hidden></div>
     </main>
-    <footer class="catalog-footer">
-      <div class="catalog-footer__inner">
-        <div>
-          <a href="/">Культура волос</a>
-          <p>Профессиональные товары для красоты, ухода и работы мастера.</p>
+    <footer class="footer">
+      <div class="footer__glass">
+        <div class="footer__top">
+          <div class="footer__brand">
+            <a
+              class="footer__logo"
+              href="/"
+              aria-label="Культура волос"
+            >
+              Культура волос
+            </a>
+
+            <p class="footer__text">
+              Премиальный уход за волосами и безупречный результат.
+              Индивидуальный подход к каждой клиентке.
+            </p>
+
+            <a class="footer__button" href="tel:+79235853333">
+              Записаться онлайн
+            </a>
+          </div>
+
+          <nav class="footer__nav" aria-label="Меню сайта">
+            <span class="footer__title">Меню</span>
+
+            <a href="/">Главная</a>
+            <a href="/services">Услуги</a>
+            <a href="/works">Работы</a>
+            <a href="/catalog">Каталог</a>
+            <a href="/blog">Блог</a>
+            <a href="/contacts">Контакты</a>
+          </nav>
+
+          <nav class="footer__nav" aria-label="Каталог">
+            <span class="footer__title">Каталог</span>
+
+            <a href="/catalog?category=hair">Волосы</a>
+            <a href="/catalog?category=tools">Инструменты</a>
+            <a href="/catalog?category=lashes-brows">Ресницы и брови</a>
+            <a href="/catalog?category=consumables">Расходные материалы</a>
+          </nav>
+
+          <div class="footer__contacts">
+            <span class="footer__title">Контакты</span>
+
+            <a class="footer__contact" href="tel:+79235853333">
+              +7 (923) 585-33-33
+            </a>
+
+            <div class="footer__contact">Абакан</div>
+
+            <div class="footer__socials">
+              <a href="https://www.instagram.com/nadezdashumilova/" target="_blank" rel="noopener noreferrer" aria-label="Instagram Надежды Шумиловой"><span class="footer__social-icon footer__social-icon--instagram" aria-hidden="true"></span></a>
+              <a href="https://vk.ru/id444945734" target="_blank" rel="noopener noreferrer" aria-label="ВКонтакте Надежды Шумиловой"><span class="footer__social-icon footer__social-icon--vk" aria-hidden="true"></span></a>
+              <a href="https://t.me/knv_898" target="_blank" rel="noopener noreferrer" aria-label="Telegram Надежды Шумиловой"><span class="footer__social-icon footer__social-icon--telegram" aria-hidden="true"></span></a>
+              <a href="https://wa.me/79235853333" target="_blank" rel="noopener noreferrer" aria-label="Написать в WhatsApp в Культуру волос"><span class="footer__social-icon footer__social-icon--whatsapp" aria-hidden="true"></span></a>
+            </div>
+          </div>
         </div>
-        <nav aria-label="Каталог">
-          <span>Каталог</span><a href="/catalog?category=hair">Волосы</a
-          ><a href="/catalog?category=tools">Инструменты</a
-          ><a href="/catalog?category=lashes-brows">Ресницы и брови</a
-          ><a href="/catalog?category=consumables">Расходные материалы</a>
-        </nav>
-        <nav aria-label="Информация">
-          <span>Информация</span><a href="/contacts">Контакты</a
-          ><a href="/cart">Корзина</a
-          ><a href="/blog">Журнал</a>
-        </nav>
-      </div>
-      <div class="catalog-footer__bottom">
-        <span>© 2026 Культура волос</span><span>Абакан</span>
+
+        <div class="footer__bottom">
+          <p>© Культура волос, 2026</p>
+
+          <a href="/privacy-policy">
+            Политика конфиденциальности
+          </a>
+
+          <a href="https://shumdev.ru" target="_blank" rel="noopener">
+            Разработка ShumDev
+          </a>
+        </div>
       </div>
     </footer>
     <script type="application/json" data-initial-product>{{INITIAL_PRODUCT_JSON}}</script>

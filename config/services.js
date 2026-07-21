@@ -24,8 +24,6 @@ const SERVICES = Object.freeze([
       '/site/img/img1aft-480.webp 480w, /site/img/img1aft-768.webp 768w, /site/img/img1aft.webp 1170w',
     imageAlt:
       'Результат окрашивания волос в технике AirTouch в студии Культура волос',
-    imageAlt:
-      'Результат окрашивания волос в технике AirTouch в студии Культура волос',
     benefits: [
       'мягкий и естественный рисунок блонда',
       'плавное и аккуратное отрастание цвета',

@@ -629,13 +629,13 @@
         '[data-catalog-filter-open], [data-catalog-filter-open-mobile], [data-chip-filter-open], [data-chip-brand-open]',
       )
       .forEach((button) => {
-        button.addEventListener('click', () => openSheet(filterSheet));
+        button.addEventListener('click', (event) => openSheet(filterSheet, event.currentTarget));
       });
 
     document
       .querySelectorAll('[data-catalog-sort-open], [data-chip-sort-open]')
       .forEach((button) => {
-        button.addEventListener('click', () => openSheet(sortSheet));
+        button.addEventListener('click', (event) => openSheet(sortSheet, event.currentTarget));
       });
 
     document.querySelectorAll('[data-sheet-close]').forEach((button) => {
@@ -720,7 +720,7 @@
           addVariantToCart(product.variants[0].id);
         }
       } else {
-        openVariantSheet(product);
+        openVariantSheet(product, addButton);
       }
     });
 
@@ -1396,7 +1396,7 @@
       renderActiveFilters();
     }
 
-    function openVariantSheet(product) {
+    function openVariantSheet(product, trigger) {
       variantSheet
         .querySelectorAll('[data-variant-product-title]')
         .forEach((element) => {
@@ -1445,7 +1445,7 @@
         )
         .join('');
 
-      openSheet(variantSheet);
+      openSheet(variantSheet, trigger);
     }
 
     function openMobileAdd(product, variant) {
@@ -1853,19 +1853,90 @@
     ].join('-');
   }
 
-  function openSheet(sheet) {
-    if (!sheet) return;
-    sheet.hidden = false;
-    requestAnimationFrame(() => sheet.classList.add('is-open'));
-    document.body.classList.add('is-sheet-open');
+  const sheetFocusSelectors = [
+    'a[href]',
+    'button:not([disabled])',
+    'input:not([disabled])',
+    'select:not([disabled])',
+    'textarea:not([disabled])',
+    '[tabindex]:not([tabindex="-1"])',
+  ].join(',');
+
+  function getOpenSheet() {
+    return [...document.querySelectorAll('[data-sheet]')].find(
+      (sheet) => !sheet.hidden,
+    );
   }
 
-  function closeSheet(sheet) {
+  function getSheetFocusableElements(sheet) {
+    const scope = sheet.querySelector('.catalog-sheet__dialog') || sheet;
+
+    return [...scope.querySelectorAll(sheetFocusSelectors)].filter(
+      (element) => !element.hidden && element.getAttribute('aria-hidden') !== 'true',
+    );
+  }
+
+  function openSheet(sheet, trigger = document.activeElement) {
     if (!sheet) return;
+
+    sheet._returnFocus = trigger instanceof HTMLElement ? trigger : null;
+    sheet.hidden = false;
+    document.body.classList.add('is-sheet-open');
+
+    requestAnimationFrame(() => {
+      sheet.classList.add('is-open');
+      getSheetFocusableElements(sheet)[0]?.focus();
+    });
+  }
+
+  function closeSheet(sheet, { restoreFocus = true } = {}) {
+    if (!sheet || sheet.hidden) return;
+
+    const returnFocus = sheet._returnFocus;
     sheet.classList.remove('is-open');
     document.body.classList.remove('is-sheet-open');
-    window.setTimeout(() => { sheet.hidden = true; }, 220);
+
+    window.setTimeout(() => {
+      sheet.hidden = true;
+      sheet._returnFocus = null;
+
+      if (restoreFocus && returnFocus?.isConnected) {
+        returnFocus.focus();
+      }
+    }, 220);
   }
+
+  document.addEventListener('keydown', (event) => {
+    const sheet = getOpenSheet();
+
+    if (!sheet) return;
+
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeSheet(sheet);
+      return;
+    }
+
+    if (event.key !== 'Tab') return;
+
+    const focusable = getSheetFocusableElements(sheet);
+
+    if (!focusable.length) {
+      event.preventDefault();
+      return;
+    }
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  });
 
   function showToast(title, text) {
     let toast = document.querySelector('[data-catalog-toast]');

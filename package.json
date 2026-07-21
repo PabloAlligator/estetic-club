@@ -1,5 +1,5 @@
 {
-  "name": "nadia-hair",
+  "name": "kultura-volos",
   "version": "1.0.0",
   "description": "Сайт студии «Культура волос»",
   "main": "server.js",
@@ -31,5 +31,8 @@
   "devDependencies": {
     "nodemon": "^3.1.9",
     "prisma": "^6.19.3"
+  },
+  "engines": {
+    "node": ">=22.12.0"
   }
 }

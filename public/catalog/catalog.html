@@ -65,7 +65,7 @@
           <span class="header__logo-text">Культура волос</span>
         </a>
 
-        <nav class="header__nav header__nav" aria-label="Левая навигация">
+        <nav class="header__nav" aria-label="Левая навигация">
           <a href="/">Главная</a>
           <a href="/services">Услуги</a>
           <a href="/catalog"  aria-current="page">Каталог</a>
@@ -75,7 +75,7 @@
         </nav>
 
         <nav
-          class="header__nav header__nav"
+          class="header__nav"
           aria-label="Правая навигация"
         ></nav>
 
@@ -237,6 +237,7 @@
               type="search"
               maxlength="120"
               autocomplete="off"
+              aria-label="Поиск по каталогу"
               placeholder="Поиск по каталогу"
               data-catalog-search-input-mobile
             />
@@ -438,11 +439,16 @@
           aria-label="Закрыть"
         ></button>
 
-        <section class="catalog-sheet__dialog">
+        <section
+          class="catalog-sheet__dialog"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="catalog-filter-sheet-title"
+        >
           <div class="catalog-sheet__head">
             <div>
               <span>Каталог</span>
-              <h2>Фильтры</h2>
+              <h2 id="catalog-filter-sheet-title">Фильтры</h2>
             </div>
 
             <button type="button" data-sheet-close aria-label="Закрыть">
@@ -470,11 +476,16 @@
           aria-label="Закрыть"
         ></button>
 
-        <section class="catalog-sheet__dialog catalog-sheet__dialog--small">
+        <section
+          class="catalog-sheet__dialog catalog-sheet__dialog--small"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="catalog-sort-sheet-title"
+        >
           <div class="catalog-sheet__head">
             <div>
               <span>Каталог</span>
-              <h2>Сортировка</h2>
+              <h2 id="catalog-sort-sheet-title">Сортировка</h2>
             </div>
 
             <button type="button" data-sheet-close aria-label="Закрыть">
@@ -507,11 +518,16 @@
           aria-label="Закрыть"
         ></button>
 
-        <section class="catalog-sheet__dialog catalog-sheet__dialog--small">
+        <section
+          class="catalog-sheet__dialog catalog-sheet__dialog--small"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="catalog-variant-sheet-title"
+        >
           <div class="catalog-sheet__head">
             <div>
               <span>Выбор варианта</span>
-              <h2 data-variant-product-title>Товар</h2>
+              <h2 id="catalog-variant-sheet-title" data-variant-product-title>Товар</h2>
             </div>
 
             <button type="button" data-sheet-close aria-label="Закрыть">

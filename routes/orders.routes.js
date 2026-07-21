@@ -410,7 +410,27 @@ router.post('/', orderLimiter, validateOrigin, async (req, res, next) => {
 
         break;
       } catch (error) {
-        if (error?.code !== 'P2002' || attempt === 3) {
+        if (error?.code !== 'P2002') {
+          throw error;
+        }
+
+        const repeatedOrder = await prisma.order.findUnique({
+          where: {
+            idempotencyKey: parsed.data.idempotencyKey,
+          },
+          include: {
+            items: true,
+          },
+        });
+
+        if (repeatedOrder) {
+          return res.json({
+            order: repeatedOrder,
+            repeated: true,
+          });
+        }
+
+        if (attempt === 3) {
           throw error;
         }
       }

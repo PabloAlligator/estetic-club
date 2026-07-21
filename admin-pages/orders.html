@@ -9,7 +9,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/site/css/admin.min.css" />
-    <link rel="stylesheet" href="/site/css/admin-catalog.css" />
     <script src="/site/script/admin/admin.js" defer></script>
   </head>
   <body class="admin-body" data-admin-page="orders">
@@ -29,7 +28,7 @@
 
           <div class="admin-orders__toolbar">
             <form data-orders-search-form><label for="orders-search">Поиск заказов</label><div><input id="orders-search" type="search" maxlength="120" placeholder="Номер, клиент, телефон или товар" data-orders-search /><button type="submit">Найти</button><button type="button" data-orders-search-reset hidden>Сбросить</button></div></form>
-            <form data-orders-date-form><span>Период</span><div><input type="date" data-orders-date-from /><input type="date" data-orders-date-to /><button type="submit">Применить</button><button type="button" data-orders-date-reset hidden>Сбросить</button></div></form>
+            <form data-orders-date-form><span>Период</span><div><input type="date" aria-label="Заказы с даты" data-orders-date-from /><input type="date" aria-label="Заказы по дату" data-orders-date-to /><button type="submit">Применить</button><button type="button" data-orders-date-reset hidden>Сбросить</button></div></form>
             <div class="admin-orders__filters" aria-label="Статус заказа"><button class="is-active" type="button" data-order-status-filter="all">Все</button><button type="button" data-order-status-filter="NEW">Новые</button><button type="button" data-order-status-filter="CONFIRMED">Подтверждены</button><button type="button" data-order-status-filter="ASSEMBLING">Собираются</button><button type="button" data-order-status-filter="READY">Готовы</button><button type="button" data-order-status-filter="COMPLETED">Завершены</button><button type="button" data-order-status-filter="CANCELLED">Отменены</button></div>
           </div>
 
